@@ -96,9 +96,3 @@ lines(l2$d_euclidean, lm1p)
 lines(l2$d_euclidean, exp(lm2p), col = "green")
 lines(l2$d_euclidean, exp(lm3p), col = "red")
 
-## ------------------------------------------------------------------------
-(coefs <- coef(lm3))
-p <- dd_logsqrt(1:5000, a = exp(coefs[1]), b1 = coefs[2], b2 = coefs[3])
-plot(1:5000, p)
-lines(l2$d_euclidean, exp(lm3p), col = "red")
-

@@ -42,12 +42,12 @@ od2line <- function(flow, zones){
 #'
 #'
 #' @param l A SpatialLinesDataFrame
-#'
 #' @export
-#'
 #' @examples
+#' \dontrun{
 #' data(flowlines) # load demo flowlines dataset
 #' ldf <- line2df(flowlines)
+#' }
 line2df <- function(l){
   l_list <- lapply(slot(l, "lines"), function(x) lapply(slot(x, "Lines"),
   function(y) slot(y, "coords")))
@@ -60,6 +60,33 @@ line2df <- function(l){
   names(output) <- c("fx", "fy", "tx", "ty")
 
   output
+
+}
+
+#' Convert a SpatialLinesDataFrame to points at the origin and destination
+#'
+#' @param l A SpatialLinesDataFrame
+#' @export
+#' @examples
+#' data(routes_fast)
+#' lpoints <- line2points(routes_fast[2,]) # for a single line
+#' data(flowlines) # load demo flowlines dataset
+#' lpoints <- line2points(flowlines) # for many lines
+#' plot(lpoints) # note overlapping points
+#'
+line2points <- function(l){
+  for(i in 1:length(l)){
+    l1 <- l[i,]
+    lcoords <- sp::coordinates(l1)[[1]][[1]]
+    lpoints <- sp::SpatialPoints(matrix(lcoords[c(1, nrow(lcoords)),], nrow = 2))
+    sp::proj4string(lpoints) <- sp::proj4string(l)
+    if(i == 1){
+      out <- lpoints
+    } else {
+      out <- tmap::sbind(out, lpoints)
+    }
+  }
+  out
 }
 
 #' Convert straight SpatialLinesDataFrame from flow data into routes
@@ -74,9 +101,7 @@ line2df <- function(l){
 #' @param ... Arguements passed to \code{\link{route_cyclestreet}}
 #'
 #' @inheritParams route_cyclestreet
-#'
 #' @export
-#'
 #' @examples
 #'
 #' data(flowlines) # load demo flowlines dataset
@@ -114,24 +139,37 @@ line2df <- function(l){
 #' lines(routes_slow[n,], col = "green")
 
 line2route <- function(ldf, ...){
-  if(class(ldf) == "SpatialLinesDataFrame") ldf <- line2df(ldf)
-  rf <- route_cyclestreet(from = ldf[1,1:2], to = ldf[1, 3:4])
+  l <- ldf # save spatial data and row numbers
+  if(class(ldf) == "SpatialLinesDataFrame"){
+    ldf <- line2df(l)
+  }
+
+  # Save the first line - catch it if it's an error
+  tryCatch({
+    rf1 <- route_cyclestreet(from = ldf[1,1:2], to = ldf[1, 3:4], ...)
+    rf <- rf1
+    row.names(rf) <- row.names(l[1,])
+  }, error = function(e){warning(paste0("Fail for line number ", 1))})
 
   for(i in 2:nrow(ldf)){
     tryCatch({
-      # if (i==7) stop("Urgh, the iphone is in the blender !") # testing tryCatch
-      rfnew <- route_cyclestreet(from = ldf[i,1:2], to = ldf[i, 3:4], ...)
-      row.names(rfnew) <- as.character(i)
-      rf <- maptools::spRbind(rf, rfnew)
-    }, error = function(e){print(paste0("Fail for line number ", i))})
+      if(!exists("rf1")){
+        rf1 <- route_cyclestreet(from = ldf[i,1:2], to = ldf[i, 3:4], ...)
+        rf <- rf1
+        row.names(rf) <- row.names(l[i,])
+      }else{
+        rfnew <- route_cyclestreet(from = ldf[i,1:2], to = ldf[i, 3:4], ...)
+        row.names(rfnew) <- row.names(l[i,])
+        rf <- maptools::spRbind(rf, rfnew)
+      }
+    }, error = function(e){warning(paste0("Fail for line number ", i))})
 
     # Status bar
     perc_temp <- i %% round(nrow(ldf) / 10)
     if(!is.na(perc_temp) & perc_temp == 0){
-      print(paste0(round(100 * i/nrow(ldf)), " % out of ", nrow(ldf),
-        " distances calculated")) # print % of distances calculated
+      message(paste0(round(100 * i/nrow(ldf)), " % out of ", nrow(ldf),
+                   " distances calculated")) # print % of distances calculated
     }
   }
   rf
 }
-
