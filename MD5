@@ -1,4 +1,4 @@
-314e2229e875e8eebe8c554b840ea77a *DESCRIPTION
+fa0eca3725960dc44ca1f1e65c115d43 *DESCRIPTION
 54007ce744145f7ca8677b8663fac4a6 *LICENSE
 26d68881f2aa0c79657f89fead7922d4 *NAMESPACE
 0ca2aff9bf8299158a9f328b0735150e *NEWS
@@ -30,7 +30,7 @@ bebc9d3f7eb00f17f3f413949e808af1 *demo/00Index
 6aef2b58ad43f91d812376c9449f9fdb *demo/route-analysis.R
 6efec46290a20fa7fe1910e247faaf1b *inst/doc/introducing-stplanr.R
 db84e07b445dfa44b2e363a866f736ab *inst/doc/introducing-stplanr.Rmd
-dbd1f3e50fbd33f6efcfaa3d0355568d *inst/doc/introducing-stplanr.html
+9dfd973489dacd0537954ece504b1ac0 *inst/doc/introducing-stplanr.html
 d83d8cc1aac3a6d256dd7f2855fc2c5e *inst/example-flows-up-hill.R
 61ceb3616b7a0029af1b7d2feba3951f *inst/extdata/SA1Population.csv
 a6003c1f2cb54667d223c86c8da91291 *inst/extdata/SA1Population.xlsx
@@ -98,7 +98,7 @@ f523d4bae4f451f719f4b87dc512612d *man/weightfield.Rd
 457aecf438a017acd18c46fdcddaeeb8 *man/writeGeoJSON.Rd
 2e21b679b969ef44a2676e91e8b4881b *man/zones.Rd
 9c936db934c9820913e1b85062f8d082 *src/RcppExports.cpp
-9ba9cb24248156ae73f1039015769b5e *src/spatialnetworks.cpp
+82b5974e94586973ee96cd8dd604d1e8 *src/spatialnetworks.cpp
 08c7740b2e05447d132c267e9f608a9d *tests/testthat.R
 f4ba927c9233ae933c376d5919cbd8eb *tests/testthat/test-calc_catchment.R
 2302cadf57d0c9f769088f23d1219b76 *tests/testthat/test-od2line.R
