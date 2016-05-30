@@ -27,7 +27,11 @@ od2line <- function(flow, zones){
   l <- vector("list", nrow(flow))
   for(i in 1:nrow(flow)){
     from <- zones@data[,1] %in% flow[i, 1]
+    if(sum(from) == 0)
+      warning(paste0("No match for line ", i))
     to <- zones@data[,1] %in% flow[i, 2]
+    if(sum(to) == 0 & sum(from) == 1)
+      warning(paste0("No match for line ", i))
     x <- sp::coordinates(zones[from, ])
     y <- sp::coordinates(zones[to, ])
     l[[i]] <- sp::Lines(list(sp::Line(rbind(x, y))), as.character(i))
@@ -73,7 +77,6 @@ line2df <- function(l){
 #' data(flowlines) # load demo flowlines dataset
 #' lpoints <- line2points(flowlines) # for many lines
 #' plot(lpoints) # note overlapping points
-#'
 line2points <- function(l){
   for(i in 1:length(l)){
     l1 <- l[i,]
@@ -88,88 +91,126 @@ line2points <- function(l){
   }
   out
 }
-
 #' Convert straight SpatialLinesDataFrame from flow data into routes
 #'
 #' @section Details:
 #'
 #' See \code{\link{route_cyclestreet}} and other route functions for details
-
-#' @param ldf A SpatialLinesDataFrame or data.frame of coordinates produced by
-#' \code{\link{line2df}}
-#'
-#' @param ... Arguements passed to \code{\link{route_cyclestreet}}
-#'
+#' @param l A SpatialLinesDataFrame
+#' @param route_fun A routing function to be used for converting the straight lines to routes
+#' \code{\link{od2line}}
+#' @param n_print A number specifying how frequently progress updates
+#' should be shown
+#' @param ... Arguments passed to the routing function, e.g. \code{\link{route_cyclestreet}}
 #' @inheritParams route_cyclestreet
 #' @export
 #' @examples
 #'
-#' data(flowlines) # load demo flowlines dataset
 #' \dontrun{
-#' # Don't run as requires gdal dependency, can cause issues
-#' library(rgdal)
-#' flowlines <- spTransform(flowlines, CRS("+init=epsg:27700"))
-#' flowlines <- flowlines[rgeos::gLength(flowlines, byid = TRUE) > 0,]
-#' flowlines <- spTransform(flowlines, CRS("+init=epsg:4326"))
 #' plot(flowlines)
-#'
-#' cckey <- readLines("~/Dropbox/dotfiles/cyclestreets-api-key-rl")
-#' Sys.setenv(CYCLESTREET = cckey)
-#' routes_fast <- line2route(l = flowlines, plan = "fastest")
-#' routes_slow <- line2route(l = flowlines, plan = "quietest", silent = TRUE)
-#' }
-#'
-#' flowlines <- flowlines[flowlines$Area.of.residence != flowlines$Area.of.workplace,]
-#' # Save the route data (uncomment if this changes)
-#' # devtools::use_data(routes_fast, overwrite = TRUE)
-#' # devtools::use_data(routes_slow, overwrite = TRUE)
-#'
-#' if(!exists("routes_fast")){
-#'   data(routes_fast, routes_slow) # load routes
-#' }
-#'
-#' plot(flowlines)
-#' lines(routes_fast, col = "red")
-#' lines(routes_slow, col = "green")
-#'
+#' rf <- line2route(l = flowlines, "route_cyclestreet", plan = "fastest")
+#' rq <- line2route(l = flowlines, plan = "quietest", silent = TRUE)
+#' plot(rf, col = "red", add = T)
+#' plot(rq, col = "green", add = T)
 #' # Plot for a single line to compare 'fastest' and 'quietest' route
-#' n = 18
+#' n = 21
 #' plot(flowlines[n,])
-#' lines(routes_fast[n,], col = "red")
-#' lines(routes_slow[n,], col = "green")
+#' lines(rf[n,], col = "red")
+#' lines(rq[n,], col = "green")
+#' }
+line2route <- function(l, route_fun = "route_cyclestreet", n_print = 10, ...){
+  FUN <- match.fun(route_fun)
+  ldf <- line2df(l)
+  r <- l
 
-line2route <- function(ldf, ...){
-  l <- ldf # save spatial data and row numbers
-  if(class(ldf) == "SpatialLinesDataFrame"){
-    ldf <- line2df(l)
-  }
+  # test for the second od pair (the first often fails)
+  rc2 <- FUN(from = ldf[2,1:2], to = ldf[2, 3:4], ...)
 
-  # Save the first line - catch it if it's an error
-  tryCatch({
-    rf1 <- route_cyclestreet(from = ldf[1,1:2], to = ldf[1, 3:4], ...)
-    rf <- rf1
-    row.names(rf) <- row.names(l[1,])
-  }, error = function(e){warning(paste0("Fail for line number ", 1))})
-
-  for(i in 2:nrow(ldf)){
+  rdata <- data.frame(matrix(nrow = nrow(l), ncol = ncol(rc2)))
+  names(rdata) <- names(rc2)
+  r@data <- rdata
+      # stop(paste0("Sorry, the function ", route_fun, " cannot be used with line2route at present")
+    for(i in 1:nrow(ldf)){
     tryCatch({
-      if(!exists("rf1")){
-        rf1 <- route_cyclestreet(from = ldf[i,1:2], to = ldf[i, 3:4], ...)
-        rf <- rf1
-        row.names(rf) <- row.names(l[i,])
-      }else{
-        rfnew <- route_cyclestreet(from = ldf[i,1:2], to = ldf[i, 3:4], ...)
-        row.names(rfnew) <- row.names(l[i,])
-        rf <- maptools::spRbind(rf, rfnew)
-      }
+        rc <- FUN(from = ldf[i,1:2], to = ldf[i, 3:4], ...)
+        rcl <- Lines(rc@lines[[1]]@Lines, row.names(l[i,]))
+        r@lines[[i]] <- rcl
+        r@data[i,] <- rc@data
     }, error = function(e){warning(paste0("Fail for line number ", i))})
-
     # Status bar
-    perc_temp <- i %% round(nrow(ldf) / 10)
+    perc_temp <- i %% round(nrow(ldf) / n_print)
     if(!is.na(perc_temp) & perc_temp == 0){
       message(paste0(round(100 * i/nrow(ldf)), " % out of ", nrow(ldf),
                    " distances calculated")) # print % of distances calculated
     }
+    }
+  r
+}
+#' Convert a series of points into a dataframe of origins and destinations
+#'
+#' Takes a series of geographical points and converts them into a data.frame
+#' representing the potential flows, or 'spatial interaction', between every combination
+#' of points.
+#'
+#' @param p SpatialPointsDataFrame or data.frame
+#' @export
+#' @examples
+#' df <- points2odf(cents)
+#'
+points2odf <- function(p){
+  if(grepl(pattern = "DataFrame", class(p))){
+    geo_code <- p@data[,1]
+  } else {
+    geo_code <- p[,1]
   }
-  rf
+  df = data.frame(
+    expand.grid(geo_code, geo_code)[2:1]
+  )
+  names(df) <- c("O", "D")
+  df
+}
+#' Convert a series of points into geographical flows
+#'
+#' Takes a series of geographical points and converts them into a SpatialLinesDataFrame
+#' representing the potential flows, or 'spatial interaction', between every combination
+#' of points.
+#'
+#' @param p SpatialPointsDataFrame
+#'
+#' @export
+#' @examples
+#' plot(cents)
+#' flow <-points2flow(cents)
+#' plot(flow, add = TRUE)
+points2flow <- function(p){
+  df <- points2odf(p)
+  flow <- od2line(flow = df, zones = p)
+}
+
+#' Update line geometry
+#'
+#' Take two SpatialLines objects and update the geometry of the former with that of the latter,
+#' retaining the data of the former.
+#'
+#' @param l A SpatialLines object, whose geometry is to be modified
+#' @param nl A SpatialLines object of the same length as \code{l} to provide the new geometry
+#'
+#' @export
+#' @examples
+#' l <- flowlines
+#' nl <- routes_fast
+#' nrow(l)
+#' nrow(nl)
+#' l <- l[!is_linepoint(l),]
+#' names(l)
+#' names(routes_fast)
+#' l_newgeom <- update_line_geometry(l, nl)
+#' plot(l, lwd = l$All / mean(l$All))
+#' plot(l_newgeom, lwd = l$All / mean(l$All))
+#' names(l_newgeom)
+update_line_geometry <- function(l, nl){
+  for(i in 1:nrow(l)){
+    l@lines[[i]] <- Lines(nl@lines[[i]]@Lines, row.names(l[i,]))
+  }
+  l
 }

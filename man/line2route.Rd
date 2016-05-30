@@ -4,13 +4,18 @@
 \alias{line2route}
 \title{Convert straight SpatialLinesDataFrame from flow data into routes}
 \usage{
-line2route(ldf, ...)
+line2route(l, route_fun = "route_cyclestreet", n_print = 10, ...)
 }
 \arguments{
-\item{ldf}{A SpatialLinesDataFrame or data.frame of coordinates produced by
-\code{\link{line2df}}}
+\item{l}{A SpatialLinesDataFrame}
 
-\item{...}{Arguements passed to \code{\link{route_cyclestreet}}}
+\item{route_fun}{A routing function to be used for converting the straight lines to routes
+\code{\link{od2line}}}
+
+\item{n_print}{A number specifying how frequently progress updates
+should be shown}
+
+\item{...}{Arguments passed to the routing function, e.g. \code{\link{route_cyclestreet}}}
 }
 \description{
 Convert straight SpatialLinesDataFrame from flow data into routes
@@ -22,38 +27,17 @@ See \code{\link{route_cyclestreet}} and other route functions for details
 }
 \examples{
 
-data(flowlines) # load demo flowlines dataset
 \dontrun{
-# Don't run as requires gdal dependency, can cause issues
-library(rgdal)
-flowlines <- spTransform(flowlines, CRS("+init=epsg:27700"))
-flowlines <- flowlines[rgeos::gLength(flowlines, byid = TRUE) > 0,]
-flowlines <- spTransform(flowlines, CRS("+init=epsg:4326"))
 plot(flowlines)
-
-cckey <- readLines("~/Dropbox/dotfiles/cyclestreets-api-key-rl")
-Sys.setenv(CYCLESTREET = cckey)
-routes_fast <- line2route(l = flowlines, plan = "fastest")
-routes_slow <- line2route(l = flowlines, plan = "quietest", silent = TRUE)
-}
-
-flowlines <- flowlines[flowlines$Area.of.residence != flowlines$Area.of.workplace,]
-# Save the route data (uncomment if this changes)
-# devtools::use_data(routes_fast, overwrite = TRUE)
-# devtools::use_data(routes_slow, overwrite = TRUE)
-
-if(!exists("routes_fast")){
-  data(routes_fast, routes_slow) # load routes
-}
-
-plot(flowlines)
-lines(routes_fast, col = "red")
-lines(routes_slow, col = "green")
-
+rf <- line2route(l = flowlines, "route_cyclestreet", plan = "fastest")
+rq <- line2route(l = flowlines, plan = "quietest", silent = TRUE)
+plot(rf, col = "red", add = T)
+plot(rq, col = "green", add = T)
 # Plot for a single line to compare 'fastest' and 'quietest' route
-n = 18
+n = 21
 plot(flowlines[n,])
-lines(routes_fast[n,], col = "red")
-lines(routes_slow[n,], col = "green")
+lines(rf[n,], col = "red")
+lines(rq[n,], col = "green")
+}
 }
 

@@ -88,11 +88,17 @@
 #'
 route_cyclestreet <- function(from, to, plan = "fastest", silent = TRUE, pat = cyclestreet_pat()){
 
+  # Convert sp object to lat/lon vector
+  if(class(from) == "SpatialPoints" | class(from) == "SpatialPointsDataFrame" )
+    from <- coordinates(from)
+  if(class(to) == "SpatialPoints" | class(to) == "SpatialPointsDataFrame" )
+    to <- coordinates(to)
+
   # Convert character strings to lon/lat if needs be
-  if(is.character(from) | is.character(to)){
+  if(is.character(from))
     from <- rev(RgoogleMaps::getGeoCode(from))
+  if(is.character(to))
     to <- rev(RgoogleMaps::getGeoCode(to))
-  }
 
   orig <- paste0(from, collapse = ",")
   dest <- paste0(to, collapse = ",")
@@ -177,7 +183,7 @@ route_cyclestreet <- function(from, to, plan = "fastest", silent = TRUE, pat = c
 #' \code{obj <- jsonlite::fromJSON(url)}
 #'
 #' Where \code{url} is an example api request from
-#'  \url{https://github.com/graphhopper/directions-api/blob/master/docs-routing.md}.
+#'  \url{https://github.com/graphhopper/directions-api/blob/master/routing.md}.
 #'
 #' @inheritParams route_cyclestreet
 #' @export

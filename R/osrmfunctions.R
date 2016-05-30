@@ -109,18 +109,18 @@ viaroute <- function(startlat = NULL, startlng = NULL, endlat = NULL,
     i <- 1
     while (i <= length(viapoints)) {
       if(ncol(viapoints[[i]]) == 3) {
-        returnval[i] <- gsub('\\\\','\\\\\\\\',RCurl::getURL(paste0(qryurl,"loc=",paste0(viapoints[[i]][,1],',',viapoints[[i]][,2],'&u=',viapoints[[i]][,3],collapse='&loc='),'&',
+        returnval[i] <- gsub('\\\\\\\\\"','\\\\\\"',gsub('\\\\','\\\\\\\\',RCurl::getURL(paste0(qryurl,"loc=",paste0(viapoints[[i]][,1],',',viapoints[[i]][,2],'&u=',viapoints[[i]][,3],collapse='&loc='),'&',
                              paste0(paste0(
                              c("z","instructions","alt","geometry","uturns"),'=',
                              c(zoom,instructions,alt,geometry,uturns)),collapse='&')
-        )))
+        ))))
       }
       else {
-        returnval[i] <- gsub('\\\\','\\\\\\\\',RCurl::getURL(paste0(qryurl,"loc=",paste0(paste0(viapoints[[i]][,1],',',viapoints[[i]][,2]),collapse='&loc='),'&',
+        returnval[i] <- gsub('\\\\\\\\\"','\\\\\\"',gsub('\\\\','\\\\\\\\',RCurl::getURL(paste0(qryurl,"loc=",paste0(paste0(viapoints[[i]][,1],',',viapoints[[i]][,2]),collapse='&loc='),'&',
            paste0(paste0(
              c("z","instructions","alt","geometry","uturns"),'=',
              c(zoom,instructions,alt,geometry,uturns)),collapse='&')
-        )))
+        ))))
       }
       i <- i + 1
     }
@@ -134,18 +134,18 @@ viaroute <- function(startlat = NULL, startlng = NULL, endlat = NULL,
           }
 
           if (length(startlat) == 1) {
-            returnval <- gsub('\\\\','\\\\\\\\',RCurl::getURL(paste0(qryurl,"loc=",startlat,",",startlng,"&loc=",endlat,",",endlng,"&",
+            returnval <- gsub('\\\\\\\\\"','\\\\\\"',gsub('\\\\','\\\\\\\\',RCurl::getURL(paste0(qryurl,"loc=",startlat,",",startlng,"&loc=",endlat,",",endlng,"&",
                                               paste0(paste0(c("z","instructions","alt","geometry","uturns"),'=',
                                                             c(zoom,instructions,alt,geometry,uturns)),collapse='&')
-            )))
+            ))))
           }
           else {
             i <- 1
             while (i <= length(startlat)) {
-              returnval[i] <- gsub('\\\\','\\\\\\\\',RCurl::getURL(paste0(qryurl,"loc=",startlat[i],",",startlng[i],"&loc=",endlat[i],",",endlng[i],"&",
+              returnval[i] <- gsub('\\\\\\\\\"','\\\\\\"',gsub('\\\\','\\\\\\\\',RCurl::getURL(paste0(qryurl,"loc=",startlat[i],",",startlng[i],"&loc=",endlat[i],",",endlng[i],"&",
                                                    paste(paste0(c("z","instructions","alt","geometry","uturns"),'=',
                                                                 c(zoom,instructions,alt,geometry,uturns)),collapse='&')
-              )))
+              ))))
               i <- i + 1
             }
           }
@@ -314,6 +314,31 @@ viaroute2sldf_instruct <- function(routeinst, routesum, routecoords, routename =
 
 }
 
+#' Generate nearest point on the route network of a point from OSRM locate service
+#'
+#' @section Details:
+#' Retrieve coordinates of the node(s) on the network mapped from coordinates
+#' passed to functions.
+#'
+#' @param lat Numeric vector containing latitude coordinate for each coordinate
+#' to map. Also accepts dataframe with latitude in the first column and
+#' longitude in the second column.
+#' @param lng Numeric vector containing longitude coordinate for each
+#' coordinate to map.
+#' @param osrmurl Base URL of the OSRM service
+#' @export
+#' @examples \dontrun{
+#'  nearest_osm(
+#'    lat = 50.3,
+#'    lng = 13.2
+#'  )
+#' }
+nearest_osm <- function(lat, lng, osrmurl = "http://router.project-osrm.org"){
+  url = paste0(osrmurl, "/nearest?loc=", lat, ",", lng)
+  obj = jsonlite::fromJSON(url)
+  SpatialPointsDataFrame(coords = matrix(obj$mapped_coordinate, ncol = 2),
+                         data = data.frame(orig_lat = lat, orig_lng = lng))
+}
 
 #' Return SpatialPointsDataFrame with located points from OSRM locate service
 #'
@@ -335,9 +360,9 @@ viaroute2sldf_instruct <- function(routeinst, routesum, routecoords, routename =
 #'  )
 #' }
 #'
-locate2spdf <- function(lat,lng = NA,osrmurl = "http://router.project-osrm.org") {
+locate2spdf <- function(lat, lng = lng, osrmurl = "http://router.project-osrm.org") {
 
-  return(getlocnear(lat=lat,lng=lng,osrmurl=osrmurl,"locate"))
+  return(getlocnear(lat = lat, lng = lng, osrmurl = osrmurl, "locate"))
 
 }
 
@@ -361,13 +386,13 @@ locate2spdf <- function(lat,lng = NA,osrmurl = "http://router.project-osrm.org")
 #'  )
 #' }
 #'
-nearest2spdf <- function(lat,lng = NA,osrmurl = "http://router.project-osrm.org") {
+nearest2spdf <- function(lat, lng, osrmurl = "http://router.project-osrm.org") {
 
-  return(getlocnear(lat=lat,lng=lng,osrmurl=osrmurl,"nearest"))
+  return(getlocnear(lat = lat, lng = lng, osrmurl = osrmurl, "nearest"))
 
 }
 
-getlocnear <- function(lat,lng = NA, osrmurl = "http://router.project-osrm.org", service="locate") {
+getlocnear <- function(lat, lng, osrmurl = "http://router.project-osrm.org", service = "locate") {
   if(class(lat) == "data.frame") {
     lng <- lat[,2]
     lat <- lat[,1]
@@ -392,7 +417,7 @@ getlocnear <- function(lat,lng = NA, osrmurl = "http://router.project-osrm.org",
                                        ",",
                                        coorddf[i,]$origlng))
     locatedata2 <- jsonlite::fromJSON(locatedata)
-    if (locatedata2$status == 0) {
+    if (locatedata2$status == 0 | locatedata2$status == 200) {
       if (service == "locate") {
         coorddf[i,c("mappedlat","mappedlng","status")] <- c(locatedata2$mapped_coordinate,0)
       }
@@ -418,6 +443,7 @@ getlocnear <- function(lat,lng = NA, osrmurl = "http://router.project-osrm.org",
   )
 
   return(osrmspdf)
+
 }
 
 #' Return SpatialPointsDataFrame with nearest street from OSRM nearest service
@@ -437,7 +463,7 @@ getlocnear <- function(lat,lng = NA, osrmurl = "http://router.project-osrm.org",
 #'  table2matrix(seq(from=50,to=52,by=0.1),seq(from=12,to=14,by=0.1))
 #' }
 #'
-table2matrix <- function(lat, lng=NA, osrmurl="http://router.project-osrm.org") {
+table2matrix <- function(lat, lng, osrmurl="http://router.project-osrm.org") {
 
   if(class(lat) == "data.frame") {
     lng <- lat[,2]
