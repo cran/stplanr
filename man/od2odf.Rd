@@ -27,9 +27,9 @@ centroids. This can be tricky to plot and link-up with geographical data.
 This function makes the task easier.
 }
 \examples{
-\dontrun{
+data(flow)
+data(zones)
 od2odf(flow, zones)
-}
 }
 \references{
 Rae, A. (2009). From spatial interaction data to spatial interaction information?

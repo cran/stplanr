@@ -4,8 +4,8 @@
 \alias{route_graphhopper}
 \title{Plan a route with the graphhopper routing engine}
 \usage{
-route_graphhopper(from, to, vehicle = "bike", silent = TRUE,
-  pat = graphhopper_pat())
+route_graphhopper(from, to, vehicle = "bike", silent = TRUE, pat = NULL,
+  base_url = "https://graphhopper.com")
 }
 \arguments{
 \item{from}{Text string or coordinates (a numeric vector of
@@ -21,8 +21,11 @@ or foot.}
 
 \item{silent}{Logical (default is FALSE). TRUE hides request sent.}
 
-\item{pat}{The API key used - this is usually aquired automatically through a helper
-function}
+\item{pat}{The API key used. By default this is set to NULL and
+this is usually aquired automatically through a helper, api_pat().}
+
+\item{base_url}{The base url from which to construct API requests
+(with default set to main server)}
 }
 \description{
 Provides an R interface to the graphhopper routing engine,
@@ -41,7 +44,7 @@ To use this function you will need to obtain an API key from
 It is assumed that you have set your api key as a system environment
 for security reasons (so you avoid typing the API key in your code).
 Do this by adding the following to your .Renviron file (see \code{?.Renviron}
-or \url{https://cran.r-project.org/web/packages/httr/vignettes/api-packages.html}
+or the 'api-packages' vignette at \url{https://cran.r-project.org/package=httr}
 for more on this):
 
 \code{GRAPHHOPPER='FALSE-Key-eccbf612-214e-437d-8b73-06bdf9e6877d'}.
@@ -54,13 +57,12 @@ Where \code{url} is an example api request from
  \url{https://github.com/graphhopper/directions-api/blob/master/routing.md}.
 }
 \examples{
-
 \dontrun{
-r <- route_graphhopper("Leeds", "Dublin", vehicle = "bike")
-r2 <- route_graphhopper("New York", "Washington", vehicle = "foot")
-library(leaflet)
-
-leaflet() \%>\% addTiles() \%>\% addPolylines(data = r)
+r <- route_graphhopper(from = "Leeds", to = "Dublin", vehicle = "bike")
+r@data
+plot(r)
+r <- route_graphhopper("New York", "Washington", vehicle = "foot")
+plot(r)
 }
 }
 \seealso{

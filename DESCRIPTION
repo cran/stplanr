@@ -1,8 +1,8 @@
 Package: stplanr
 Type: Package
 Title: Sustainable Transport Planning
-Version: 0.1.4
-Date: 2016-08-29
+Version: 0.1.5
+Date: 2016-10-26
 Authors@R: c(
     person("Robin", "Lovelace", email = "rob00x@gmail.com", role = c("aut", "cre")),
     person("Richard", "Ellison", role = c("aut")),
@@ -21,19 +21,19 @@ Depends: sp, R (>= 3.0)
 Imports: jsonlite, maptools, raster, rgdal, rgeos, dplyr, magrittr,
         RgoogleMaps, openxlsx, leaflet, methods, httr, R.utils,
         stringi, stringr, readr, lubridate, RCurl, geosphere, Rcpp (>=
-        0.12.1), igraph, data.table
+        0.12.1), igraph, nabor, data.table
 LinkingTo: RcppArmadillo, Rcpp
-Suggests: testthat, knitr, tmap, rmarkdown
+Suggests: testthat, knitr, rmarkdown
 VignetteBuilder: knitr
 URL: https://github.com/ropensci/stplanr
 SystemRequirements: GNU make
 RoxygenNote: 5.0.1
 NeedsCompilation: yes
-Packaged: 2016-08-29 13:27:57 UTC; robin
+Packaged: 2016-10-26 15:44:38 UTC; robin
 Author: Robin Lovelace [aut, cre],
   Richard Ellison [aut],
   Barry Rowlingson [aut] (Author of overline),
   Nick Bearman [aut] (Co-author of gclip),
   Malcolm Morgan [aut] (Co-author of angle_diff)
 Repository: CRAN
-Date/Publication: 2016-08-29 17:44:32
+Date/Publication: 2016-10-26 18:36:33

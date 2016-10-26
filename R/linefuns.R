@@ -11,6 +11,7 @@
 #'
 #' @export
 #' @examples
+#' data(routes_fast)
 #' n_vertices(routes_fast)
 n_vertices <- function(l){
   sapply(l@lines, function(x) nrow(x@Lines[[1]]@coords))
@@ -29,6 +30,7 @@ n_vertices <- function(l){
 #' @inheritParams line2df
 #' @export
 #' @examples
+#' data(flowlines)
 #' islp <- is_linepoint(flowlines)
 #' nrow(flowlines)
 #' sum(islp)
@@ -54,6 +56,7 @@ is_linepoint <- function(l){
 #' Default is FALSE. If TRUE, the same line in the oposite direction would have the same bearing
 #' @export
 #' @examples
+#' data(flowlines)
 #' line_bearing(flowlines)
 #' line_bearing(flowlines, bidirectional = TRUE)
 line_bearing = function(l, bidirectional = FALSE){
@@ -83,7 +86,8 @@ line_bearing = function(l, bidirectional = FALSE){
 #' @author Robin Lovelace and Malcolm Morgan
 #' @export
 #' @examples
-#' # find all routes going North-South
+#' data(flowlines)
+#' # Find all routes going North-South
 #' a = angle_diff(flowlines, angle = 0, bidirectional = TRUE, absolute = TRUE)
 #' plot(flowlines)
 #' plot(flowlines[a < 15,], add = TRUE, lwd = 3, col = "red")
@@ -113,7 +117,66 @@ angle_diff = function(l, angle, bidirectional = FALSE, absolute = TRUE){
 #' @inheritParams line2df
 #' @export
 #' @examples
-#' l = routes_fast
+#' data(routes_fast)
+#' line_midpoint(routes_fast)
 line_midpoint = function(l){
-  stplanr::crs_select_aeq
+  gprojected(l, maptools::SpatialLinesMidPoints)
+}
+
+#' Calculate length of lines in geographic CRS
+#' @inheritParams line2df
+#' @param byid Logical determining whether the length is returned per object (default is true)
+#' @export
+line_length = function(l, byid = TRUE){
+  gprojected(l, rgeos::gLength, byid = byid)
+}
+
+#' Divide SpatialLines dataset into regular segments
+#' @inheritParams line2df
+#' @param n_segments The number of segments to divide the line into
+#' @param segment_length The approximate length of segments in the output (overides n_segments if set)
+#' @export
+#' @examples
+#' data(routes_fast)
+#' l = routes_fast[1,]
+#' l_seg2 = line_segment(l = l, n_segments = 2)
+#' plot(l_seg2, col = l_seg2$group, lwd = 50)
+#' l_seg5 = line_segment(l = l, n_segments = 5)
+#' plot(l_seg5, col = l_seg5$group, lwd = 30, add = TRUE)
+#' l_seg100m = line_segment(l = l, segment_length = 100)
+#' plot(l_seg100m, col = l_seg100m$group, lwd = 10, add = TRUE)
+#' plot(l, col = "white", add = TRUE)
+#' line_segment(l = l, segment_length = 100)
+line_segment = function(l, n_segments, segment_length = NA){
+  if(!is.na(segment_length)){
+    l_length = line_length(l)
+    n_segments = round(l_length / segment_length)
+  }
+  if(n_segments == 2){
+    pseg = line_midpoint(l)
+  } else {
+    pseg = spsample(x = l, n = n_segments - 1, type = "regular")
+  }
+  l_geom = raster::geom(l)
+  l_coords = l_geom[, c("x", "y")]
+  knn_res = nabor::knn(data = l_coords, query = coordinates(pseg), k = 1)
+  sel_nearest = c(knn_res$nn.idx)
+  for(i in 1:(length(sel_nearest) + 1)){
+    ids = c(1, sel_nearest, nrow(l))
+    if(i == 1){
+      l_seg = points2line(l_coords[ids[i]:ids[(i + 1)],])
+      spChFIDs(l) = i
+    } else if(i == length(sel_nearest) + 1){
+      l_temp = points2line(l_coords[ids[i]:nrow(l_coords),])
+      spChFIDs(l_temp) = i
+      l_seg = maptools::spRbind(l_seg, l_temp)
+    } else {
+      l_temp = points2line(l_coords[ids[i]:ids[(i + 1)],])
+      spChFIDs(l_temp) = i
+      l_seg = maptools::spRbind(l_seg, l_temp)
+    }
+  }
+  l_seg = SpatialLinesDataFrame(l_seg, data.frame(group = 1:i))
+  raster::crs(l_seg) = raster::crs(l)
+  l_seg
 }

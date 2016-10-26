@@ -36,6 +36,7 @@ crs_select_aeq <- function(shp){
 #' automatically by \code{\link{crs_select_aeq}}).
 #' @export
 #' @examples
+#' data(routes_fast)
 #' rf_aeq = reproject(routes_fast)
 #' rf_osgb = reproject(routes_fast, 27700)
 #' cor(rgeos::gLength(rf_aeq, byid = TRUE), rgeos::gLength(rf_osgb, byid = TRUE))
@@ -45,13 +46,14 @@ crs_select_aeq <- function(shp){
 #' plot(rf_osgb_wgs84, col = "red", add = TRUE)
 reproject = function(shp, crs = crs_select_aeq(shp)){
   if(is.na(raster::crs(shp))){
-    message("Assuming that this the shp has a lat/long CRS (EPSG:4326)")
+    message("Assuming a geographical (lat/lon) CRS (EPSG:4326)")
     raster::crs(shp) = CRS("+init=epsg:4326")
   }
   if(is.numeric(crs)) # test if it's an epsg code
     crs = CRS(paste0("+init=epsg:", crs))
-  message(paste0("Running the function "))
+  message(paste0("Transforming to CRS ", crs))
   res = spTransform(shp, crs)
+  res
 }
 
 #' Perform GIS functions on a temporary, projected version of a spatial object
@@ -62,6 +64,7 @@ reproject = function(shp, crs = crs_select_aeq(shp)){
 #' @export
 #' @examples
 #' # Find the length of routes that are in lat/long format
+#' data(routes_fast)
 #' rlength = gprojected(routes_fast, fun = rgeos::gLength, byid = TRUE)
 #' plot(routes_fast$length, rlength)
 #' cor(routes_fast$length, rlength)
@@ -70,11 +73,24 @@ reproject = function(shp, crs = crs_select_aeq(shp)){
 #' raster::crs(rbuf)
 #' plot(routes_fast, col = "green", add = TRUE)
 gprojected = function(shp, fun, crs = crs_select_aeq(shp), ...){
-  shp_projected = reproject(shp, crs = crs)
-  message(paste0("Running function on a temporary projected version of the Spatial object using the CRS: ", crs))
-  res = fun(shp_projected, ...)
-  if(is(res, "Spatial"))
-    res = spTransform(res, CRS("+init=epsg:4326"))
+  # assume it's not projected  (i.e. lat/lon) if there is no CRS
+  if(!is.na(is.projected(shp))){
+    if(is.projected(shp)){
+      res = fun(shp, ...)
+    } else {
+      shp_projected = reproject(shp, crs = crs)
+      message(paste0("Running function on a temporary projected version of the Spatial object using the CRS: ", crs))
+      res = fun(shp_projected, ...)
+      if(is(res, "Spatial"))
+        res = spTransform(res, CRS("+init=epsg:4326"))
+    }
+  } else {
+    shp_projected = reproject(shp, crs = crs)
+    message(paste0("Running function on a temporary projected version of the Spatial object using the CRS: ", crs))
+    res = fun(shp_projected, ...)
+    if(is(res, "Spatial"))
+      res = spTransform(res, CRS("+init=epsg:4326"))
+  }
   res
 }
 
