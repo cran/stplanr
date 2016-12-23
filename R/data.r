@@ -216,3 +216,50 @@ NULL
 #' @usage data(zones)
 #' @format A SpatialPolygonsDataFrame
 NULL
+
+#' SpatialLinesDataFrame representing a route network
+#'
+#' @family example of route network data (sometimes called flow data)
+#'
+#' The flow of commuters using different segments of the road network represented in the
+#' \code{\link{flowlines}} and \code{\link{routes_fast}} datasets
+#'
+#' @docType data
+#' @keywords datasets
+#' @name route_network
+#' @usage data(route_network)
+#' @format A SpatialLinesDataFrame 80 rows and 1 column
+#' @examples \dontrun{
+#' # Generate route network
+#' route_network = overline(routes_fast, "All", fun = sum)
+#' }
+NULL
+
+#' SpatialPointsDataFrame representing road traffic deaths
+#'
+#' This dataset represents the type of data downloaded and cleaned
+#' using stplanr functions. It represents a very small sample (with most variables stripped)
+#' of open data from the UK's Stats19 dataset.
+#'
+#' @docType data
+#' @keywords datasets
+#' @name ca_local
+#' @usage data(ca_local)
+#' @format A SpatialPointsDataFrame with 11 rows and 2 columns
+#' @examples \dontrun{
+#' # Generate data
+#' ac <- read_stats19_ac()
+#' ca <- read_stats19_ca()
+#' ve <- read_stats19_ve()
+#' library(dplyr)
+#' ca_ac <- inner_join(ca, ac)
+#' ca_cycle <- ca_ac %>%
+#'   filter(Casualty_Severity == "Fatal" & !is.na(Latitude)) %>%
+#'   select(Age = Age_of_Casualty, Mode = Casualty_Type, Longitude, Latitude)
+#' ca_sp <- SpatialPointsDataFrame(coords = ca_cycle[3:4], data = ca_cycle[1:2])
+#' data("route_network")
+#' proj4string(ca_sp) <- proj4string(route_network)
+#' bb <- bb2poly(route_network)
+#' ca_local = ca_sp[bb,]
+#' }
+NULL

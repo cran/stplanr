@@ -7,8 +7,8 @@
 viaroute2sldf(osrmresult)
 }
 \arguments{
-\item{osrmresult}{String containing encoded json result of OSRM routing
-query.}
+\item{osrmresult}{Single character string or character vector containing
+encoded json result(s) of OSRM routing queries.}
 }
 \description{
 Convert json result of OSRM routing query to SpatialLinesDataFrame
@@ -20,11 +20,11 @@ SpatialLinesDataFrame containing the route, route summary and instructions.
 }
 \examples{
 \dontrun{
-library(RCurl)
  viaroute2sldf(
-   RCurl::getURL(paste0(
-   "http://router.project-osrm.org/viaroute?loc=52.503033,13.420526&",
-   "loc=52.516582,13.429290&instructions=true"))
+   viaroute(startlat = 52.503033,
+            startlng = 13.420526,
+            endlat = 52.516582,
+            endlng = 13.429290)
  )
 }
 }

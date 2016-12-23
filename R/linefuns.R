@@ -57,14 +57,15 @@ is_linepoint <- function(l){
 #' @export
 #' @examples
 #' data(flowlines)
-#' line_bearing(flowlines)
-#' line_bearing(flowlines, bidirectional = TRUE)
-line_bearing = function(l, bidirectional = FALSE){
-  ldf = line2df(l)
-  bearing = geosphere::bearing(as.matrix(ldf[,c("fx", "fy")]), as.matrix(ldf[,c("tx", "ty")]))
-    if(bidirectional){
-    new_bearing = bearing + 180
-    new_bearing[new_bearing >= 180] = new_bearing[new_bearing >= 180] - 180
+#' b1 <- line_bearing(flowlines)
+#' b2 <- line_bearing(flowlines, bidirectional = TRUE)
+#' plot(b1, b2)
+line_bearing <- function(l, bidirectional = FALSE){
+  ldf <- line2df(l)
+  bearing <- geosphere::bearing(as.matrix(ldf[, c("fx", "fy")]), as.matrix(ldf[,c("tx", "ty")]))
+    if(bidirectional) {
+      bearing[bearing > 90] <- bearing[bearing > 90] - 180
+      bearing[bearing < -90] <- bearing[bearing < -90] + 180
   }
   bearing
 }
@@ -118,7 +119,7 @@ angle_diff = function(l, angle, bidirectional = FALSE, absolute = TRUE){
 #' @export
 #' @examples
 #' data(routes_fast)
-#' line_midpoint(routes_fast)
+#' line_midpoint(routes_fast[2:5,])
 line_midpoint = function(l){
   gprojected(l, maptools::SpatialLinesMidPoints)
 }
@@ -138,7 +139,7 @@ line_length = function(l, byid = TRUE){
 #' @export
 #' @examples
 #' data(routes_fast)
-#' l = routes_fast[1,]
+#' l = routes_fast[2,]
 #' l_seg2 = line_segment(l = l, n_segments = 2)
 #' plot(l_seg2, col = l_seg2$group, lwd = 50)
 #' l_seg5 = line_segment(l = l, n_segments = 5)
@@ -169,11 +170,11 @@ line_segment = function(l, n_segments, segment_length = NA){
     } else if(i == length(sel_nearest) + 1){
       l_temp = points2line(l_coords[ids[i]:nrow(l_coords),])
       spChFIDs(l_temp) = i
-      l_seg = maptools::spRbind(l_seg, l_temp)
+      l_seg = raster::bind(l_seg, l_temp)
     } else {
       l_temp = points2line(l_coords[ids[i]:ids[(i + 1)],])
       spChFIDs(l_temp) = i
-      l_seg = maptools::spRbind(l_seg, l_temp)
+      l_seg = raster::bind(l_seg, l_temp)
     }
   }
   l_seg = SpatialLinesDataFrame(l_seg, data.frame(group = 1:i))

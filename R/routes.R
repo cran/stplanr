@@ -15,7 +15,7 @@
 #'  \code{length = 2} representing latitude and longitude) representing a point
 #'  on Earth. This represents the destination of the trip.
 #'
-#' @param plan Text strong of either "fastest", "quietest" or "balanced"
+#' @param plan Text strong of either "fastest" (default), "quietest" or "balanced"
 #' @param silent Logical (default is FALSE). TRUE hides request sent.
 #' @param pat The API key used. By default this is set to NULL and
 #' this is usually aquired automatically through a helper, api_pat().
@@ -56,7 +56,7 @@
 #' @inheritParams line2route
 #' @param base_url The base url from which to construct API requests
 #' (with default set to main server)
-#' @param reporterrors Boolean value (TRUE/FALSE) indicating if cyclestreets
+#' @param reporterrors Boolean value (TRUE/FALSE) indicating if cyclestreets (TRUE by default).
 #' should report errors (FALSE by default).
 #' @param save_raw Boolean value which returns raw list from the json if TRUE (FALSE by default).
 #' @export
@@ -93,7 +93,7 @@
 #' }
 #'
 route_cyclestreet <- function(from, to, plan = "fastest", silent = TRUE, pat = NULL,
-                              base_url = "http://www.cyclestreets.net", reporterrors = FALSE,
+                              base_url = "http://www.cyclestreets.net", reporterrors = TRUE,
                               save_raw = "FALSE"){
 
   # Convert sp object to lat/lon vector

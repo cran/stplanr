@@ -236,83 +236,155 @@ line2pointsn <- function(l){
 #' @param n_print A number specifying how frequently progress updates
 #' should be shown
 #' @param list_output If FALSE (default) assumes SpatialLinesDataFrame output. Set to TRUE to save output as a list.
+#' @param l_id Character string naming the id field from the input lines data,
+#' typically the origin and destination ids pasted together. If absent, the row name of the
+#' straight lines will be used.
+#' @param n_processes The number of processes the routing requests should be made from, default 1.
 #' @param ... Arguments passed to the routing function, e.g. \code{\link{route_cyclestreet}}
 #' @inheritParams route_cyclestreet
 #' @export
 #' @examples
 #' \dontrun{
 #' data(flowlines)
-#' plot(flowlines)
-#' rf <- line2route(l = flowlines, "route_cyclestreet", plan = "fastest")
-#' rq <- line2route(l = flowlines, plan = "quietest", silent = TRUE)
-#' plot(rf, col = "red", add = TRUE
-#' plot(rq, col = "green", add = TRUE
+#' l = flowlines[2:5,]
+#' rf <- line2route(l = l, "route_cyclestreet", plan = "fastest")
+#' rq <- line2route(l = l, plan = "quietest", silent = TRUE)
+#' plot(rf, col = "red")
+#' plot(rq, col = "green", add = TRUE)
+#' plot(l, add = T)
 #' # Plot for a single line to compare 'fastest' and 'quietest' route
-#' n = 21
-#' plot(flowlines[n,])
+#' n = 2
+#' plot(l[n,])
 #' lines(rf[n,], col = "red")
 #' lines(rq[n,], col = "green")
 #' # Example with list output
-#' l <- flowlines[1:3,]
+#' l <- l[1:3,]
 #' rf_list <- line2route(l = l, list_output = TRUE)
 #' class(rf_list)       # list output
 #' class(rf_list[[2]])  # but individual elements are spatial
 #' rf_list_of_lists <- line2route(l = l, list_output = TRUE, save_raw = TRUE)
 #' class(rf_list_of_lists)       # list output
 #' class(rf_list_of_lists[[2]])  # but individual elements are spatial
+#' # illustration of how the l_id argument works:
+#' rf$id # has id as l has "id" field
+#' l$id <- NULL # remove id field for testing
+#' rf_no_id <- line2route(l)
+#' rf_no_id$id # [1] "1" "2" "3" "4"
+#' rf_with_id = line2route(l, l_id = "All")
+#' rf_with_id$id # [1] 38 10 44
+#' # demo with parallel version spliting route API requests over multiple CPU processes
+#' rf_parr <- line2route(l = l, n_processes = 4)
+#' l = flowlines[1:2,]
+#' rf_with_err = line2route(l,  reporterrors = T)
+#' # Now rf_with_err$error[2] has the correct error message
 #' }
-line2route <- function(l, route_fun = "route_cyclestreet", n_print = 10, list_output = FALSE, ...){
-
+line2route <- function(l, route_fun = "route_cyclestreet", n_print = 10, list_output = FALSE, l_id = NA, n_processes = 1, ...){
   FUN <- match.fun(route_fun)
   ldf <- line2df(l)
+  n_ldf <- nrow(ldf)
 
-  if(list_output){
-    r <- as.list(rep(NA, length(l)))
+  error_fun <- function(e){
+    warning(paste("Fail for line number", i))
+    e
+  }
 
-    # test for the second od pair (the first often fails)
-    rc2 <- FUN(from = c(ldf$fx[2], ldf$fy[2]), to = c(ldf$tx[2], ldf$ty[2]), ...)
+  if(n_processes > 1){
+    n_processes <- min(c(n_processes, n_ldf))
+    cl <- parallel::makeCluster(n_processes)
+    doParallel::registerDoParallel(cl)
+  }
 
-    # stop(paste0("Sorry, the function ", route_fun, " cannot be used with line2route at present")
-    for(i in 1:nrow(ldf)){
-      tryCatch({
-        r[[i]] <- FUN(from = c(ldf$fx[i], ldf$fy[i]), to = c(ldf$tx[i], ldf$ty[i]), ...)
-      }, error = function(e){warning(paste0("Fail for line number ", i))})
-      # Status bar
-      perc_temp <- i %% round(nrow(ldf) / n_print)
-      if(!is.na(perc_temp) & perc_temp == 0){
-        message(paste0(round(100 * i/nrow(ldf)), " % out of ", nrow(ldf),
-                       " distances calculated")) # print % of distances calculated
-      }
+  if(n_processes > 1){
+    rc <- foreach::foreach(i = 1:n_ldf, .errorhandling = "pass") %dopar% {
+      FUN(from = c(ldf$fx[i], ldf$fy[i]), to = c(ldf$tx[i], ldf$ty[i]), ...)
     }
+    parallel::stopCluster(cl)
   } else {
-
-    r <- l
-
-    # test for the second od pair (the first often fails)
-    rc2 <- FUN(from = c(ldf$fx[2], ldf$fy[2]), to = c(ldf$tx[2], ldf$ty[2]), ...)
-
-    rdata <- data.frame(matrix(nrow = nrow(l), ncol = ncol(rc2)))
-    names(rdata) <- names(rc2)
-    r@data <- rdata
-    # stop(paste0("Sorry, the function ", route_fun, " cannot be used with line2route at present")
-    for(i in 1:nrow(ldf)){
-      tryCatch({
-        rc <- FUN(from = c(ldf$fx[i], ldf$fy[i]), to = c(ldf$tx[i], ldf$ty[i]), ...)
-        rcl <- Lines(rc@lines[[1]]@Lines, row.names(l[i,]))
-        r@lines[[i]] <- rcl
-        r@data[i,] <- rc@data
-      }, error = function(e){warning(paste0("Fail for line number ", i))})
-      # Status bar
-      perc_temp <- i %% round(nrow(ldf) / n_print)
+    rc <- as.list(rep(NA, length(l)))
+    for(i in 1:n_ldf){
+      rc[[i]] <- tryCatch({
+        FUN(from = c(ldf$fx[i], ldf$fy[i]), to = c(ldf$tx[i], ldf$ty[i]), ...)
+      }, error = error_fun)
+      perc_temp <- i %% round(n_ldf / n_print)
+      # print % of distances calculated
       if(!is.na(perc_temp) & perc_temp == 0){
-        message(paste0(round(100 * i/nrow(ldf)), " % out of ", nrow(ldf),
-                       " distances calculated")) # print % of distances calculated
+        message(paste0(round(100 * i/n_ldf), " % out of ", n_ldf, " distances calculated"))
       }
     }
-    r@data$ID <- row.names(r@data)
+  }
+
+  if(!list_output){
+    # Set the names based on the first non failing line (then exit loop)
+    for(i in 1:n_ldf){
+      if(grepl("Spatial.*DataFrame", class(rc[[i]]))[1]) {
+        rdata <- data.frame(matrix(nrow = nrow(l), ncol = ncol(rc[[i]]) + 1))
+        names(rdata) <- c(names(rc[[i]]), "error")
+        r <- l
+        r@data <- rdata
+        break
+      }
+    }
+
+    # Copy rc into r including the data or copy the error into r
+    for(i in 1:n_ldf){
+      if(grepl("Spatial.*DataFrame", class(rc[[i]]))[1]) {
+        r@lines[[i]] <- Lines(rc[[i]]@lines[[1]]@Lines, row.names(l[i,]))
+        r@data[i,] <- c(rc[[i]]@data, error = NA)
+      } else {
+        r@data[i, "error"] <- rc[[i]][1]
+      }
+    }
+
+    # Set the id in r
+    l_ids <- c(l_id, "id")
+    l_id <- l_ids[!is.na(l_ids)][1]
+    r$id <- if(l_id %in% names(l)){
+      l@data[[l_id]]
+    } else {
+      row.names(l)
+    }
   }
   r
 }
+
+#' Convert straight SpatialLinesDataFrame from flow data into routes retrying
+#' on connection (or other) intermittent failures
+#'
+#' @section Details:
+#'
+#' See \code{\link{line2route}} for the version that is not retried on errors.
+#' @param lines A SpatialLinesDataFrame
+#' @param pattern A regex that the error messages must not match to be retried, default "^Error: " i.e. do not retry errors starting with "Error: "
+#' @param n_retry Number of times to retry
+#' @inheritParams line2route
+#' @export
+#' @examples
+#' \dontrun{
+#' data(flowlines)
+#' rf_list <- line2routeRetry(flowlines[1:2,], pattern = "nonexistanceerror", silent = F)
+#' }
+line2routeRetry <- function(lines, pattern = "^Error: ", n_retry = 3, ...) {
+  routes <- line2route(lines, reporterrors = T, ...)
+
+  # When the time is NA then the routing failed,
+  # if there is no error message or the message matches the pattern select line to be retried
+  failed_to_route <- lines[is.na(routes$time) & (is.na(routes$error) | !grepl(pattern, routes$error)),]
+  if (nrow(failed_to_route) > 0 && n_retry > 0){
+    ids <- routes$ids
+    routes_retry <- line2routeRetry(failed_to_route, pattern = pattern, n_retry = n_retry-1,  ...)
+    for (idx_retry in 1:nrow(routes_retry)) {
+      # Merge in retried routes if they are Spatial DataFrames
+      if(grepl("Spatial.*DataFrame", class(routes_retry[[idx_retry]]))) {
+        idx_to_replace <- which(routes$id == routes_retry$id[idx_retry])
+
+        routes@data[idx_to_replace,] <- routes_retry@data[idx_retry,]
+        routes@lines[[idx_to_replace]] <- Lines(routes_retry@lines[[idx_retry]]@Lines, row.names(routes_retry[idx_retry,]))
+      }
+    }
+  }
+  routes
+}
+
 #' Convert a series of points into a dataframe of origins and destinations
 #'
 #' Takes a series of geographical points and converts them into a data.frame
@@ -370,7 +442,7 @@ points2flow <- function(p){
 #' @export
 #' @examples
 #' data(flowlines)
-#' l <- flowlines
+#' l <- flowlines[2:5,]
 #' nl <- routes_fast
 #' nrow(l)
 #' nrow(nl)
