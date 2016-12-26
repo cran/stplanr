@@ -1,4 +1,4 @@
-f4422e5490c2dfd77c206da97dcf61b0 *DESCRIPTION
+7c3bc07be53650f793ececfef9d64d28 *DESCRIPTION
 54007ce744145f7ca8677b8663fac4a6 *LICENSE
 ccade665c136a6dcbf712a24689ca6bc *NAMESPACE
 11d0c13df34181aa92fbe78405abf13c *NEWS.md
@@ -44,7 +44,7 @@ bebc9d3f7eb00f17f3f413949e808af1 *demo/00Index
 6aef2b58ad43f91d812376c9449f9fdb *demo/route-analysis.R
 9e390cedec73317e0978294d1ab61830 *inst/doc/introducing-stplanr.R
 d5390a34c45fcab688bc0ace227e5fda *inst/doc/introducing-stplanr.Rmd
-35c782507bc5eafda428778e74477232 *inst/doc/introducing-stplanr.html
+a364532107ebef7d35897444f3a1ca36 *inst/doc/introducing-stplanr.html
 d83d8cc1aac3a6d256dd7f2855fc2c5e *inst/example-flows-up-hill.R
 61ceb3616b7a0029af1b7d2feba3951f *inst/extdata/SA1Population.csv
 a6003c1f2cb54667d223c86c8da91291 *inst/extdata/SA1Population.xlsx
