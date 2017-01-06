@@ -28,6 +28,7 @@ head(cents)
 
 ## ------------------------------------------------------------------------
 library(tmap)
+library(tmaptools)
 osm_tiles = read_osm(bb(cents, 1.4))
 (map = qtm(osm_tiles) +
   qtm(cents, symbols.size = 5) )

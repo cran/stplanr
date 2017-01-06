@@ -41,6 +41,8 @@ setClass("SpatialLinesNetwork", representation(sl = "SpatialLinesDataFrame",
 #' @param uselonglat A boolean value indicating if the data should be assumed
 #' to be using WGS84 latitude/longitude coordinates. If \code{FALSE} or not
 #' set, uses the coordinate system specified by the SpatialLines object.
+#' @param tolerance A numeric value indicating the tolerance (in the units of
+#' the coordinate system) to use as a tolerance with which to match nodes.
 #'
 #' @references
 #' Pebesma, E. (2013). Spatial Networks, URL:http://rpubs.com/edzer/6767.
@@ -52,18 +54,19 @@ setClass("SpatialLinesNetwork", representation(sl = "SpatialLinesDataFrame",
 #' data(routes_fast)
 #' rnet <- overline(sldf = routes_fast, attrib = "length")
 #' SLN <- SpatialLinesNetwork(rnet)
+#' class(SLN)
 #' weightfield(SLN) # field used to determine shortest path
 #' shortpath <- sum_network_routes(SLN, 1, 50, sumvars = "length")
 #' plot(shortpath, col = "red", lwd = 4)
 #' plot(SLN, add = TRUE)
-SpatialLinesNetwork = function(sl, uselonglat = FALSE) {
+SpatialLinesNetwork = function(sl, uselonglat = FALSE, tolerance = 0.000) {
   stopifnot(is(sl, "SpatialLines"))
   if (!is(sl, "SpatialLinesDataFrame"))
     sl = new("SpatialLinesDataFrame", sl, data = data.frame(id = 1:length(sl)))
   if (!all(sapply(sl@lines, length) == 1))
     stop("SpatialLines is not simple: each Lines element should have only a single Line")
   # Generate graph data
-  gdata = coord_matches(sl)
+  gdata = coord_matches(sl, tolerance)
   s = gdata$s
   g = igraph::graph(gdata$pts0, directed = FALSE)  # edges
   nodes = s[gdata$upts, ]
@@ -85,6 +88,11 @@ SpatialLinesNetwork = function(sl, uselonglat = FALSE) {
 #' for the geographic (SpatialLines) representation or "graph" for the graph
 #' representation.
 #' @param ... Arguments to pass to relevant plot function.
+#' @examples
+#' data(routes_fast)
+#' rnet <- overline(sldf = routes_fast, attrib = "length")
+#' SLN <- SpatialLinesNetwork(rnet)
+#' plot(SLN)
 #' @export
 setMethod("plot", signature = c(x="SpatialLinesNetwork"),
           definition = function(x, component = "sl", ...){
@@ -115,6 +123,13 @@ setMethod("plot", signature = c(x="SpatialLinesNetwork"),
 #' passed to the replacement function. If the dataframe contains multiple
 #' columns, the column with the same name as \code{varname} is used,
 #' otherwise the first column is used.
+#' @examples
+#' data(routes_fast)
+#' rnet <- overline(sldf = routes_fast, attrib = "length")
+#' SLN <- SpatialLinesNetwork(rnet)
+#' weightfield(SLN) <- 'length'
+#' weightfield(SLN, 'randomnum') <- sample(1:10, size = nrow(SLN@sl), replace = TRUE)
+#'
 #' @name weightfield
 NULL
 
@@ -172,7 +187,12 @@ setReplaceMethod("weightfield", signature(x = "SpatialLinesNetwork", varname = "
 #' Print a summary of a SpatialLinesNetwork
 #'
 #' @param object The SpatialLinesNetwork
-#' @param ... Arguments to pass to relevant plot function.
+#' @param ... Arguments to pass to relevant summary function.
+#' @examples
+#' data(routes_fast)
+#' rnet <- overline(sldf = routes_fast, attrib = "length")
+#' SLN <- SpatialLinesNetwork(rnet)
+#' summary(SLN)
 #' @export
 setMethod("summary", signature = c(object="SpatialLinesNetwork"),
         definition = function(object, ...){
@@ -202,6 +222,11 @@ setMethod("summary", signature = c(object="SpatialLinesNetwork"),
 #' @return An integer value with the ID of the node closest to \code{(x,y)}
 #' with a value of \code{NA} the closest node is further than \code{maxdist}
 #' from \code{(x,y)}. If \code{x} is a vector, returns a vector of Node IDs.
+#' @examples
+#' data(routes_fast)
+#' rnet <- overline(sldf = routes_fast, attrib = "length")
+#' SLN <- SpatialLinesNetwork(rnet)
+#' find_network_nodes(SLN, -1.516734, 53.828)
 #' @export
 find_network_nodes <- function(sln, x, y = NULL, maxdist = 1000) {
   if(!is(sln, "SpatialLinesNetwork")) {
@@ -235,28 +260,6 @@ find_network_nodes <- function(sln, x, y = NULL, maxdist = 1000) {
   longlat <- ifelse(is.projected(sln@sl) == TRUE, FALSE, TRUE)
   maxdist <- ifelse(longlat == TRUE, maxdist/1000, maxdist)
 
-  # if (length(x) == 1) {
-  #   # nodedists = geosphere::distHaversine(data.frame(x=sln@g$x, y=sln@g$y),c(x,y))
-  #   nodedists = sp::spDists(x = as.matrix(data.frame(x=sln@g$x, y=sln@g$y)),
-  #                           y = matrix(c(x,y),ncol=2),
-  #                           longlat = longlat)
-  #   nodeid = which(nodedists == min(nodedists))[1]
-  #   mindist = nodedists[nodeid]
-  #   nodeid = ifelse(mindist <= maxdist,nodeid,NA)
-  # }
-  # else {
-    # nodeid = c()
-    # mindist = c()
-    # i <- 1
-    # while (i <= length(x)) {
-    #   # nodedists = geosphere::distHaversine(data.frame(x=sln@g$x, y=sln@g$y),c(x[i],y[i]))
-    #   nodedists = sp::spDists(x = as.matrix(data.frame(x=sln@g$x, y=sln@g$y)),
-    #                           y = matrix(c(x[i],y[i]),ncol=2),
-    #                           longlat = longlat)
-    #   nodeid[i] = which(nodedists == min(nodedists))[1]
-    #   mindist[i] = nodedists[nodeid[i]]
-    #   i <- i + 1
-    # }
     distlist <- lapply(1:length(x), function(i, gxy){
       sp::spDists(x = gxy,
                   y = matrix(c(x[i],y[i]),ncol=2),
@@ -267,9 +270,6 @@ find_network_nodes <- function(sln, x, y = NULL, maxdist = 1000) {
                        ifelse(min(x) > maxdist, NA, which(x == min(x))[1])
                      },
                      maxdist)
-
-    # nodeid <- ifelse(mindist <= maxdist, nodeid, NA)
-  # }
 
 
   return(nodeid)
@@ -288,8 +288,22 @@ find_network_nodes <- function(sln, x, y = NULL, maxdist = 1000) {
 #' @param end Node ID(s) of route ends.
 #' @param sumvars Character vector of variables for which to calculate
 #' summary statistics.
+#' @param combinations Boolean value indicating if all combinations of start
+#' and ends should be calculated. If TRUE then every start Node ID will be routed
+#' to every end Node ID. This is faster than passing every combination to start
+#' and end. Default is FALSE.
+#'
+#' @examples
+#' data(routes_fast)
+#' rnet <- overline(sldf = routes_fast, attrib = "length")
+#' SLN <- SpatialLinesNetwork(rnet)
+#' weightfield(SLN) # field used to determine shortest path
+#' shortpath <- sum_network_routes(SLN, 1, 50, sumvars = "length")
+#' plot(shortpath, col = "red", lwd = 4)
+#' plot(SLN, add = TRUE)
+#'
 #' @export
-sum_network_routes <- function(sln, start, end, sumvars) {
+sum_network_routes <- function(sln, start, end, sumvars, combinations = FALSE) {
 
   if (class(sln) != "SpatialLinesNetwork") {
     stop("sln is not a SpatialLinesNetwork.")
@@ -297,24 +311,41 @@ sum_network_routes <- function(sln, start, end, sumvars) {
   if (missing(start) | missing(end)) {
     stop("start or end is missing")
   }
-  if (length(start) != length(end)) {
+  if (length(start) != length(end) && combinations == FALSE) {
     stop("start and end not the same length.")
   }
 
-  routesegs <- lapply(1:length(start), function(i) {
-      unlist(igraph::get.shortest.paths(sln@g, start[i], end[i], output="epath")$epath)
+  if (combinations == FALSE) {
+    routesegs <- lapply(1:length(start), function(i) {
+        unlist(igraph::get.shortest.paths(sln@g, start[i], end[i], output="epath")$epath)
+      })
+    routecoords <- mapply(function(routesegs, start) {
+        join_spatiallines_coords(sln@sl[routesegs,],sln@g$x[start],sln@g$y[start])
+      },
+    routesegs, start, SIMPLIFY = FALSE)
+    routecoords <- lapply(1:length(start), function(i) {
+      if(nrow(routecoords[[i]]) > 0){
+        routecoords[[i]]
+      } else {
+        matrix(c(sln@g$x[start[i]], sln@g$y[start[i]], sln@g$x[end[i]], sln@g$y[end[i]]), byrow=TRUE, nrow=2)
+      }
     })
-  routecoords <- mapply(function(routesegs, start) {
+  } else {
+    routesegs <- unlist(lapply(1:length(start), function(i) {
+      lapply(igraph::get.shortest.paths(sln@g, start[i], end, output="epath")$epath, function(x){as.vector(x)})
+    }), recursive = FALSE)
+    routecoords <- mapply(function(routesegs, start) {
       join_spatiallines_coords(sln@sl[routesegs,],sln@g$x[start],sln@g$y[start])
     },
-    routesegs, start, SIMPLIFY = FALSE)
-  routecoords <- lapply(1:length(start), function(i) {
-    if(nrow(routecoords[[i]]) > 0){
-      routecoords[[i]]
-    } else {
-      matrix(c(sln@g$x[start[i]], sln@g$y[start[i]], sln@g$x[end[i]], sln@g$y[end[i]]), byrow=TRUE, nrow=2)
-    }
-  })
+    routesegs, rep(start, each = length(end)), SIMPLIFY = FALSE)
+    routecoords <- lapply(1:(length(start)*length(end)), function(i, start, end) {
+      if(nrow(routecoords[[i]]) > 0){
+        routecoords[[i]]
+      } else {
+        matrix(c(sln@g$x[start[i]], sln@g$y[start[i]], sln@g$x[end[i]], sln@g$y[end[i]]), byrow=TRUE, nrow=2)
+      }
+    }, rep(start, each = length(end)), rep(end, times = length(start)))
+  }
   routedata <- setNames(data.frame(cbind(1:length(routesegs), do.call(rbind, lapply(routesegs, function(routesegs, sumvars) {
     matrix(
       sapply(1:length(sumvars),
@@ -332,4 +363,20 @@ sum_network_routes <- function(sln, start, end, sumvars) {
 
   return(sldf)
 
+}
+
+#' Generate spatial points representing nodes on a SpatialLinesNetwork
+#'
+#' @inheritParams sum_network_routes
+#' @export
+#' @examples
+#' data(routes_fast)
+#' rnet <- overline(sldf = routes_fast, attrib = "length")
+#' SLN <- SpatialLinesNetwork(rnet)
+#' (sln_nodes = sln2points(SLN))
+#' plot(SLN)
+#' plot(sln_nodes, add = TRUE)
+sln2points <- function(sln){
+  coords <- cbind(sln@g$x, sln@g$y)
+  sp::SpatialPoints(coords)
 }
