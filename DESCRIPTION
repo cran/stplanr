@@ -1,8 +1,8 @@
 Package: stplanr
 Type: Package
 Title: Sustainable Transport Planning
-Version: 0.1.7-3
-Date: 2017-01-06
+Version: 0.1.8
+Date: 2017-06-02
 Authors@R: c(
     person("Robin", "Lovelace", email = "rob00x@gmail.com", role = c("aut", "cre")),
     person("Richard", "Ellison", role = c("aut")),
@@ -19,19 +19,18 @@ License: MIT + file LICENSE
 BugReports: https://github.com/ropensci/stplanr/issues
 LazyData: yes
 Depends: sp, R (>= 3.0)
-Imports: jsonlite, maptools, raster, rgdal, rgeos, dplyr, RgoogleMaps,
-        openxlsx, methods, httr, R.utils, stringi, stringr, readr,
-        lubridate, geosphere, Rcpp (>= 0.12.1), igraph, nabor, foreach,
-        doParallel
+Imports: curl, readr, dplyr, httr, jsonlite, stringi, stringr, foreach,
+        lubridate, maptools, raster, rgdal, rgeos, RgoogleMaps,
+        openxlsx, methods, R.utils, geosphere, Rcpp (>= 0.12.1),
+        igraph, nabor, doParallel
 LinkingTo: RcppArmadillo, Rcpp
-Suggests: testthat, knitr, rmarkdown, tmap, tmaptools, OpenStreetMap,
-        leaflet
+Suggests: testthat, knitr, rmarkdown, tmap
 VignetteBuilder: knitr
 URL: https://github.com/ropensci/stplanr
 SystemRequirements: GNU make
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 NeedsCompilation: yes
-Packaged: 2017-01-06 09:15:05 UTC; robin
+Packaged: 2017-06-02 19:15:46 UTC; robin
 Author: Robin Lovelace [aut, cre],
   Richard Ellison [aut],
   Barry Rowlingson [ctb] (Author of overline),
@@ -39,4 +38,4 @@ Author: Robin Lovelace [aut, cre],
   Malcolm Morgan [ctb] (Co-author of angle_diff),
   Nikolai Berkoff [ctb] (Co-author of line2route)
 Repository: CRAN
-Date/Publication: 2017-01-06 10:27:40
+Date/Publication: 2017-06-02 19:31:11 UTC

@@ -21,21 +21,22 @@ reproducible and flexible transport planning workflow. We conclude with
 a brief discussion of desirable directions of future development.
 }
 
-\subsection{Build warning}\label{build-warning}
-
-Warning: knitting this paper from the RStudio project can lead the build
-to fail. Please build this file from a different or no project if this
-happens. It also requires the latest version of pandoc for all the code
-chunks to compile correctly.
-
 \section{Introduction}\label{introduction}
 
-Transport planning is a diverse field requiring a wide range of
-computational tasks \citep{boyce_forecasting_2015}. Software in the
-transport planner's toolkit should be flexible, able to handle a wide
-range of data formats; robust, able to generate reproducible results for
-transparent decision-making; and scalable, able to work at multiple
-geographic levels from single streets to large cities and regions.
+The practice of transport planning can been defined as ``preparing,
+assessing and implementing policies, plans and projects to improve and
+manage our transport systems'' \citep{jones_road_2014}. Clearly this
+will involve some judgements based on intuition, experience and
+political considerations. However, with the push for measurable
+improvements in terms of `sustainability' (e.g.~reduced energy use), the
+pressure on transport planners to adopt scientific methods, including
+computating, has grown \citep{balmer_matsim-t:_2009}. Transport planning
+is a diverse field requiring a wide range of computational tasks
+\citep{boyce_forecasting_2015}. Software for transport planning should
+therefor be: flexible, able to handle a wide range of data formats;
+robust, able to generate reproducible results for transparent
+decision-making; and scalable, able to work at multiple geographic
+levels from single streets to large cities and regions.
 
 R can provide a solid basis for a transport planning workflow that meets
 each of these criteria. Packages such as \CRANpkg{sp}
@@ -220,22 +221,27 @@ on lat/lon projected data (this function is currently named
 \texttt{buff\_geo}). We plan to elicit feedback on such changes before
 implementing them.
 
-\begin{table}[ht]
-\centering
-\begin{tabular}{lll}
-  \toprule
-Function & Input data type(s) & Output data type \\ 
-  \midrule
-od\_dist & Data frame & Numeric vector \\ 
-  od\_id\_order & Data frame & Data frame \\ 
-  line\_bearing & Spatial line & Numeric vector \\ 
-  line\_midpoint & Spatial line & Spatial points \\ 
-  route\_cyclestreet & Coordinates, spatial point or text & Spatial lines \\ 
-  route\_graphhopper & Coordinates, spatial point or text & Spatial lines \\ 
-   \bottomrule
-\end{tabular}
-\caption{Selection of functions for working with or generating OD, line and route data types.} 
-\end{table}
+\begin{longtable}[]{@{}lll@{}}
+\caption{Selection of functions for working with or generating OD, line
+and route data types.}\tabularnewline
+\toprule
+Function & Input data type(s) & Output data type\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+Function & Input data type(s) & Output data type\tabularnewline
+\midrule
+\endhead
+od\_dist & Data frame & Numeric vector\tabularnewline
+od\_id\_order & Data frame & Data frame\tabularnewline
+line\_bearing & Spatial line & Numeric vector\tabularnewline
+line\_midpoint & Spatial line & Spatial points\tabularnewline
+route\_cyclestreet & Coordinates, spatial point or text & Spatial
+lines\tabularnewline
+route\_graphhopper & Coordinates, spatial point or text & Spatial
+lines\tabularnewline
+\bottomrule
+\end{longtable}
 
 With a tip of the hat to the concept of type stability (e.g.~as
 implemented in \CRANpkg{dplyr}), we also plan to make the core functions
@@ -577,19 +583,15 @@ rbind(ny2oaxaca1@data, ny2oaxaca2@data)
 \end{Sinput}
 \end{Schunk}
 
-\begin{table}[ht]
-\centering
-\begin{tabular}{lrrr}
-  \toprule
-Mode & time & dist & change\_elev \\ 
-  \midrule
-Cycle & 17493.25 & 4884360.99 & 87429.74 \\ 
-  Car & 2755.66 & 4753582.07 &  \\ 
-   \bottomrule
-\end{tabular}
-\caption{Attribute data from the route\_graphhopper function, from New York to Oaxaca, by cycle and car.} 
-\label{tab:xtnyoa}
-\end{table}
+\begin{longtable}[]{@{}rrr@{}}
+\toprule
+time & dist & change\_elev\tabularnewline
+\midrule
+\endhead
+17522.73 & 4885663 & 87388.13\tabularnewline
+2759.89 & 4754772 & NA\tabularnewline
+\bottomrule
+\end{longtable}
 
 \subsection{Modelling travel catchment
 areas}\label{modelling-travel-catchment-areas}
@@ -687,7 +689,7 @@ plot(catch800m, col = rgb(1, 0, 0, 0.5), add = TRUE)
 plot(testcycleway, col = "green", add = TRUE)
 \end{Sinput}
 \begin{figure}
-\includegraphics[width=\textwidth]{stplanr-paper_files/figure-latex/catchmentplot-1} \caption[An 800 metre catchment area (red) associated with a cycle path (green) using straight-line distance in Sydney]{An 800 metre catchment area (red) associated with a cycle path (green) using straight-line distance in Sydney.}\label{fig:catchmentplot}
+\includegraphics{stplanr-paper_files/figure-latex/catchmentplot-1} \caption[An 800 metre catchment area (red) associated with a cycle path (green) using straight-line distance in Sydney]{An 800 metre catchment area (red) associated with a cycle path (green) using straight-line distance in Sydney.}\label{fig:catchmentplot}
 \end{figure}
 \end{Schunk}
 
@@ -747,7 +749,7 @@ netcatch800m <- calc_network_catchment(
 
 Once calculated, the network catchment area can be used just as the
 straight-line network catchment. This includes extracting the catchment
-population of 20802 and plotting the original catchment area together
+population of 23457 and plotting the original catchment area together
 with the original area with the results shown in Figure
 \ref{fig:netcatchplot}:
 
@@ -759,7 +761,7 @@ plot(netcatch800m, col = rgb(0, 0, 1, 0.5), add = TRUE)
 plot(testcycleway, col = "green", add = TRUE)
 \end{Sinput}
 \begin{figure}
-\includegraphics[width=\textwidth]{stplanr-paper_files/figure-latex/netcatchplot-1} \caption[A 800 metre network catchment are (blue) compared with a catchment area based on Euclidean distance (red) associated with a cycle path (green)]{A 800 metre network catchment are (blue) compared with a catchment area based on Euclidean distance (red) associated with a cycle path (green).}\label{fig:netcatchplot}
+\includegraphics{stplanr-paper_files/figure-latex/netcatchplot-1} \caption[A 800 metre network catchment are (blue) compared with a catchment area based on Euclidean distance (red) associated with a cycle path (green)]{A 800 metre network catchment are (blue) compared with a catchment area based on Euclidean distance (red) associated with a cycle path (green).}\label{fig:netcatchplot}
 \end{figure}
 \end{Schunk}
 
