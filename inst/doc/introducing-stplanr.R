@@ -1,6 +1,7 @@
 ## ---- include=FALSE------------------------------------------------------
 library(stplanr)
-build = require("tmap") & curl::has_internet()
+has_internet <- curl::has_internet()
+build = require("tmap") & has_internet
 knitr::opts_chunk$set(eval = build)
 
 ## ---- eval=FALSE---------------------------------------------------------
@@ -42,7 +43,9 @@ qtm(desire_line_single, lines.lwd = 5)
 
 ## ------------------------------------------------------------------------
 l = od2line(flow = flow, zones = cents)
-l = l[! l$Area.of.residence == l$Area.of.workplace,]
+# remove 'internal flows'
+sel = l$Area.of.residence == l$Area.of.workplace
+l = l[!sel, ]
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  qtm(l)
@@ -53,12 +56,10 @@ qtm(l, lines.lwd = "All", scale = 10)
 ## ------------------------------------------------------------------------
 tm_shape(l) + tm_lines(lwd = "All", scale = 10, col = "Bicycle")
 
-## ---- eval=FALSE---------------------------------------------------------
-#  r = line2route(l) # requires the a cyclestreets.net API key
-
-## ---- echo=FALSE---------------------------------------------------------
-r = routes_fast
-r = r[!is.na(r$length), ]
+## ---- message=FALSE------------------------------------------------------
+# if the next line returns FALSE the code will not run
+curl::has_internet() 
+r = line2route(l, route_fun = route_osrm)
 
 ## ------------------------------------------------------------------------
 r@data = cbind(r@data, l@data)
