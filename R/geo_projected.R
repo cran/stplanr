@@ -11,15 +11,13 @@
 #' @param shp A spatial object with a geographic (WGS84) coordinate system
 #' @export
 #' @examples
-#' bbox(routes_fast)
-#' proj4string(routes_fast) <- CRS("+init=epsg:4326")
+#' sp::bbox(routes_fast)
 #' new_crs <- crs_select_aeq(routes_fast)
-#' rf_projected <- spTransform(routes_fast, new_crs)
-#' bbox(rf_projected)
+#' rf_projected <- sp::spTransform(routes_fast, new_crs)
+#' sp::bbox(rf_projected)
 #' line_length <- rgeos::gLength(rf_projected, byid = TRUE)
 #' plot(line_length, rf_projected$length)
-#' shp = sf::st_sf(sf::st_sfc(sf::st_point(c(1, 0))))
-#' geo_select_aeq(shp)
+#' geo_select_aeq(zones_sf)
 #' @export
 geo_select_aeq <- function(shp) {
   UseMethod("geo_select_aeq")
@@ -35,7 +33,7 @@ geo_select_aeq.sf <- function(shp){
   coords_mat <- matrix(coords[,1:2], ncol = 2)
   midpoint <- apply(coords_mat, 2, mean)
   aeqd <- sprintf("+proj=aeqd +lat_0=%s +lon_0=%s +x_0=0 +y_0=0",
-                  midpoint[1], midpoint[1])
+                  midpoint[2], midpoint[1])
   sf::st_crs(aeqd)
 }
 
@@ -52,10 +50,9 @@ geo_select_aeq.sf <- function(shp){
 #' @aliases gprojected
 #' @export
 #' @examples
-#' library(sf)
 #' shp = routes_fast_sf[2:4,]
-#' plot(geo_projected(shp, st_buffer, dist = 100)$geometry)
-#' shp = sf::as_Spatial(shp$geometry)
+#' plot(geo_projected(shp, sf::st_buffer, dist = 100)$geometry)
+#' shp = routes_fast[2:4,]
 #' geo_projected(shp, fun = rgeos::gBuffer, width = 100, byid = TRUE)
 #' rlength = geo_projected(routes_fast, fun = rgeos::gLength, byid = TRUE)
 #' plot(routes_fast$length, rlength)
@@ -81,8 +78,8 @@ geo_projected.sf <- function(shp, fun, crs = geo_select_aeq(shp), silent = TRUE,
 #' @export
 geo_projected.Spatial <- function(shp, fun, crs = geo_select_aeq(shp), silent = TRUE, ...){
   # assume it's not projected  (i.e. lat/lon) if there is no CRS
-  if(!is.na(is.projected(shp))){
-    if(is.projected(shp)){
+  if(!is.na(sp::is.projected(shp))){
+    if(sp::is.projected(shp)){
       res <- fun(shp, ...)
     } else {
       shp_projected <- reproject(shp, crs = crs)
@@ -91,7 +88,7 @@ geo_projected.Spatial <- function(shp, fun, crs = geo_select_aeq(shp), silent = 
       }
       res <- fun(shp_projected, ...)
       if(is(res, "Spatial"))
-        res <- spTransform(res, CRS("+init=epsg:4326"))
+        res <- sp::spTransform(res, sp::CRS("+init=epsg:4326"))
     }
   } else {
     shp_projected <- reproject(shp, crs = crs)
@@ -100,7 +97,7 @@ geo_projected.Spatial <- function(shp, fun, crs = geo_select_aeq(shp), silent = 
     }
     res <- fun(shp_projected, ...)
     if(is(res, "Spatial"))
-      res <- spTransform(res, CRS("+init=epsg:4326"))
+      res <- sp::spTransform(res, sp::CRS("+init=epsg:4326"))
   }
   res
 }
@@ -122,7 +119,6 @@ gprojected <- geo_projected.Spatial
 #' plot(buff_sp, col = "red")
 #' routes_fast_sf = sf::st_as_sf(routes_fast)
 #' buff_sf = geo_buffer(routes_fast_sf, dist = 50)
-#' class(buff_sf)
 #' plot(buff_sf$geometry, add = TRUE)
 #' @export
 geo_buffer <- function(shp, dist = NULL, width = NULL, ...) {

@@ -107,7 +107,6 @@ mapshape_available <- function() {
 #' @export
 #' @examples
 #' data(cents)
-#' bb <- bbox(cents)
 #' cb <- rgeos::gBuffer(cents[8, ], width = 0.012, byid = TRUE)
 #' plot(cents)
 #' plot(cb, add = TRUE)
@@ -210,7 +209,7 @@ bbox_scale <- function(bb, scale_factor){
 #' plot(geo_bb(routes_fast_sf, output = "points"), add = TRUE)
 #' bb_matrix <- geo_bb(routes_fast, scale_factor = c(2, 1.1), output = "bb")
 #' if(require(tmap)) { # as input into tmap plot
-#' tm_shape(shp = routes_fast_sf, bbox = bb_matrix) +
+#' tm_shape(shp = routes_fast_sf[2:5, ], bbox = bb_matrix) +
 #'   tm_lines()
 #' }
 geo_bb <- function(shp, scale_factor = 1, distance = 0, output = c("polygon", "points", "bb")) {
