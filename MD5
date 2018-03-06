@@ -1,15 +1,15 @@
-53557082808dd45804cce34685e73e4a *DESCRIPTION
+c6917d2524c92e1dce59449c8294a25a *DESCRIPTION
 54007ce744145f7ca8677b8663fac4a6 *LICENSE
-eec7ee03a8cbae9bf570437f03abb1b7 *NAMESPACE
-27fc007b1205423f3ebbea93cedba66c *NEWS.md
+3bad1b5eed65a901a71854206aeeded1 *NAMESPACE
+895ef43512f44094da3249696ae53e9e *NEWS.md
 5c3c3ed369dd1b5b9b333e03069a90bf *R/RcppExports.R
-fa743e7579e8f10a8f81c32a28c99f36 *R/SpatialLinesNetwork.R
+da5783901e5fab1896a3f2969534240f *R/SpatialLinesNetwork.R
 06669a55638a5b72592636c126abd9a9 *R/aggregate_funs.R
 02f7a395f91361413d5b69e5011f9601 *R/as_sf_fun.R
 2d3d9201be676e7c1a864426e335a560 *R/catchmentArea.R
 65969f88fd9046bd84a2898c6356539f *R/crs-funs.R
 552e3324aa91611a67e58684b13e799b *R/cyclestreets.R
-c02e9ec3942bce15310dec5f2b104909 *R/data.r
+67282a829fbd151da842266a4036b99e *R/data.r
 566e84412635b1a3cc9b3c5579725e3b *R/geo-functions.R
 b96320ed3bd97b5d88f25d578bec3dee *R/geo_code.R
 45ef928445c3a2ef1a91ff3f8fc2ade1 *R/geo_projected.R
@@ -22,7 +22,7 @@ b9a088b7bca36e7a27de34490123a92c *R/linefuns.R
 5dd10807c30d44eeab7af4e8bd3b958a *R/load-stats19.R
 9894363a136013f1166bb7c26aa2ffb2 *R/loadABS.R
 afc7d126746b939017d0943220785e84 *R/od-funs.R
-02ca748e270b94d436cce19757ed48eb *R/od_coords.R
+a8194742bf3886d3811f1833a4f70b8f *R/od_coords.R
 9ec29e6fbd0d2f2f644bad96398564e4 *R/oneway.R
 b008ffa8641377f0bca50fcb146e3007 *R/osrmfunctions.R
 a6da3a4a117efb229c75e4335fa817c9 *R/overline.R
@@ -47,6 +47,7 @@ bce7ab60c37439c709be7babea7492a2 *R/radiate.R
 adad7a8efc3c6bf7d9dafda84ca4e10a *data/flowlines_sf.rda
 6cff2a533107e8d3ba8278e6867a4593 *data/l_poly.rda
 fa46c71c25adcfbae256e65db5c28b71 *data/route_network.rda
+d010973a0e65b181d1b8b5ce171f1daa *data/route_network_sf.rda
 1b0630ae990351531ff5ef6b6a7f4ee7 *data/routes_fast.rda
 823935c508c8a70443599d84cff8ca3b *data/routes_fast_sf.rda
 9aa83532c79577de09259b8260c6cfde *data/routes_slow.rda
@@ -57,7 +58,7 @@ bebc9d3f7eb00f17f3f413949e808af1 *demo/00Index
 8068198ea020c4b20ff2967b03f53254 *demo/route-analysis.R
 8302ba4a083bd5aede8ce22d955245d1 *inst/doc/introducing-stplanr.R
 9401e1f965029e3e7381ab3d10fa291a *inst/doc/introducing-stplanr.Rmd
-28efca0c6417827af0d5731da7c4e6d0 *inst/doc/introducing-stplanr.html
+5c6a5144010f2708ccd16ffec14372c8 *inst/doc/introducing-stplanr.html
 d174bed7fab91e80e9db0bf496c6f531 *inst/doc/stplanr-paper.R
 f7c1b05250d7816368a0f7a257fde29b *inst/doc/stplanr-paper.Rmd
 328c75b26e8c089902bc41ddd53710e8 *inst/doc/stplanr-paper.html
@@ -70,7 +71,7 @@ ffca9e332126db0cdf39d04782d9cf2d *inst/extdata/smallsa1.zip
 c4d5717269dd0675dc9cd3722b23f44d *inst/extdata/sydroads.zip
 883aeb8ac46f9feda78be776259760b9 *inst/extdata/testcycleway.zip
 b90868106c262b18888988c19cec7ac7 *man/SpatialLinesNetwork-class.Rd
-c2e3e795f593c4f370707fa90f7285de *man/SpatialLinesNetwork.Rd
+8854c9cc4e7582958a182792292cd8a7 *man/SpatialLinesNetwork.Rd
 b2e0dcbca2557dc7b7c9a9588794fb55 *man/angle_diff.Rd
 ea34bc789ca167448ca898434a15e1d6 *man/api_pat.Rd
 a9ea50b60dd4fd8780a4b5b6022c895b *man/as_sf_fun.Rd
@@ -138,8 +139,8 @@ decbec6e939d45193a6b9541a439c033 *man/od_radiation.Rd
 1d9597f5921e140d47fbe0517f4d02fb *man/onewayid.Rd
 23c2dfc979b4890b1db5069a6d0c1131 *man/overline.Rd
 9e72d79221b4b15d5976e3e52cab0c31 *man/pipe.Rd
-bb60973f4b6078a5126aff9a87c67fa9 *man/plot-SpatialLinesNetwork-ANY-method.Rd
-27f1c8f40d35e4165f3eef0b328b0ee7 *man/plot-sfNetwork-ANY-method.Rd
+a5df207155924917b26eacedea97d744 *man/plot-SpatialLinesNetwork-ANY-method.Rd
+728457b48e2b14c664d2f7427baa4d56 *man/plot-sfNetwork-ANY-method.Rd
 edad3503ba1abcca0109965c8c0cb045 *man/points2flow.Rd
 d9ef10d89270ea39b878edea120b0a8e *man/points2line.Rd
 1da50746cc9da1b607c49ddb765ec976 *man/points2odf.Rd
@@ -152,7 +153,7 @@ da739be84fc5d92741fa244ac2da14be *man/read_stats19_ve.Rd
 7364d581a9df031ffe86ed6feed2fcde *man/route.Rd
 6ae37c60297645e8a4fe56b4f28e79ce *man/route_cyclestreet.Rd
 00429c024ad7521068b1679733105805 *man/route_graphhopper.Rd
-5e82af09b52474a11944f4c46b74cfed *man/route_network.Rd
+9cc3f5172da09c36036b5cf54bdb5254 *man/route_network.Rd
 c36bb77eb42c6847797016fb8de2306d *man/route_osrm.Rd
 870c47997c7e49e82ae386ea06b7e6f7 *man/route_transportapi_public.Rd
 ee36e6f9b836d53b9298745e4b19312c *man/routes_fast.Rd
@@ -162,7 +163,7 @@ ee36e6f9b836d53b9298745e4b19312c *man/routes_fast.Rd
 d2007d5633e8a230fbb19a842cb77792 *man/sp_aggregate.Rd
 011848869edc5e52e9c0303b80310135 *man/stplanr-package.Rd
 dadfd950f19c77f33e5b154eb8d4a1a7 *man/sum_network_links.Rd
-0c6c84cbf506fb68c2879c55da2f1ea3 *man/sum_network_routes.Rd
+805ccdf63c65897f3f2a1a6dd9866ebb *man/sum_network_routes.Rd
 dcc06c90bf56711b7a2b5d1003d2effa *man/summary-SpatialLinesNetwork-method.Rd
 fe7de05732417625a4aa0b1199b0196d *man/summary-sfNetwork-method.Rd
 627a5a5d8b671365a4f4999df9ab8019 *man/table2matrix.Rd

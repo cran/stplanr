@@ -73,74 +73,85 @@ setClass("sfNetwork", representation(sl = "sf",
 #' URL:http://rpubs.com/janoskaz/10396.
 #' @export
 #' @examples
-#' data(routes_fast)
-#' rnet <- overline(routes_fast, attrib = "length")
-#' SLN <- SpatialLinesNetwork(rnet)
+#' SLN <- SpatialLinesNetwork(route_network)
 #' class(SLN)
 #' weightfield(SLN) # field used to determine shortest path
 #' plot(SLN)
-#' from_id = 1
-#' to_id = 50
-#' points(sln2points(SLN)[from_id,], cex = 5)
-#' points(sln2points(SLN)[to_id,], cex = 5)
-#' shortpath <- sum_network_routes(SLN, from_id, to_id, sumvars = "length")
+#' points(sln2points(SLN)[1,], cex = 5)
+#' points(sln2points(SLN)[50,], cex = 5)
+#' shortpath <- sum_network_routes(SLN, 1, 50, sumvars = "length")
 #' plot(shortpath, col = "red", lwd = 4, add = TRUE)
-#' to_id = 35
-#' points(sln2points(SLN)[to_id,], cex = 5)
-#' shortpath <- sum_network_routes(SLN, from_id, to_id, sumvars = "length")
+#' points(sln2points(SLN)[35,], cex = 5)
+#' shortpath <- sum_network_routes(SLN, 1, 35, sumvars = "length")
 #' plot(shortpath, col = "red", lwd = 4, add = TRUE)
+#' library(sf)
+#' SLN_sf <- SpatialLinesNetwork(route_network_sf)
+#' plot(SLN_sf)
+#' shortpath <- sum_network_routes(SLN_sf, 1, 50, sumvars = "length")
+#' plot(shortpath$geometry, col = "red", lwd = 4, add = TRUE)
 SpatialLinesNetwork <- function(sl, uselonglat = FALSE, tolerance = 0.000) {
-  stopifnot(is(sl, "SpatialLines") | is(sl,"sf"))
-  if (is(sl, "sf")) {
+  UseMethod("SpatialLinesNetwork")
+}
+#' @export
+SpatialLinesNetwork.Spatial <- function(sl, uselonglat = FALSE, tolerance = 0.000) {
+  sl = new("SpatialLinesDataFrame", sl, data = data.frame(id = 1:length(sl)))
+  if (!all(sapply(sl@lines, length) == 1))
+    stop("SpatialLines is not simple: each Lines element should have only a single Line")
+  # Generate graph data
+  gdata = coord_matches(sl, tolerance)
+  s = gdata$s
+  g = igraph::graph(gdata$pts0, directed = FALSE)  # edges
+  nodes = s[gdata$upts + 1,]
+  g$x = nodes[, 1]  # x-coordinate vertex
+  g$y = nodes[, 2]  # y-coordinate vertex
+  g$n = as.vector(table(gdata$pts0))  # nr of edges
+  # line lengths:
+  # If uselonglat == FALSE then checks if sl uses longlat coordinate
+  # system/projection. If so, passes longlat=TRUE.
+  sl$length = sapply(sl@lines, function(x)
+    sp::LineLength(x@Lines[[1]], longlat = ifelse(
+      uselonglat == TRUE, TRUE, ifelse(length(grep(
+        "proj=longlat", sp::proj4string(sl)
+      )) > 0, TRUE, FALSE)
+    )))
+  igraph::E(g)$weight = sl$length
+  new("SpatialLinesNetwork", sl = sl, g = g, nb = gdata$nb, weightfield = "length")
+}
+#' @export
+SpatialLinesNetwork.sf <-function(sl, uselonglat = FALSE, tolerance = 0.000) {
 
-    nodecoords <- as.data.frame(sf::st_coordinates(sl)) %>%
-      dplyr::group_by(.data$L1) %>%
-      dplyr::mutate(nrow = dplyr::n(), rownum = dplyr::row_number()) %>%
-      dplyr::filter(.data$rownum == 1 | .data$rownum == nrow) %>% dplyr::ungroup() %>%
-      dplyr::mutate(allrownum = dplyr::row_number())
+  nodecoords <- as.data.frame(sf::st_coordinates(sl)) %>%
+    dplyr::group_by(.data$L1) %>%
+    dplyr::mutate(nrow = n(), rownum = 1:n()) %>%
+    dplyr::filter(.data$rownum == 1 | .data$rownum == (!!dplyr::quo(nrow))) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(allrownum = 1:n())
 
     gdata <- coord_matches_sf(
-      as.matrix(nodecoords %>%
-                  dplyr::select(.data$X, .data$Y, .data$allrownum)),
-      as.matrix(nodecoords %>%
-                  dplyr::arrange(.data$X, .data$Y) %>%
-                  dplyr::select(.data$X, .data$Y, .data$allrownum)),
+      as.matrix(
+        nodecoords %>%
+          dplyr::select(.data$X, .data$Y, .data$allrownum)
+      ),
+      as.matrix(
+        nodecoords %>%
+          dplyr::arrange(.data$X, .data$Y) %>%
+          dplyr::select(.data$X, .data$Y, .data$allrownum)
+      ),
       nrow(sl),
       tolerance
     )
 
     s = gdata$s
     g = igraph::graph(gdata$pts0, directed = FALSE)
-    nodes = s[gdata$upts + 1,]
+    nodes = s[gdata$upts + 1, ]
     g$x = nodes[, 1]  # x-coordinate vertex
     g$y = nodes[, 2]  # y-coordinate vertex
     g$n = as.vector(table(gdata$pts0))  # nr of edges
 
     sl$length = sf::st_length(sl)
     igraph::E(g)$weight = sl$length
-    new("sfNetwork", sl = sl, g = g, nb = gdata$nb, weightfield="length")
-
-  } else {
-    if (!is(sl, "SpatialLinesDataFrame"))
-      sl = new("SpatialLinesDataFrame", sl, data = data.frame(id = 1:length(sl)))
-    if (!all(sapply(sl@lines, length) == 1))
-      stop("SpatialLines is not simple: each Lines element should have only a single Line")
-    # Generate graph data
-    gdata = coord_matches(sl, tolerance)
-    s = gdata$s
-    g = igraph::graph(gdata$pts0, directed = FALSE)  # edges
-    nodes = s[gdata$upts + 1, ]
-    g$x = nodes[, 1]  # x-coordinate vertex
-    g$y = nodes[, 2]  # y-coordinate vertex
-    g$n = as.vector(table(gdata$pts0))  # nr of edges
-    # line lengths:
-    # If uselonglat == FALSE then checks if sl uses longlat coordinate
-    # system/projection. If so, passes longlat=TRUE.
-    sl$length = sapply(sl@lines, function(x) sp::LineLength(x@Lines[[1]],longlat=ifelse(uselonglat == TRUE,TRUE,ifelse(length(grep("proj=longlat",sp::proj4string(sl))) > 0,TRUE,FALSE))))
-    igraph::E(g)$weight = sl$length
-    new("SpatialLinesNetwork", sl = sl, g = g, nb = gdata$nb, weightfield="length")
+    new("sfNetwork", sl = sl, g = g, nb = gdata$nb, weightfield = "length")
   }
-}
 
 #' Plot a SpatialLinesNetwork
 #'
@@ -150,10 +161,9 @@ SpatialLinesNetwork <- function(sl, uselonglat = FALSE, tolerance = 0.000) {
 #' representation.
 #' @param ... Arguments to pass to relevant plot function.
 #' @examples
-#' data(routes_fast)
-#' rnet <- overline(routes_fast, attrib = "length")
-#' SLN <- SpatialLinesNetwork(rnet)
+#' SLN <- SpatialLinesNetwork(route_network)
 #' plot(SLN)
+#' plot(SLN, component = "graph")
 #' @export
 setMethod("plot", signature = c(x="SpatialLinesNetwork"),
           definition = function(x, component = "sl", ...){
@@ -168,7 +178,7 @@ setMethod("plot", signature = c(x="SpatialLinesNetwork"),
             }
           })
 
-#' Plot a sfNetwork
+#' Plot an sfNetwork
 #'
 #' @param x The sfNetwork to plot
 #' @param component The component of the network to plot. Valid values are "sl"
@@ -176,15 +186,13 @@ setMethod("plot", signature = c(x="SpatialLinesNetwork"),
 #' representation.
 #' @param ... Arguments to pass to relevant plot function.
 #' @examples
-#' data(routes_fast)
-#' rnet <- overline(routes_fast, attrib = "length")
-#' SLN <- SpatialLinesNetwork(rnet)
-#' plot(SLN)
+#' SLN_sf <- SpatialLinesNetwork(route_network_sf)
+#' plot(SLN_sf)
 #' @export
 setMethod("plot", signature = c(x="sfNetwork"),
           definition = function(x, component = "sl", ...){
             if (component == "sl") {
-              sp::plot(x@sl, ...)
+              sp::plot(x@sl$geometry, ...)
             }
             else if (component == "graph") {
               igraph::plot.igraph(x@g, ...)
@@ -455,7 +463,6 @@ find_network_nodes <- function(sln, x, y = NULL, maxdist = 1000) {
 #' shortpath <- sum_network_routes(SLN, 1, 50, sumvars = "length")
 #' plot(shortpath, col = "red", lwd = 4)
 #' plot(SLN, add = TRUE)
-#'
 #' @export
 sum_network_routes <- function(sln, start, end, sumvars, combinations = FALSE) {
 
@@ -475,6 +482,9 @@ sum_network_routes <- function(sln, start, end, sumvars, combinations = FALSE) {
       })
 
     if (is(sln, "sfNetwork")) {
+      if (is(sln, "sfNetwork") & "sf" %in% (.packages()) == FALSE) {
+        stop("Load the sf package, e.g. with\nlibrary(sf)")
+        }
       routecoords <- mapply(function(routesegs, start) {
         linecoords <- sf::st_coordinates(sln@sl[routesegs,])
         linecoords <- lapply(1:max(linecoords[,'L1']), function(x){
@@ -551,7 +561,7 @@ sum_network_routes <- function(sln, start, end, sumvars, combinations = FALSE) {
           })
       ) %>%
       sf::st_as_sf(
-        coords = utils::head(colnames(.data),-2),
+        coords = utils::head(colnames(.),-2),
         crs = sf::st_crs(sln@sl)$epsg
       ) %>%
       dplyr::group_by(.data$linenum) %>%
@@ -649,6 +659,9 @@ sum_network_links <- function(sln, routedata) {
   }
   if (ncol(routedata) < 2) {
     stop("routedata has fewer than 2 columns.")
+  }
+  if (is(sln, "sfNetwork") & "sf" %in% (.packages()) == FALSE) {
+    stop("sf package must be loaded first. Run library(sf)")
   }
 
   if(ncol(routedata) < 3) {
