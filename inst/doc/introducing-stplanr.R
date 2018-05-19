@@ -43,9 +43,14 @@ qtm(desire_line_single, lines.lwd = 5)
 
 ## ------------------------------------------------------------------------
 l = od2line(flow = flow, zones = cents)
-# remove 'internal flows'
-sel = l$Area.of.residence == l$Area.of.workplace
-l = l[!sel, ]
+# identify 'intrazone flows'
+sel_intra = l$Area.of.residence == l$Area.of.workplace
+# find distances
+l_distances = geo_length(l)
+summary(l_distances)
+sel_dist = l_distances > 2000
+sel = !sel_intra & sel_dist
+l = l[sel, ]
 
 ## ---- eval=FALSE---------------------------------------------------------
 #  qtm(l)
@@ -56,10 +61,15 @@ qtm(l, lines.lwd = "All", scale = 10)
 ## ------------------------------------------------------------------------
 tm_shape(l) + tm_lines(lwd = "All", scale = 10, col = "Bicycle")
 
-## ---- message=FALSE------------------------------------------------------
+## ---- message=FALSE, warning=FALSE---------------------------------------
 # if the next line returns FALSE the code will not run
-curl::has_internet() 
-r = line2route(l, route_fun = route_osrm)
+(has_internet = curl::has_internet() )
+(cs_key = nchar(Sys.getenv("CYCLESTREETS")))
+if(has_internet & cs_key == 32) {
+  r = line2route(l, route_fun = route_cyclestreets)
+} else {
+  r = routes_fast[sel, ]
+}
 
 ## ------------------------------------------------------------------------
 r@data = cbind(r@data, l@data)
