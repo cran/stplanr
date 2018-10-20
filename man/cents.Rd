@@ -14,10 +14,10 @@ These points represent population-weighted centroids of Medium Super Output Area
 }
 \details{
 \itemize{
-  \item geo_code the official code of the zone
-  \item MSOA11NM name zone name
-  \item percent_fem the percent female
-  \item avslope average gradient of the zone
+\item geo_code the official code of the zone
+\item MSOA11NM name zone name
+\item percent_fem the percent female
+\item avslope average gradient of the zone
 }
 
 Cents was generated from the data repository pct-data: https://github.com/npct/pct-data. This data was accessed from within the pct repo: https://github.com/npct/pct, using the following code:
@@ -35,14 +35,14 @@ home <- sp::SpatialPoints(matrix(home, ncol = 2), proj4string = crs)
 home <- sp::spTransform(x = home, CRSobj = crsuk)
 buf <- rgeos::gBuffer(home, width = 2000)
 # Check it saved the points OK
-cents <- cents[buf,]
+cents <- cents[buf, ]
 plot(buf)
 points(cents)
 cents <- sp::spTransform(x = cents, CRSobj = crs)
 cents$geo_code <- as.character(cents$geo_code)
 library(devtools)
 # use_data(cents, overwrite = TRUE)
-cents_sf = sf::st_as_sf(cents)
+cents_sf <- sf::st_as_sf(cents)
 devtools::use_data(cents_sf)
 }
 

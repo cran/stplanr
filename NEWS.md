@@ -1,3 +1,16 @@
+# stplanr 0.2.6
+
+## NEW FEATURES
+
+* New function `route_local()`
+# * New argument in `line2route()`: `time_sleep` waits a period between each route request
+
+## BUG FIXES
+
+* Issue with `dl_stats19()`, see [#270](https://github.com/ropensci/stplanr/issues/270)
+* Make style consistent, see [commit](https://github.com/ropensci/stplanr/commit/521598c329c15ff2dfeb159b0da4ba7b1507b060)
+* Various small fixes to documentation and style
+
 # stplanr 0.2.5
 
 ## NEW FEATURES

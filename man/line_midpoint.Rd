@@ -10,10 +10,10 @@ line_midpoint(l)
 \item{l}{A spatial lines object}
 }
 \description{
-This is a wrapper around \code{\link{SpatialLinesMidPoints}} that allows it to find the midpoint
+This is a wrapper around \code{\link[=SpatialLinesMidPoints]{SpatialLinesMidPoints()}} that allows it to find the midpoint
 of lines that are not projected, which have a lat/long CRS.
 }
 \examples{
 data(routes_fast)
-line_midpoint(routes_fast[2:5,])
+line_midpoint(routes_fast[2:5, ])
 }

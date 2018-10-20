@@ -5,13 +5,13 @@
 \title{Convert straight OD data (desire lines) into routes}
 \usage{
 line2route(l, route_fun = "route_cyclestreet", n_print = 10,
-  list_output = FALSE, l_id = NA, ...)
+  list_output = FALSE, l_id = NA, time_delay = 0, ...)
 }
 \arguments{
 \item{l}{A SpatialLinesDataFrame}
 
 \item{route_fun}{A routing function to be used for converting the straight lines to routes
-\code{\link{od2line}}}
+\code{\link[=od2line]{od2line()}}}
 
 \item{n_print}{A number specifying how frequently progress updates
 should be shown}
@@ -22,7 +22,9 @@ should be shown}
 typically the origin and destination ids pasted together. If absent, the row name of the
 straight lines will be used.}
 
-\item{...}{Arguments passed to the routing function, e.g. \code{\link{route_cyclestreet}}}
+\item{time_delay}{Number or seconds to wait between each query}
+
+\item{...}{Arguments passed to the routing function, e.g. \code{\link[=route_cyclestreet]{route_cyclestreet()}}}
 }
 \description{
 Convert straight OD data (desire lines) into routes
@@ -30,7 +32,7 @@ Convert straight OD data (desire lines) into routes
 \section{Details}{
 
 
-See \code{\link{route_cyclestreet}} and other route functions for details.
+See \code{\link[=route_cyclestreet]{route_cyclestreet()}} and other route functions for details.
 
 A parallel implementation of this was available until version 0.1.8.
 See \href{https://github.com/ropensci/stplanr/blob/18a598674bb378d5577050178da1561489496157/R/od-funs.R}{github.com/ropensci/stplanr} for details.
@@ -38,7 +40,7 @@ See \href{https://github.com/ropensci/stplanr/blob/18a598674bb378d5577050178da15
 
 \examples{
 \dontrun{
-l = flowlines[2:5,]
+l <- flowlines[2:5, ]
 r <- line2route(l, "route_osrm")
 rf <- line2route(l = l, "route_cyclestreet", plan = "fastest")
 rq <- line2route(l = l, plan = "quietest", silent = TRUE)
@@ -48,13 +50,13 @@ plot(rq, col = "green", add = TRUE)
 plot(l, add = T)
 line2route(flowlines_sf[2:3, ], route_osrm)
 # Plot for a single line to compare 'fastest' and 'quietest' route
-n = 2
-plot(l[n,])
-lines(rf[n,], col = "red")
-lines(rq[n,], col = "green")
+n <- 2
+plot(l[n, ])
+lines(rf[n, ], col = "red")
+lines(rq[n, ], col = "green")
 # Example with list output
-l <- l[1:3,]
+l <- l[1:3, ]
 rf_list <- line2route(l = l, list_output = TRUE)
-line2route(l[1,], route_graphhopper)
+line2route(l[1, ], route_graphhopper)
 }
 }

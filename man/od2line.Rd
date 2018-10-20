@@ -2,7 +2,6 @@
 % Please edit documentation in R/od-funs.R
 \name{od2line}
 \alias{od2line}
-\alias{od2line}
 \alias{od2line2}
 \title{Convert flow data to SpatialLinesDataFrame}
 \usage{
@@ -15,9 +14,9 @@ od2line2(flow, zones)
 \arguments{
 \item{flow}{A data frame representing the flow between two points
 or zones. The first two columns of this data frame should correspond
-to the first column of the data in the zones. Thus in \code{\link{cents}},
+to the first column of the data in the zones. Thus in \code{\link[=cents]{cents()}},
 the first column is geo_code. This corresponds to the first two columns
-of \code{\link{flow}}.}
+of \code{\link[=flow]{flow()}}.}
 
 \item{zones}{A SpatialPolygonsDataFrame or SpatialPointsDataFrame
 representing origins (and destinations if no separate destinations object is provided)
@@ -51,7 +50,7 @@ This function makes the task easier.
 The function expects zone codes to be in the 1st column of the zones/destinations
 datasets and the 1st and 2nd columns of the flow data, respectively.
 
-\code{\link{od2line2}} is a faster implementation
+\code{\link[=od2line2]{od2line2()}} is a faster implementation
 (around 6 times faster on large datasets)
 that returns a \code{SpatialLines} object, omitting the data and working
 only when there is no destinations dataset (i.e. when the geography of
@@ -71,7 +70,7 @@ identical(nfl_sldf, newflowlines)
 data(destinations)
 head(flow_dests[1:5]) # check data
 head(destinations@data[1:5])
-flowlines_dests = od2line(flow_dests, cents, destinations = destinations, silent = FALSE)
+flowlines_dests <- od2line(flow_dests, cents, destinations = destinations, silent = FALSE)
 plot(flowlines_dests)
 nfl_sf <- od2line(flow, zones_sf)
 }

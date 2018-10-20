@@ -4,8 +4,9 @@
 \alias{route}
 \title{Plan routes on the transport network}
 \usage{
-route(from = NULL, to = NULL, l = NULL, route_fun = route_cyclestreet,
-  n_print = 10, list_output = FALSE, ...)
+route(from = NULL, to = NULL, l = NULL,
+  route_fun = route_cyclestreet, n_print = 10, list_output = FALSE,
+  ...)
 }
 \arguments{
 \item{from}{An object representing origins
@@ -17,14 +18,14 @@ route(from = NULL, to = NULL, l = NULL, route_fun = route_cyclestreet,
 should be a spatial object representing desire lines}
 
 \item{route_fun}{A routing function to be used for converting the straight lines to routes
-\code{\link{od2line}}}
+\code{\link[=od2line]{od2line()}}}
 
 \item{n_print}{A number specifying how frequently progress updates
 should be shown}
 
 \item{list_output}{If FALSE (default) assumes SpatialLinesDataFrame output. Set to TRUE to save output as a list.}
 
-\item{...}{Arguments passed to the routing function, e.g. \code{\link{route_cyclestreet}}}
+\item{...}{Arguments passed to the routing function, e.g. \code{\link[=route_cyclestreet]{route_cyclestreet()}}}
 }
 \description{
 Takes origins and destinations, finds the optimal routes between them
@@ -33,9 +34,9 @@ The definition of optimal depends on the routing function used
 }
 \examples{
 \dontrun{
-from = "Leek, UK"
-to = "Hereford, UK"
-route_leek_to_hereford = route(from, to)
+from <- "Leek, UK"
+to <- "Hereford, UK"
+route_leek_to_hereford <- route(from, to)
 route(cents_sf[1:3, ], cents_sf[2:4, ]) # sf points
 route(flowlines_sf[2:4, ]) # lines
 }

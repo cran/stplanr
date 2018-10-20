@@ -24,14 +24,14 @@
 #' home <- sp::spTransform(x = home, CRSobj = crsuk)
 #' buf <- rgeos::gBuffer(home, width = 2000)
 #' # Check it saved the points OK
-#' cents <- cents[buf,]
+#' cents <- cents[buf, ]
 #' plot(buf)
 #' points(cents)
 #' cents <- sp::spTransform(x = cents, CRSobj = crs)
 #' cents$geo_code <- as.character(cents$geo_code)
 #' library(devtools)
 #' # use_data(cents, overwrite = TRUE)
-#' cents_sf = sf::st_as_sf(cents)
+#' cents_sf <- sf::st_as_sf(cents)
 #' devtools::use_data(cents_sf)
 #' }
 #'
@@ -47,9 +47,9 @@ NULL
 # @family example flow data
 #'
 #' This dataset represents commuter flows (work travel) between origin
-#' and destination zones (see \code{\link{cents}}).
+#' and destination zones (see [cents()]).
 #' The data is from the UK and is available as open data:
-#' \url{http://wicid.ukdataservice.ac.uk/}.
+#' <http://wicid.ukdataservice.ac.uk/>.
 #'
 #' The variables are as follows:
 #'
@@ -57,13 +57,13 @@ NULL
 #'   \item Area.of.residence. id of origin zone
 #'   \item Area.of.workplace id of destination zone
 #'   \item All. Travel to work flows by all modes
-#'   \item [,4:15]. Flows for different modes
+#'   \item `[,4:15]`. Flows for different modes
 #'   \item id. unique id of flow
 #' }
 #' Although these variable names are unique to UK data, the data
 #' structure is generalisable and typical of flow data from any source.
 #' The key variables are the origin and destination ids, which link to
-#' the \code{cents} georeferenced spatial objects.
+#' the `cents` georeferenced spatial objects.
 #' @examples
 #' \dontrun{
 #' # This is how the dataset was constructed - see
@@ -105,9 +105,9 @@ NULL
 #' @examples
 #' \dontrun{
 #' # This is how the dataset was constructed
-#' flow_dests = flow
-#' flow_dests$Area.of.workplace = sample(x = destinations$WZ11CD, size = nrow(flow))
-#' flow_dests = dplyr::rename(flow_dests, WZ11CD = Area.of.workplace)
+#' flow_dests <- flow
+#' flow_dests$Area.of.workplace <- sample(x = destinations$WZ11CD, size = nrow(flow))
+#' flow_dests <- dplyr::rename(flow_dests, WZ11CD = Area.of.workplace)
 #' devtools::use_data(flow_dests)
 #' }
 #'
@@ -122,27 +122,29 @@ NULL
 # @family example destinations
 #'
 #' This dataset represents trip destinations on a different geographic
-#' level than the origins stored in the \code{cents}.
+#' level than the origins stored in the `cents`.
 #' @examples
 #' \dontrun{
 #' # This is how the dataset was constructed - see
 #' # http://cowz.geodata.soton.ac.uk/download/
-#' download.file("http://cowz.geodata.soton.ac.uk/download/files/COWZ_EW_2011_BFC.zip",
-#'   "COWZ_EW_2011_BFC.zip")
+#' download.file(
+#'   "http://cowz.geodata.soton.ac.uk/download/files/COWZ_EW_2011_BFC.zip",
+#'   "COWZ_EW_2011_BFC.zip"
+#' )
 #' unzip("COWZ_EW_2011_BFC.zip")
-#' wz = raster::shapefile("COWZ_EW_2011_BFC.shp")
-#' to_remove = list.files(pattern = "COWZ", full.names = TRUE, recursive = TRUE)
+#' wz <- raster::shapefile("COWZ_EW_2011_BFC.shp")
+#' to_remove <- list.files(pattern = "COWZ", full.names = TRUE, recursive = TRUE)
 #' file.remove(to_remove)
 #' proj4string(wz)
-#' wz = sp::spTransform(wz, proj4string(zones))
-#' destination_zones = wz[zones,]
+#' wz <- sp::spTransform(wz, proj4string(zones))
+#' destination_zones <- wz[zones, ]
 #' plot(destination_zones)
 #' devtools::use_data(destination_zones)
 #' head(destination_zones@data)
-#' destinations = rgeos::gCentroid(destinations, byid = TRUE)
-#' destinations = sp::SpatialPointsDataFrame(destinations, destination_zones@data)
+#' destinations <- rgeos::gCentroid(destinations, byid = TRUE)
+#' destinations <- sp::SpatialPointsDataFrame(destinations, destination_zones@data)
 #' devtools::use_data(destinations, overwrite = TRUE)
-#' destinations_sf = sf::st_as_sf(destinations)
+#' destinations_sf <- sf::st_as_sf(destinations)
 #' devtools::use_data(destinations_sf)
 #' }
 #' @docType data
@@ -157,7 +159,7 @@ NULL
 # @family example flow data
 #'
 #' Flow data after conversion to a spatial format
-#' with \code{\link{od2line}} (see \code{\link{flow}}).
+#' with [od2line()] (see [flow()]).
 #'
 #' @docType data
 #' @keywords datasets
@@ -171,9 +173,9 @@ NULL
 #' @family example flow data
 #'
 #' Simulated travel route allocated to the transport network
-#' representing the 'fastest' between \code{\link{cents}}
+#' representing the 'fastest' between [cents()]
 #' objects
-#' with \code{\link{od2line}} (see \code{\link{flow}}).
+#' with [od2line()] (see [flow()]).
 #'
 #' @docType data
 #' @keywords datasets
@@ -188,9 +190,9 @@ NULL
 #' @family example flow data
 #'
 #' Simulated travel route allocated to the transport network
-#' representing the 'quietest' between \code{\link{cents}()}
+#' representing the 'quietest' between [cents()]
 #' objects
-#' with \code{\link{od2line}} (see \code{\link{flow}}).
+#' with [od2line()] (see [flow()]).
 #'
 #' @docType data
 #' @keywords datasets
@@ -202,7 +204,7 @@ NULL
 
 #' Spatial polygons of home locations for flow analysis.
 #'
-#'  These correspond to the \code{\link{cents}} data.
+#'  These correspond to the [cents()] data.
 #'
 #' \itemize{
 #'   \item geo_code. the official code of the zone
@@ -212,10 +214,10 @@ NULL
 #' \dontrun{
 #' zones <- rgdal::readOGR(dsn = "/home/robin/npct/pct-bigdata/msoas.geojson", layer = "OGRGeoJSON")
 #' proj4string(zones) <- proj4string(cents)
-#' zones <- zones[cents,]
+#' zones <- zones[cents, ]
 #' plot(zones)
 #' points(cents)
-#' zones_sf = sf::st_as_sf(zones)
+#' zones_sf <- sf::st_as_sf(zones)
 #' }
 #' @docType data
 #' @keywords datasets
@@ -228,7 +230,7 @@ NULL
 #' @family example of route network data (sometimes called flow data)
 #'
 #' The flow of commuters using different segments of the road network represented in the
-#' \code{\link{flowlines}} and \code{\link{routes_fast}} datasets
+#' [flowlines()] and [routes_fast()] datasets
 #'
 #' @docType data
 #' @keywords datasets
@@ -236,9 +238,10 @@ NULL
 #' @aliases route_network_sf
 #' @usage data(route_network)
 #' @format A spatial lines dataset 80 rows and 1 column
-#' @examples \dontrun{
+#' @examples
+#' \dontrun{
 #' # Generate route network
-#' route_network = overline(routes_fast, "All", fun = sum)
+#' route_network <- overline(routes_fast, "All", fun = sum)
 #' route_network_sf <- sf::st_as_sf(route_network)
 #' }
 NULL
@@ -254,7 +257,8 @@ NULL
 #' @name ca_local
 #' @usage data(ca_local)
 #' @format A SpatialPointsDataFrame with 11 rows and 2 columns
-#' @examples \dontrun{
+#' @examples
+#' \dontrun{
 #' # Generate data
 #' ac <- read_stats19_ac()
 #' ca <- read_stats19_ca()
@@ -268,7 +272,7 @@ NULL
 #' data("route_network")
 #' proj4string(ca_sp) <- proj4string(route_network)
 #' bb <- bb2poly(route_network)
-#' ca_local = ca_sp[bb,]
+#' ca_local <- ca_sp[bb, ]
 #' }
 NULL
 
@@ -281,9 +285,10 @@ NULL
 #' @usage data(l_poly)
 #' @format A SpatialPolygon
 #'
-#' @examples \dontrun{
-#' l = routes_fast[13,]
-#' l_poly = buff_geo(l, 8)
+#' @examples
+#' \dontrun{
+#' l <- routes_fast[13, ]
+#' l_poly <- buff_geo(l, 8)
 #' plot(l_poly)
 #' plot(routes_fast, add = TRUE)
 #' # allocate road width to relevant line

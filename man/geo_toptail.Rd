@@ -21,12 +21,12 @@ Takes lines and removes the start and end point, to a distance determined
 by the user.
 }
 \details{
-Note: \code{\link{toptailgs}} is around 10 times faster, but only works
+Note: \code{\link[=toptailgs]{toptailgs()}} is around 10 times faster, but only works
 on data with geographic CRS's due to its reliance on the geosphere
 package.
 }
 \examples{
-l = routes_fast[2:4,]
+l <- routes_fast[2:4, ]
 l_toptail <- geo_toptail(l, toptail_dist = 300)
 plot(l)
 plot(l_toptail, col = "red", add = TRUE, lwd = 3)
