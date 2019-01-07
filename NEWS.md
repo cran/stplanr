@@ -1,9 +1,24 @@
+# stplanr 0.2.7
+
+## NEW FEATURES
+
+* Various changes to support `dplyr` [0.8.0](https://www.tidyverse.org/articles/2018/12/dplyr-0-8-0-release-candidate/): https://github.com/ropensci/stplanr/pull/275
+
+
+## BUG FIXES
+
+* Fixed [#272](https://github.com/ropensci/stplanr/issues/272) by removing byvars argument of overline in preparation for overdue overhaul of overline function.
+
+## OTHER
+
+* No longer suggests **tmap** to reduce install times: `install.packages()` installs suggested packages by default
+
 # stplanr 0.2.6
 
 ## NEW FEATURES
 
 * New function `route_local()`
-# * New argument in `line2route()`: `time_sleep` waits a period between each route request
+* New argument in `line2route()`: `time_sleep` waits a period between each route request
 
 ## BUG FIXES
 

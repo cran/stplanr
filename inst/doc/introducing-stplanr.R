@@ -1,7 +1,6 @@
 ## ---- include=FALSE------------------------------------------------------
 library(stplanr)
-has_internet <- curl::has_internet()
-build = require("tmap") & has_internet
+build <- curl::has_internet()
 knitr::opts_chunk$set(eval = build)
 
 ## ---- eval=FALSE---------------------------------------------------------

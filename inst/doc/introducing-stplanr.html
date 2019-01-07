@@ -12,14 +12,14 @@
 
 <meta name="author" content="Robin Lovelace" />
 
-<meta name="date" content="2018-10-19" />
+<meta name="date" content="2019-01-05" />
 
 <title>Introducing stplanr</title>
 
 
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
+<style type="text/css" data-origin="pandoc">
 a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
 a.sourceLine:empty { height: 1.2em; }
@@ -81,7 +81,29 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
 </style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
 
 
 
@@ -278,7 +300,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">Introducing stplanr</h1>
 <h4 class="author"><em>Robin Lovelace</em></h4>
-<h4 class="date"><em>2018-10-19</em></h4>
+<h4 class="date"><em>2019-01-05</em></h4>
 
 
 
@@ -380,7 +402,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## 1930 E02002361 Leeds 032    0.511777 3.589363 POINT (-1.516734 53.82887)</code></pre>
 <p>The <code>cents</code> dataset is <em>spatial</em>, illustrated by it’s class: a <code>SpatialPointsDataFrame</code>, from the <strong>sp</strong> package. Because <strong>stplanr</strong> loads <strong>sp</strong>, the dataset will be plotted as a map by default, as illustrated below:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw">library</span>(sf)</a></code></pre></div>
-<pre><code>## Linking to GEOS 3.6.2, GDAL 2.2.3, proj.4 4.9.3</code></pre>
+<pre><code>## Linking to GEOS 3.6.2, GDAL 2.2.3, PROJ 4.9.3</code></pre>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">st_geometry</span>(cents_sf))</a></code></pre></div>
 <p><img src="data:image/png;base64,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" /><!-- --></p>
 <p><strong>stplanr</strong> creates desire lines using the <code>od2line()</code> function, which links geographical and non-geographical datasets together. In this case, it will join the non-geographical <code>flow</code> data with the geographical <code>cents</code> data plotted above. Let’s take a single OD pair, E02002361 to E02002371, the fourth row represented in the table above, to see how this works:</p>
