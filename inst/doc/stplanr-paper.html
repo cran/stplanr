@@ -299,6 +299,9 @@ code > span.al { color: #ff0000; font-weight: bold; }
 code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
+
+
+
 </head>
 
 <body>
@@ -307,11 +310,11 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 
 <h1 class="title toc-ignore">stplanr: A Package for Transport Planning</h1>
-<h4 class="author"><em>Robin Lovelace</em></h4>
+<h4 class="author">Robin Lovelace</h4>
 <address class="author_afil">
 University of Leeds<br><a class="author_email" href="mailto:#"><a href="mailto:r.lovelace@leeds.ac.uk" class="email">r.lovelace@leeds.ac.uk</a></a>
 </address>
-<h4 class="author"><em>Richard Ellison</em></h4>
+<h4 class="author">Richard Ellison</h4>
 <address class="author_afil">
 University of Sydney<br><a class="author_email" href="mailto:#"><a href="mailto:richard.ellison@sydney.edu.au" class="email">richard.ellison@sydney.edu.au</a></a>
 </address>
@@ -324,7 +327,7 @@ Tools for transport planning should be flexible, scalable and transparent. The <
 
 <div id="note" class="section level2">
 <h2>Note</h2>
-<p>This vignette is under peer review and was submitted in pdf form to the <a href="https://journal.r-project.org/">R Journal</a>. Please see its <a href="https://github.com/ropensci/stplanr/blob/master/vignettes/stplanr-paper.Rmd">source code</a> for comments and suggestions.</p>
+<p>This paper has now been peer reviewed and published by the R Journal. Please see the published version at <a href="https://journal.r-project.org/archive/2018/RJ-2018-053/index.html">journal.r-project.org</a> and cite it as <span class="citation">Lovelace and Ellison (2018)</span>.</p>
 </div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
@@ -535,12 +538,12 @@ Visualisation of travel desire lines, with width proportional to number of trips
 <p>Accessibility to transport services is a particularly important topic when considering public transport or active travel because of the frequent steep reduction in use as distances to access services (or infrastructure) increase. As a result, the planning for transport services and infrastructure frequently focuses on several measures of accessibility including distance, but also travel times and frequencies and weighted by population. The functions in <strong>stplanr</strong> are intended to provide a method of estimating these accessibility measures as well as calculating the population that can access specific services (i.e., estimating the catchment area).</p>
 <p>Catchment areas in particular are a widely used measure of accessibility that attempts to both quantify the likely target group for a particular service, and visualise the geographic area that is covered by the service. For instance, passengers are often said to be willing to walk up to 400 metres to a bus stop, or 800 metres to a railway station . Although these distances may appear relatively arbitrary and have been found to underestimate the true catchment area of bus stops and railway stations  they nonetheless represent a good, albeit somewhat conservative, starting point from which catchment areas can be determined.</p>
 <p>In many cases, catchment areas are calculated on the basis of straight-line (or “as the crow flies”) distances. This is a simplistic, but relatively appealing approach because it requires little additional data and is straight-forward to understand. <strong>stplanr</strong> provides functionality that calculates catchment areas using straight-line distances with the <code>calc_catchment</code> function. This function takes a <code>SpatialPolygonsDataFrame</code> that contains the population (or other) data, typically from a census, and a <code>Spatial*</code> layer that contains the geometry of the transport facility. These two layers are overlayed to calculate statistics for the desired catchments including proportioning polygons to account for the proportion located within the catchment area.</p>
-<p>To illustrate how catchment areas can be calculated, <strong>stplanr</strong> contains some sample datasets stored in ESRI Shapefile format (a commonly used format for distributing GIS layers) that can together be used to calculate sample catchment areas. One of these datasets (<code>smallsa1</code>) contains population data for Statistical Area 1 (SA1) zones in Sydney, Australia. The second contains hypothetical cycleways aligned to streets in Sydney. The code below unzips the datasets and reads in the shapefiles using the <code>readOGR</code> function of .</p>
+<p>To illustrate how catchment areas can be calculated, <strong>stplanr</strong> contains some sample datasets stored in ESRI Shapefile format (a commonly used format for distributing GIS layers) that can together be used to calculate sample catchment areas. One of these datasets (<code>smallsa1</code>) contains population data for Statistical Area 1 (SA1) zones in Sydney, Australia. The second contains hypothetical cycleways aligned to streets in Sydney. The code below unzips the datasets and reads in the shapefiles.</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">data_dir &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;stplanr&quot;</span>)</a>
 <a class="sourceLine" id="cb20-2" data-line-number="2"><span class="kw">unzip</span>(<span class="kw">file.path</span>(data_dir, <span class="st">'smallsa1.zip'</span>))</a>
 <a class="sourceLine" id="cb20-3" data-line-number="3"><span class="kw">unzip</span>(<span class="kw">file.path</span>(data_dir, <span class="st">'testcycleway.zip'</span>))</a>
-<a class="sourceLine" id="cb20-4" data-line-number="4">sa1income &lt;-<span class="st"> </span>rgdal<span class="op">::</span><span class="kw">readOGR</span>(<span class="st">&quot;.&quot;</span>, <span class="st">&quot;smallsa1&quot;</span>)</a>
-<a class="sourceLine" id="cb20-5" data-line-number="5">testcycleway &lt;-<span class="st"> </span>rgdal<span class="op">::</span><span class="kw">readOGR</span>(<span class="st">&quot;.&quot;</span>, <span class="st">&quot;testcycleway&quot;</span>)</a>
+<a class="sourceLine" id="cb20-4" data-line-number="4">sa1income &lt;-<span class="st"> </span><span class="kw">as</span>(sf<span class="op">::</span><span class="kw">read_sf</span>(<span class="st">&quot;smallsa1.shp&quot;</span>), <span class="st">&quot;Spatial&quot;</span>)</a>
+<a class="sourceLine" id="cb20-5" data-line-number="5">testcycleway &lt;-<span class="st"> </span><span class="kw">as</span>(sf<span class="op">::</span><span class="kw">read_sf</span>(<span class="st">&quot;testcycleway.shp&quot;</span>), <span class="st">&quot;Spatial&quot;</span>)</a>
 <a class="sourceLine" id="cb20-6" data-line-number="6"><span class="co"># Remove unzipped files</span></a>
 <a class="sourceLine" id="cb20-7" data-line-number="7"><span class="kw">file.remove</span>(<span class="kw">list.files</span>(<span class="dt">pattern =</span> <span class="st">&quot;^(smallsa1|testcycleway).*&quot;</span>))</a></code></pre></div>
 <p>Calculating the catchment area is straightforward and in addition to specifying the required datasets, only a vector containing column names to calculate statistics and a distance is required. Since proportioning the areas assumes projected data, unprojected data are automatically projected to either a common projection (if one is already projected) or a specified projection. It should be emphasised that the choice of projection is important and has an effect on the results meaning setting a local projection is recommended to achieve the most accurate results.</p>
@@ -563,7 +566,7 @@ Visualisation of travel desire lines, with width proportional to number of trips
 <p>This simplistic catchment area is useful when the straight-line distance is a reasonable approximation of the route taken to walk (or cycle) to a transport facility. However, this is often not the case. The catchment area in Figure  initially appears reasonable but the red-shaded catchment area includes an area that requires travelling around a bay to access from the (green-coloured) cycleway. To allow for more realistic catchment areas for most situations, <strong>stplanr</strong> provides the <code>calc_network_catchment</code> function that uses the same principle as <code>calc_catchment</code> but also takes into account the transport network.</p>
 <p>To use <code>calc_network_catchment</code>, a transport network needs to be prepared that can be used in conjunction with the previous datasets. Preparation of the dataset involves using the <code>SpatialLinesNetwork</code> function to create a network from a <code>SpatialLinesDataFrame</code>. This function combines a <code>SpatialLinesDataFrame</code> with a graph network (using the  package) to provide basic routing functionality. The network is used to calculate the shortest actual paths within the specific catchment distance. This process involves the following code:</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw">unzip</span>(<span class="kw">file.path</span>(data_dir, <span class="st">'sydroads.zip'</span>))</a>
-<a class="sourceLine" id="cb23-2" data-line-number="2">sydroads &lt;-<span class="st"> </span>rgdal<span class="op">::</span><span class="kw">readOGR</span>(<span class="st">&quot;.&quot;</span>, <span class="st">&quot;roads&quot;</span>)</a>
+<a class="sourceLine" id="cb23-2" data-line-number="2">sydroads &lt;-<span class="st"> </span><span class="kw">as</span>(sf<span class="op">::</span><span class="kw">read_sf</span>(<span class="st">&quot;.&quot;</span>, <span class="st">&quot;roads&quot;</span>), <span class="st">&quot;Spatial&quot;</span>)</a>
 <a class="sourceLine" id="cb23-3" data-line-number="3"><span class="kw">file.remove</span>(<span class="kw">list.files</span>(<span class="dt">pattern =</span> <span class="st">&quot;^(roads).*&quot;</span>))</a>
 <a class="sourceLine" id="cb23-4" data-line-number="4">sydnetwork &lt;-<span class="st"> </span><span class="kw">SpatialLinesNetwork</span>(sydroads)</a></code></pre></div>
 <p>The network catchment is then calculated using a similar method as with <code>calc_catchment</code> but with a few minor changes. Specifically these are including the <code>SpatialLinesNetwork</code>, and using the <code>maximpedance</code> parameter to define the distance, with distance being the additional distance from the network. In contrast to the distance parameter that is based on the straight-line distance in both the <code>calc_catchment</code> and <code>calc_network_catchment</code> functions, the <code>maximpedance</code> parameter is the maximum value in the units of the network’s weight attribute. In practice this is generally distance in metres but can also be travel times, risk or other measures.</p>
@@ -724,6 +727,9 @@ Relationship between euclidean distance and walking
 </div>
 <div id="ref-kim_spatialepi:_2016">
 <p>Kim, Albert Y., and Jon Wakefield. 2016. “SpatialEpi: Methods and Data for Spatial Epidemiology.” <a href="https://CRAN.R-project.org/package=SpatialEpi">https://CRAN.R-project.org/package=SpatialEpi</a>.</p>
+</div>
+<div id="ref-lovelace_stplanr_2018">
+<p>Lovelace, Robin, and Richard Ellison. 2018. “Stplanr: A Package for Transport Planning.” <em>The R Journal</em> 10 (2): 7–23. <a href="https://doi.org/10.32614/RJ-2018-053">https://doi.org/10.32614/RJ-2018-053</a>.</p>
 </div>
 <div id="ref-lovelace_propensity_2017">
 <p>Lovelace, Robin, Anna Goodman, Rachel Aldred, Nikolai Berkoff, Ali Abbas, and James Woodcock. 2017. “The Propensity to Cycle Tool: An Open Source Online System for Sustainable Transport Planning.” <em>Journal of Transport and Land Use</em> 10 (1). <a href="https://doi.org/10.5198/jtlu.2016.862">https://doi.org/10.5198/jtlu.2016.862</a>.</p>

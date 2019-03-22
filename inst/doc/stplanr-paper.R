@@ -99,8 +99,8 @@ plot(rnet, lwd = rnet$flow / mean(rnet$flow))
 data_dir <- system.file("extdata", package = "stplanr")
 unzip(file.path(data_dir, 'smallsa1.zip'))
 unzip(file.path(data_dir, 'testcycleway.zip'))
-sa1income <- rgdal::readOGR(".", "smallsa1")
-testcycleway <- rgdal::readOGR(".", "testcycleway")
+sa1income <- as(sf::read_sf("smallsa1.shp"), "Spatial")
+testcycleway <- as(sf::read_sf("testcycleway.shp"), "Spatial")
 # Remove unzipped files
 file.remove(list.files(pattern = "^(smallsa1|testcycleway).*"))
 
@@ -121,7 +121,7 @@ plot(testcycleway, col = "green", add = TRUE)
 
 ## ---- echo=TRUE, message=FALSE, warning=FALSE, results='hide'------------
 unzip(file.path(data_dir, 'sydroads.zip'))
-sydroads <- rgdal::readOGR(".", "roads")
+sydroads <- as(sf::read_sf(".", "roads"), "Spatial")
 file.remove(list.files(pattern = "^(roads).*"))
 sydnetwork <- SpatialLinesNetwork(sydroads)
 

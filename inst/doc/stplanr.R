@@ -7,7 +7,7 @@ knitr::opts_chunk$set(eval = build)
 #  install.packages("stplanr")
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  devtools::install_github("ropensci/stplanr")
+#  remotes::install_github("ropensci/stplanr")
 
 ## ------------------------------------------------------------------------
 library(stplanr)
