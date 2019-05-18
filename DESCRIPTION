@@ -1,7 +1,7 @@
 Package: stplanr
 Type: Package
 Title: Sustainable Transport Planning
-Version: 0.2.9
+Version: 0.2.10
 Authors@R: c(
     person("Robin", "Lovelace", email = "rob00x@gmail.com", role = c("aut", "cre"),
       comment = c(ORCID = "0000-0001-5679-6536")),
@@ -45,7 +45,7 @@ SystemRequirements: GNU make
 RoxygenNote: 6.1.1
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2019-05-10 09:13:53 UTC; rstudio
+Packaged: 2019-05-18 07:59:05 UTC; rstudio
 Author: Robin Lovelace [aut, cre] (<https://orcid.org/0000-0001-5679-6536>),
   Richard Ellison [aut],
   Malcolm Morgan [aut] (<https://orcid.org/0000-0001-5679-6536>),
@@ -56,4 +56,4 @@ Author: Robin Lovelace [aut, cre] (<https://orcid.org/0000-0001-5679-6536>),
     https://github.com/ropensci/onboarding/issues/10),
   Mark Padgham [ctb]
 Repository: CRAN
-Date/Publication: 2019-05-10 09:50:03 UTC
+Date/Publication: 2019-05-18 08:40:03 UTC

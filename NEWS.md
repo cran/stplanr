@@ -1,3 +1,7 @@
+# stplanr 0.2.10
+
+- Fix in documentation. See [#311](https://github.com/ropensci/stplanr/issues/311)
+
 # stplanr 0.2.9
 
 ## NEW FEATURES
