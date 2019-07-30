@@ -87,13 +87,14 @@ od_coords <- function(from = NULL, to = NULL, l = NULL) {
 
 #' Convert origin-destination coordinates into desire lines
 #'
-#' @param odc A data frame or matrix of representing the coordinates
+#' @param odc A data frame or matrix representing the coordinates
 #' of origin-destination data. The first two columns represent the
 #' coordinates of the origin (typically longitude and latitude) points;
-#' the second two columns represent the coordinates of the destination
+#' the third and fourth columns represent the coordinates of the destination
 #' (in the same CRS). Each row represents travel from origin to destination.
 #' @param crs A number representing the coordinate reference system
-#' of the result.
+#' of the result, 4326 by default.
+#' @param remove_duplicates Should rows with duplicated rows be removed? `TRUE` by default.
 #' @family od
 #' @export
 #' @examples
@@ -101,12 +102,28 @@ od_coords <- function(from = NULL, to = NULL, l = NULL) {
 #' odlines <- od_coords2line(odf)
 #' odlines <- od_coords2line(odf, crs = 4326)
 #' plot(odlines)
-od_coords2line <- function(odc, crs = sf::st_crs()) {
+#' x_coords = 1:3
+#' n = 50
+#' d = data.frame(lapply(1:4, function(x) sample(x_coords, n, replace = TRUE)))
+#' names(d) = c("fx", "fy", "tx", "ty")
+#' l = od_coords2line(d)
+#' plot(l)
+#' nrow(l)
+#' l_with_duplicates = od_coords2line(d, remove_duplicates = FALSE)
+#' plot(l_with_duplicates)
+#' nrow(l_with_duplicates)
+od_coords2line <- function(odc, crs = 4326, remove_duplicates = TRUE) {
+  odc_unique <- odc[!duplicated(odc[, 1:4]), ]
+  if(nrow(odc_unique) < nrow(odc) && remove_duplicates) {
+    message("Duplicate OD pairs identified, removing ", nrow(odc) - nrow(odc_unique), " rows")
+    odc <- odc_unique
+    odc_unique$n = dplyr::group_size(dplyr::group_by_all(as.data.frame(odc[, 1:4])))
+  }
   odm <- as.matrix(odc)
   linestring_list <- lapply(seq(nrow(odm)), function(i) {
     sf::st_linestring(rbind(odm[i, 1:2], odm[i, 3:4]))
   })
-  sf::st_sfc(linestring_list, crs = crs)
+  sf::st_sf(odc, geometry = sf::st_sfc(linestring_list, crs = crs))
 }
 #' Convert flow data to SpatialLinesDataFrame
 #'
@@ -198,8 +215,8 @@ od2line.sf <- function(flow, zones, destinations = NULL,
 
   odm = cbind(origin_points, dest_points)
 
-  odsfc <- od_coords2line(odm, crs = sf::st_crs(zones))
-  sf::st_sf(flow, geometry = odsfc)
+  odsfc <- od_coords2line(odm, crs = sf::st_crs(zones), remove_duplicates = FALSE)
+  sf::st_sf(flow, geometry = odsfc$geometry)
 
 }
 #' @export
@@ -267,7 +284,10 @@ od2line2 <- function(flow, zones) {
   odf <- od2odf(flow, zones)
   l <- vector("list", nrow(odf))
   for (i in 1:nrow(odf)) {
-    l[[i]] <- sp::Lines(list(sp::Line(rbind(c(odf$fx[i], odf$fy[i]), c(odf$tx[i], odf$ty[i])))), as.character(i))
+    l[[i]] <-
+      sp::Lines(list(sp::Line(rbind(
+        c(odf$fx[i], odf$fy[i]), c(odf$tx[i], odf$ty[i])
+      ))), as.character(i))
   }
   l <- sp::SpatialLines(l)
 }
@@ -389,8 +409,6 @@ line2pointsn <- function(l) {
 #' See [route_cyclestreet()] and other route functions for details.
 #'
 #' A parallel implementation of this was available until version 0.1.8.
-#' See \href{https://github.com/ropensci/stplanr/blob/18a598674bb378d5577050178da1561489496157/R/od-funs.R}{github.com/ropensci/stplanr} for details.
-#'
 #'
 #' @param l A SpatialLinesDataFrame
 #' @param route_fun A routing function to be used for converting the straight lines to routes
@@ -427,8 +445,15 @@ line2pointsn <- function(l) {
 #' rf_list <- line2route(l = l, list_output = TRUE)
 #' line2route(l[1, ], route_graphhopper)
 #' }
-line2route <- function(l, route_fun = stplanr::route_cyclestreet, n_print = 10, list_output = FALSE, l_id = NA, time_delay = 0, ...) {
-  return_sf <- is(l, "sf")
+line2route <-
+  function(l,
+           route_fun = stplanr::route_cyclestreet,
+           n_print = 10,
+           list_output = FALSE,
+           l_id = NA,
+           time_delay = 0,
+           ...) {
+    return_sf <- is(l, "sf")
   if (return_sf) {
     l <- as(l, "Spatial")
   }
@@ -502,7 +527,8 @@ line2route <- function(l, route_fun = stplanr::route_cyclestreet, n_print = 10, 
 #'
 #' See [line2route()] for the version that is not retried on errors.
 #' @param lines A SpatialLinesDataFrame
-#' @param pattern A regex that the error messages must not match to be retried, default "^Error: " i.e. do not retry errors starting with "Error: "
+#' @param pattern A regex that the error messages must not match to be retried, default
+#'  "^Error: " i.e. do not retry errors starting with "Error: "
 #' @param n_retry Number of times to retry
 #' @inheritParams line2route
 #' @family routes
@@ -527,7 +553,8 @@ line2routeRetry <- function(lines, pattern = "^Error: ", n_retry = 3, ...) {
         idx_to_replace <- which(routes$id == routes_retry$id[idx_retry])
 
         routes@data[idx_to_replace, ] <- routes_retry@data[idx_retry, ]
-        routes@lines[[idx_to_replace]] <- Lines(routes_retry@lines[[idx_retry]]@Lines, row.names(routes_retry[idx_retry, ]))
+        routes@lines[[idx_to_replace]] <-
+          Lines(routes_retry@lines[[idx_retry]]@Lines, row.names(routes_retry[idx_retry,]))
       }
     }
   }
@@ -708,7 +735,8 @@ points2line.matrix <- function(p) {
 #' @inheritParams od2odf
 #' @inheritParams overline
 #' @param FUN A function to summarise OD data by
-#' @param col The column that the OD dataset is grouped by (1 by default, the first column usually represents the origin)
+#' @param col The column that the OD dataset is grouped by
+#' (1 by default, the first column usually represents the origin)
 #' @param ... Additional arguments passed to `FUN`
 #' @family od
 #' @export
@@ -755,4 +783,61 @@ od_aggregate_to <- function(flow, attrib = NULL, FUN = sum, ..., col = 2) {
   }
   flow_grouped <- dplyr::group_by_at(flow, col)
   dplyr::summarise_if(flow_grouped, is.numeric, .funs = FUN, ...)
+}
+
+#' Convert origin-destination data from long to wide format
+#'
+#' This function takes a data frame representing travel between origins
+#' (with origin codes in `name_orig`, typically the 1st column)
+#' and destinations
+#' (with destination codes in `name_dest`, typically the second column) and returns a matrix
+#' with cell values (from `attrib`, the third column by default) representing travel between
+#' origins and destinations.
+#'
+#' @param flow A data frame representing flows between origin and destinations
+#' @param attrib A number or character string representing the column containing the attribute data
+#' of interest from the `flow` data frame
+#' @param name_orig A number or character string representing the zone of origin
+#' @param name_dest A number or character string representing the zone of destination
+#' @family od
+#' @export
+#' @examples
+#' od_to_odmatrix(flow)
+#' od_to_odmatrix(flow[1:9, ])
+#' od_to_odmatrix(flow[1:9, ], attrib = "Bicycle")
+od_to_odmatrix <- function(flow, attrib = 3, name_orig = 1, name_dest = 2) {
+  out <- matrix(
+    nrow = length(unique(flow[[name_orig]])),
+    ncol = length(unique(flow[[name_dest]])),
+    dimnames = list(unique(flow[[name_orig]]), unique(flow[[name_dest]]))
+  )
+  out[cbind(flow[[name_orig]], flow[[name_dest]])] <- flow[[attrib]]
+  out
+}
+
+#' Convert origin-destination data from wide to long format
+#'
+#' This function takes a matrix representing travel between origins
+#' (with origin codes in the `rownames` of the matrix)
+#' and destinations
+#' (with destination codes in the `colnames` of the matrix)
+#' and returns a data frame representing origin-destination pairs.
+#'
+#' The function returns a data frame with rows ordered by origin and then destination
+#' zone code values and with names `orig`, `dest` and `flow`.
+#'
+#' @param odmatrix A matrix with row and columns representing origin and destination zone codes
+#' and cells representing the flow between these zones.
+#' @family od
+#' @export
+#' @examples
+#' odmatrix <- od_to_odmatrix(flow)
+#' odmatrix_to_od(odmatrix)
+#' flow[1:9, 1:3]
+#' odmatrix_to_od(od_to_odmatrix(flow[1:9, 1:3]))
+odmatrix_to_od <- function(odmatrix) {
+  od <- as.data.frame(as.table(odmatrix))
+  names(od) <- c("orig", "dest", "flow")
+  od <- stats::na.omit(od)
+  od[order(paste0(od$orig, od$dest)), ]
 }

@@ -20,7 +20,8 @@ of \code{\link[=flow]{flow()}}.}
 
 \item{...}{Additional arguments passed to \code{FUN}}
 
-\item{col}{The column that the OD dataset is grouped by (1 by default, the first column usually represents the origin)}
+\item{col}{The column that the OD dataset is grouped by
+(1 by default, the first column usually represents the origin)}
 }
 \description{
 This function takes a data frame of OD data and
@@ -39,7 +40,9 @@ Other od: \code{\link{dist_google}}, \code{\link{od2line}},
   \code{\link{od2odf}}, \code{\link{od_aggregate_from}},
   \code{\link{od_aggregate}}, \code{\link{od_coords2line}},
   \code{\link{od_coords}}, \code{\link{od_dist}},
-  \code{\link{od_radiation}}, \code{\link{points2flow}},
+  \code{\link{od_id}}, \code{\link{od_oneway}},
+  \code{\link{od_radiation}}, \code{\link{od_to_odmatrix}},
+  \code{\link{odmatrix_to_od}}, \code{\link{points2flow}},
   \code{\link{points2odf}}, \code{\link{sp_aggregate}}
 }
 \concept{od}
