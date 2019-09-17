@@ -13,7 +13,7 @@
 
 <meta name="author" content="Robin Lovelace" />
 
-<meta name="date" content="2019-07-30" />
+<meta name="date" content="2019-09-17" />
 
 <title>Introducing stplanr</title>
 
@@ -304,7 +304,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">Introducing stplanr</h1>
 <h4 class="author">Robin Lovelace</h4>
-<h4 class="date">2019-07-30</h4>
+<h4 class="date">2019-09-17</h4>
 
 
 
@@ -312,11 +312,11 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <h1>Introduction</h1>
 <p>The purpose of this vignette is to get you up-to-speed with the basics and provide useful links for doing transport research with R.</p>
 <p>Initially, <strong>stplanr</strong> was developed to solve a real world problem: how to convert official data on travel behaviour into geographic objects that can be plotted on a map and analysed using methods from geographical information systems (GIS)? Specifically, how can origin-destination (OD) data, such as the open datasets provided by the UK Data Services WICID portal (see <a href="http://wicid.ukdataservice.ac.uk/">wicid.ukdataservice.ac.uk/</a>), be used to estimate cycling potential down to the street levels at city and national levels? The research project that the initial work on <strong>stplanr</strong> was funded by was called the Propensity to Cycle Tool (PCT), which has now been deployed as a web application hosted at www.pct.bike and written-up as an academic paper <span class="citation">(Lovelace et al. 2017)</span>.</p>
-<p>Since this basic functionality has been implemented (with the function <code>od2line()</code>) there have been many further developments in <strong>stplanr</strong>. The package was reviewed through the rOpenSci package review process (see here for the details) and the package is now hosted on their site. See the website at <a href="https://ropensci.github.io/stplanr/">ropensci.github.io/stplanr</a>. A more detailed overview of the package’s aims and capabilities is contained in a <a href="https://github.com/ropensci/stplanr/blob/master/vignettes/stplanr-paper.Rmd">longer vignette</a>, which has since been published in the R Journal <span class="citation">(Lovelace and Ellison 2018)</span>.</p>
+<p>Since this basic functionality has been implemented (with the function <code>od2line()</code>) there have been many further developments in <strong>stplanr</strong>. The package was reviewed through the rOpenSci package review process (see here for the details) and the package is now hosted on their site. See the website at <a href="https://docs.ropensci.org/stplanr/">docs.ropensci.org/stplanr</a>. A more detailed overview of the package’s aims and capabilities is contained in a <a href="https://github.com/ropensci/stplanr/blob/master/vignettes/stplanr-paper.Rmd">longer vignette</a>, which has since been published in the R Journal <span class="citation">(Lovelace and Ellison 2018)</span>.</p>
 </div>
 <div id="installing-stplanr" class="section level1">
 <h1>Installing stplanr</h1>
-<p>If you’re new to programming and transport data, we recommend using <strong>stplanr</strong> interactively in an Integrated Development Environment (IDE) such as RStudio to make life easier. Steps to set-up a suitable R/RStudio environment are described in the package’s <a href="https://ropensci.github.io/stplanr/#installation">README</a>. Broader guidance on R set-up can be found in sections <a href="https://csgillespie.github.io/efficientR/set-up.html#r-version">2.3</a> and <a href="https://csgillespie.github.io/efficientR/set-up.html#rstudio">2.5</a> of the book <a href="https://csgillespie.github.io/efficientR/set-up.html">Efficient R Programming</a> <span class="citation">(Gillespie and Lovelace 2016)</span>.</p>
+<p>If you’re new to programming and transport data, we recommend using <strong>stplanr</strong> interactively in an Integrated Development Environment (IDE) such as RStudio to make life easier. Steps to set-up a suitable R/RStudio environment are described in the package’s <a href="https://docs.ropensci.org/stplanr/#installation">README</a>. Broader guidance on R set-up can be found in sections <a href="https://csgillespie.github.io/efficientR/set-up.html#r-version">2.3</a> and <a href="https://csgillespie.github.io/efficientR/set-up.html#rstudio">2.5</a> of the book <a href="https://csgillespie.github.io/efficientR/set-up.html">Efficient R Programming</a> <span class="citation">(Gillespie and Lovelace 2016)</span>.</p>
 <p>Once you have an R set-up you are happy with, the latest version can be installed from CRAN in the usual way:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;stplanr&quot;</span>)</a></code></pre></div>
 <p>The development version can be installed as follows:</p>
@@ -332,7 +332,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 ## [13] &quot;osm_net_example&quot;   &quot;route_network&quot;     &quot;route_network_sf&quot; 
 ## [16] &quot;routes_fast&quot;       &quot;routes_fast_sf&quot;    &quot;routes_slow&quot;      
 ## [19] &quot;routes_slow_sf&quot;    &quot;zones&quot;             &quot;zones_sf&quot;</code></pre>
-<p>A more complete list of functions in the package can be found here: <a href="https://ropensci.github.io/stplanr/reference/index.html" class="uri">https://ropensci.github.io/stplanr/reference/index.html</a>.</p>
+<p>A more complete list of functions in the package can be found here: <a href="https://docs.ropensci.org/stplanr/reference/index.html" class="uri">https://docs.ropensci.org/stplanr/reference/index.html</a>.</p>
 </div>
 <div id="od-data-to-desire-lines-and-routes" class="section level1">
 <h1>OD data to desire lines and routes</h1>
