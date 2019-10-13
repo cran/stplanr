@@ -291,3 +291,39 @@ NULL
 #' @examples
 #' od_data_sample
 NULL
+
+#' Example of roundabout data showing problems for SpatialLinesNetwork objects
+#'
+#' See `data-raw/rnet_roundabout.R` for details on how this was created.
+#'
+#' @docType data
+#' @keywords datasets
+#' @name rnet_roundabout
+#' @format A sf object
+#' @examples
+#' rnet_roundabout
+NULL
+
+#' Example of overpass data showing problems for SpatialLinesNetwork objects
+#'
+#' See `data-raw/rnet_overpass.R` for details on how this was created.
+#'
+#' @docType data
+#' @keywords datasets
+#' @name rnet_overpass
+#' @format A sf object
+#' @examples
+#' rnet_overpass
+NULL
+
+#' Example of cycleway intersection data showing problems for SpatialLinesNetwork objects
+#'
+#' See `data-raw/rnet_cycleway_intersection` for details on how this was created.
+#'
+#' @docType data
+#' @keywords datasets
+#' @name rnet_cycleway_intersection
+#' @format A sf object
+#' @examples
+#' rnet_cycleway_intersection
+NULL

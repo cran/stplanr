@@ -72,8 +72,8 @@ od_coords <- function(from = NULL, to = NULL, l = NULL) {
     if (is(object = to, "Spatial")) to <- sp::coordinates(to)
 
     # sf objects
-    if (is(object = from, "sf")) from <- sf::st_coordinates(from)
-    if (is(object = to, "sf")) to <- sf::st_coordinates(to)
+    if (is(object = from, "sf") | is(object = from, "sfc")) from <- sf::st_coordinates(from)
+    if (is(object = to, "sf") | is(object = to, "sfc")) to <- sf::st_coordinates(to)
 
     # Convert character strings to lon/lat if needs be
     if (is.character(from)) from <- matrix(geo_code(from), ncol = 2)
@@ -337,11 +337,16 @@ line2df.Spatial <- function(l) {
 }
 
 #' Convert a spatial (linestring) object to points
-#' The number of points will be double the number of lines with `line2points`.
-#' A closely related function, `line2pointsn` returns all the points that were line vertices.
-#' The points corresponding with a given line, `i`, will be `(2*i):((2*i)+1)`.
+#'
+#' The number of points will be double the number of lines with `line2points`. A
+#' closely related function, `line2pointsn` returns all the points that were
+#' line vertices. #' The points corresponding with a given line, `i`, will be
+#' `(2*i):((2*i)+1)`. The last function, `line2vertices`, returns all the points
+#' that are vertices but not nodes.
+#'
 #' @param l An `sf` object or a `SpatialLinesDataFrame` from the older `sp` package
 #' @param ids Vector of ids (by default `1:nrow(l)`)
+#' @family lines
 #' @export
 #' @examples
 #' l <- routes_fast_sf[2:4, ]
@@ -355,41 +360,6 @@ line2df.Spatial <- function(l) {
 #' lpoints2 <- line2pointsn(l)
 #' plot(lpoints, pch = lpoints$id, cex = lpoints$id)
 #' points(lpoints2)
-#' @aliases line2points
-#' @export
-line_to_points <- function(l, ids = rep(1:nrow(l), each = 2)) {
-  .Deprecated(new = "line2points")
-  UseMethod("line_to_points")
-}
-#' @export
-line_to_points.sf <- function(l, ids = rep(1:nrow(l), each = 2)) {
-  y_coords <- x_coords <- double(length = length(ids)) # initiate coords
-  d_indices <- 1:nrow(l) * 2
-  o_indices <- d_indices - 1
-  x_coords[o_indices] <- sapply(l$geometry, `[[`, 1) # first (x) element of each line
-  x_coords[d_indices] <- sapply(l$geometry, function(x) x[length(x) / 2]) # last (x) element of each line
-  y_coords[o_indices] <- sapply(l$geometry, function(x) x[length(x) / 2 + 1]) # first (y) element of each line
-  y_coords[d_indices] <- sapply(l$geometry, tail, n = 1) # last (y) element of each line
-  p_multi <- sf::st_multipoint(cbind(x_coords, y_coords))
-  p <- sf::st_cast(sf::st_sfc(p_multi), "POINT")
-  sf::st_sf(data.frame(id = ids), p)
-}
-#' @export
-line_to_points.Spatial <- function(l, ids = rep(1:nrow(l), each = 2)) {
-  for (i in 1:length(l)) {
-    lcoords <- sp::coordinates(l[i, ])[[1]][[1]]
-    pmat <- matrix(lcoords[c(1, nrow(lcoords)), ], nrow = 2)
-    lpoints <- sp::SpatialPoints(pmat)
-    if (i == 1) {
-      out <- lpoints
-    } else {
-      out <- raster::bind(out, lpoints)
-    }
-  }
-  sp::proj4string(out) <- sp::proj4string(l)
-  out <- sp::SpatialPointsDataFrame(coords = out, data = data.frame(id = ids))
-  out
-}
 #' @export
 line2points <- function(l, ids = rep(1:nrow(l))) {
   UseMethod("line2points")
@@ -411,7 +381,7 @@ line2points.Spatial <- function(l, ids = rep(1:nrow(l), each = 2)) {
   out
 }
 #' @export
-line2points.sf <- function(l, ids = rep(1:nrow(l))) {
+line2points.sf <- function(l, ids = rep(1:nrow(l), each = 2)) {
   y_coords <- x_coords <- double(length = length(ids)) # initiate coords
   d_indices <- 1:nrow(l) * 2
   o_indices <- d_indices - 1
@@ -421,10 +391,10 @@ line2points.sf <- function(l, ids = rep(1:nrow(l))) {
   y_coords[d_indices] <- sapply(l$geometry, tail, n = 1) # last (y) element of each line
   p_multi <- sf::st_multipoint(cbind(x_coords, y_coords))
   p <- sf::st_cast(sf::st_sfc(p_multi), "POINT")
-  sf::st_sf(data.frame(id = ids), p)
+  sf::st_sf(data.frame(id = ids), geometry = p, crs = sf::st_crs(l))
 }
 
-#' @rdname line_to_points
+#' @rdname line2points
 #' @export
 line2pointsn <- function(l) {
   UseMethod("line2pointsn")
@@ -440,6 +410,29 @@ line2pointsn.Spatial <- function(l) {
 line2pointsn.sf <- function(l) {
   suppressWarnings(sf::st_cast(l, "POINT"))
 }
+
+#' @rdname line2points
+#' @export
+line2vertices <- function(l) {
+  UseMethod("line2vertices")
+}
+#' @export
+line2vertices.sf <- function(l) {
+  all_vertexes <- sf::st_coordinates(l)
+  indexes_of_internal_vertexes <- lapply(
+    split(1:nrow(all_vertexes), all_vertexes[, "L1"]),
+    function(x) x[-c(1, length(x))] # exclude starting and ending point
+  )
+  # extract those indexes
+  internal_vertexes <- all_vertexes[do.call("c", indexes_of_internal_vertexes), ]
+
+  # transform back to sf
+  internal_vertexes_sf <- sf::st_as_sf(data.frame(internal_vertexes),
+    coords = c("X", "Y"), crs = sf::st_crs(l)
+  )
+  internal_vertexes_sf
+}
+
 #' Convert straight OD data (desire lines) into routes
 #'
 #' @section Details:

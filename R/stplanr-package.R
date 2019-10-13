@@ -26,7 +26,6 @@
 #' @importFrom utils read.csv
 #' @importFrom openxlsx readWorkbook
 #' @importFrom raster extent crop
-#' @importFrom R.utils intToBin
 #' @importFrom geosphere distHaversine
 #' @importFrom Rcpp evalCpp
 #' @importFrom igraph graph E
@@ -38,5 +37,5 @@
 #' @importFrom dplyr first last n
 #' @useDynLib stplanr
 NULL
-utils::globalVariables(c(".", "n"))
+utils::globalVariables(c(".", "n", ".inc"))
 

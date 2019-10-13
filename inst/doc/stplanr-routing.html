@@ -307,6 +307,31 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(stplanr)</a></code></pre></div>
 <div id="this-vignette-is-work-in-progress---watch-this-space" class="section level2">
 <h2>This vignette is work in progress - watch this space!</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">roads_iow =<span class="st"> </span>sf<span class="op">::</span><span class="kw">read_sf</span>(<span class="st">&quot;https://github.com/ropensci/stplanr/releases/download/0.3.1/roads_iow.geojson&quot;</span>)</a></code></pre></div>
+</div>
+<div id="osrm" class="section level1">
+<h1>osrm</h1>
+<p>Then in bash run the following commands to make the <a href="https://hub.docker.com/r/osrm/osrm-backend/">OSRM docker image</a> work for you.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="ex">docker</span> run -t -v <span class="st">&quot;</span><span class="va">${PWD}</span><span class="st">:/data&quot;</span> osrm/osrm-backend osrm-extract -p /opt/car.lua /data/iow.pbf</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="ex">docker</span> run -t -v <span class="st">&quot;</span><span class="va">${PWD}</span><span class="st">:/data&quot;</span> osrm/osrm-backend osrm-partition /data/iow.osrm</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="ex">docker</span> run -t -v <span class="st">&quot;</span><span class="va">${PWD}</span><span class="st">:/data&quot;</span> osrm/osrm-backend osrm-customize /data/iow.osrm</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="ex">docker</span> run -t -i -p 5000:5000 -v <span class="st">&quot;</span><span class="va">${PWD}</span><span class="st">:/data&quot;</span> osrm/osrm-backend osrm-routed --algorithm mld /data/iow.osrm</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="ex">curl</span> <span class="st">&quot;http://127.0.0.1:5000/route/v1/driving/13.388860,52.517037;13.385983,52.496891?steps=true&quot;</span></a></code></pre></div>
+<p>Now we can do routing in R!</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">l =<span class="st"> </span>pct<span class="op">::</span>wight_lines_<span class="dv">30</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">p =<span class="st"> </span><span class="kw">line2points</span>(l)</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">r =<span class="st"> </span>osrm<span class="op">::</span><span class="kw">osrmRoute</span>(<span class="dt">src =</span> p[<span class="dv">1</span>, ], <span class="dt">dst =</span> p[<span class="dv">2</span>, ], <span class="dt">returnclass =</span> <span class="st">&quot;sf&quot;</span>)</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="kw">plot</span>(r)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">route_osrm2 =<span class="st"> </span><span class="cf">function</span>(l) {</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">  p =<span class="st"> </span><span class="kw">line2points</span>(l)</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">  s =<span class="st"> </span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(l)) <span class="op">*</span><span class="st"> </span><span class="dv">2</span> <span class="op">-</span><span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">  list_out =<span class="st"> </span><span class="kw">lapply</span>(s, <span class="cf">function</span>(i) osrm<span class="op">::</span><span class="kw">osrmRoute</span>(p[i, ], <span class="dt">dst =</span> p[i <span class="op">+</span><span class="st"> </span><span class="dv">1</span>, ], <span class="dt">returnclass =</span> <span class="st">&quot;sf&quot;</span>))</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">  <span class="kw">do.call</span>(rbind, list_out)</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">}</a>
+<a class="sourceLine" id="cb5-7" data-line-number="7">routes_osrm =<span class="st"> </span><span class="kw">route_osrm2</span>(l)</a>
+<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="kw">plot</span>(routes_osrm)</a>
+<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co"># tidy up</span></a>
+<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="kw">file.remove</span>(<span class="st">&quot;iow.pbf&quot;</span>)</a></code></pre></div>
 </div>
 
 
