@@ -1,14 +1,15 @@
-## ---- include = FALSE----------------------------------------------------
+## ---- include = FALSE---------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 
-## ----setup, message=FALSE------------------------------------------------
+## ----setup, message=FALSE-----------------------------------------------------
 library(stplanr)
+library(sf)
 
-## ---- out.width="40%", fig.show='hold', fig.width=5, message=FALSE-------
-sample_routes <- routes_fast_sf[2:6, NULL]
+## ---- out.width="40%", fig.show='hold', fig.width=5, message=FALSE------------
+sample_routes <- routes_fast_sf[2:6, 1]
 sample_routes$value <- rep(1:3, length.out = 5)
 rnet <- overline2(sample_routes, attrib = "value")
 plot(sample_routes["value"], lwd = sample_routes$value, main = "Routes")
@@ -17,11 +18,11 @@ plot(rnet["value"], lwd = rnet$value, main = "Route network")
 ## ----rnets1, message=FALSE, warning=FALSE, out.width="100%", fig.width=6, fig.height=6, echo=FALSE----
 # knitr::include_graphics("route-networks.png")
 
-## ----rnet-routing1-------------------------------------------------------
+## ----rnet-routing1------------------------------------------------------------
 sln <- SpatialLinesNetwork(rnet)
 class(sln)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 class(sln@sl)
 nrow(sln@sl)
 class(sln@g)
@@ -30,12 +31,12 @@ class(sln@nb)
 length(unique(unlist(sln@nb)))
 identical(sln@sl$geometry, rnet$geometry)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 sln_nodes <- sln2points(sln)
 nrow(sln_nodes)
 length(sln@nb)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 rnet_coordinates <- sf::st_coordinates(rnet)
 set.seed(85)
 x <- runif(n = 2, min = min(rnet_coordinates[, 1]), max = max(rnet_coordinates[, 1]))
@@ -44,7 +45,7 @@ crs <- sf::st_crs(rnet)
 xy_sf <- sf::st_as_sf(data.frame(n = 1:2, x, y), coords = c("x", "y"), crs = crs)
 xy_nodes <- stplanr::find_network_nodes(sln = sln, x = x, y = y)
 
-## ---- out.width="49%", fig.show='hide'-----------------------------------
+## ---- out.width="49%", fig.show='hide'----------------------------------------
 plot(rnet$geometry)
 plot(sln_nodes, add = TRUE)
 xy_path <- sum_network_routes(sln = sln, start = xy_nodes[1], end = xy_nodes[2], sumvars = "length")
@@ -53,11 +54,11 @@ plot(rnet$geometry)
 plot(xy_sf$geometry, add = TRUE)
 plot(xy_path$geometry, add = TRUE, lwd = 5)
 
-## ----netpoint------------------------------------------------------------
+## ----netpoint-----------------------------------------------------------------
 new_point_coordinates <- c(-1.540, 53.826)
 p <- sf::st_sf(geometry = sf::st_sfc(sf::st_point(new_point_coordinates)), crs = crs)
 
-## ---- fig.show='hold', out.width="49%"-----------------------------------
+## ---- fig.show='hold', out.width="49%"----------------------------------------
 sln_new <- sln_add_node(sln = sln, p = p)
 route_new <- route_local(sln = sln_new, from = p, to = xy_sf[1, ])
 plot(sln_new)
@@ -106,7 +107,7 @@ plot(route_new, lwd = 5, add = TRUE)
 #  # m
 #  tmap_save(m, "vignettes/route-networks.png")
 
-## ---- eval=FALSE, echo=FALSE---------------------------------------------
+## ---- eval=FALSE, echo=FALSE--------------------------------------------------
 #  # test code:
 #  
 #  sample_routes2 <- sample_routes5[2:3, ]
