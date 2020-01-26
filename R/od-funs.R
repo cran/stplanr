@@ -172,16 +172,18 @@ od_coords2line <- function(odc, crs = 4326, remove_duplicates = TRUE) {
 #' @family od
 #' @export
 #' @examples
-#' l <- od2line(flow = flow, zones = cents)
-#' plot(cents)
+#' od_data <- stplanr::flow[1:20, ]
+#' l <- od2line(flow = od_data, zones = cents_sf)
+#' plot(sf::st_geometry(cents_sf))
 #' plot(l, lwd = l$All / mean(l$All), add = TRUE)
+#' l <- od2line(flow = od_data, zones = cents)
 #' # When destinations are different
-#' head(flow_dests[1:5]) # check data
 #' head(destinations[1:5])
-#' flowlines_dests <- od2line(flow_dests, cents, destinations = destinations)
+#' od_data2 <- flow_dests[1:12, 1:3]
+#' od_data2
+#' flowlines_dests <- od2line(od_data2, cents_sf, destinations = destinations_sf)
+#' flowlines_dests
 #' plot(flowlines_dests)
-#' l <- od2line(flow, zones_sf)
-#' plot(l["All"], lwd = l$All/mean(l$All))
 #' @name od2line
 NULL
 
@@ -204,7 +206,6 @@ od2line.sf <- function(flow, zones, destinations = NULL,
     message("Creating centroids representing desire line start and end points.")
     suppressWarnings(zones <- sf::st_centroid(zones))
   }
-
   coords_o <- sf::st_coordinates(zones)[, 1:2]
   origin_matches <- match(flow[[origin_code]], zones[[zone_code]])
 
@@ -224,7 +225,11 @@ od2line.sf <- function(flow, zones, destinations = NULL,
     dest_points <- coords_o[dest_matches, ]
 
   } else {
-    dest_points <- coords_o[match(flow[[dest_code]], destinations[[zone_code_d]]), ]
+    if(is.na(zone_code_d)) {
+      zone_code_d <- names(destinations)[1]
+    }
+    coords_d <- sf::st_coordinates(destinations)[, 1:2]
+    dest_points <- coords_d[match(flow[[dest_code]], destinations[[zone_code_d]]), ]
   }
 
   odm = cbind(origin_points, dest_points)
@@ -359,6 +364,8 @@ line2df.Spatial <- function(l) {
 #' @examples
 #' l <- routes_fast_sf[2:4, ]
 #' lpoints <- line2points(l)
+#' lpoints_sfc <- line2points(sf::st_geometry(l))
+#' identical(lpoints, lpoints_sfc)
 #' lpoints2 <- line2pointsn(l)
 #' plot(sf::st_geometry(lpoints), pch = lpoints$id, cex = lpoints$id, col = "black")
 #' plot(lpoints2$geometry, add = TRUE)
@@ -393,13 +400,19 @@ line2points.sf <- function(l, ids = rep(1:nrow(l), each = 2)) {
   y_coords <- x_coords <- double(length = length(ids)) # initiate coords
   d_indices <- 1:nrow(l) * 2
   o_indices <- d_indices - 1
-  x_coords[o_indices] <- sapply(l$geometry, `[[`, 1) # first (x) element of each line
-  x_coords[d_indices] <- sapply(l$geometry, function(x) x[length(x) / 2]) # last (x) element of each line
-  y_coords[o_indices] <- sapply(l$geometry, function(x) x[length(x) / 2 + 1]) # first (y) element of each line
-  y_coords[d_indices] <- sapply(l$geometry, tail, n = 1) # last (y) element of each line
+  l_geometry <- sf::st_geometry(l)
+  x_coords[o_indices] <- sapply(l_geometry, `[[`, 1) # first (x) element of each line
+  x_coords[d_indices] <- sapply(l_geometry, function(x) x[length(x) / 2]) # last (x) element of each line
+  y_coords[o_indices] <- sapply(l_geometry, function(x) x[length(x) / 2 + 1]) # first (y) element of each line
+  y_coords[d_indices] <- sapply(l_geometry, tail, n = 1) # last (y) element of each line
   p_multi <- sf::st_multipoint(cbind(x_coords, y_coords))
   p <- sf::st_cast(sf::st_sfc(p_multi), "POINT")
   sf::st_sf(data.frame(id = ids), geometry = p, crs = sf::st_crs(l))
+}
+#' @export
+line2points.sfc <- function(l, ids = rep(1:nrow(l), each = 2)) {
+  lsfc <- sf::st_as_sf(l)
+  line2points(lsfc)
 }
 
 #' @rdname line2points
@@ -466,11 +479,12 @@ line2vertices.sf <- function(l) {
 #' \dontrun{
 #' l <- flowlines[2:5, ]
 #' r <- line2route(l)
-#' rf <- line2route(l = l, "route_cyclestreet", plan = "fastest")
 #' rq <- line2route(l = l, plan = "quietest", silent = TRUE)
+#' rsc <- line2route(l = l, route_fun = cyclestreets::journey)
 #' plot(r)
-#' plot(rf, col = "red", add = TRUE)
+#' plot(r, col = "red", add = TRUE)
 #' plot(rq, col = "green", add = TRUE)
+#' plot(rsc)
 #' plot(l, add = T)
 #' line2route(flowlines_sf[2:3, ], route_osrm)
 #' # Plot for a single line to compare 'fastest' and 'quietest' route
@@ -493,6 +507,7 @@ line2route <-
            ...) {
     return_sf <- is(l, "sf")
   if (return_sf) {
+    requireNamespace("sf")
     l <- as(l, "Spatial")
   }
   FUN <- match.fun(route_fun)
@@ -515,6 +530,16 @@ line2route <-
       message(paste0(round(100 * i / n_ldf), " % out of ", n_ldf, " distances calculated"))
     }
     Sys.sleep(time = time_delay)
+  }
+
+  class_out <- sapply(rc, function(x) class(x)[1])
+  most_common_class <- names(sort(table(class_out), decreasing = TRUE)[1])
+  if(most_common_class == "sf") {
+    message("Output is sf")
+    rc_is_sf <- class_out == "sf"
+    rc_sf <- rc[rc_is_sf]
+    r_sf <- do.call(rbind, rc_sf)
+    return(r_sf)
   }
 
   if (list_output) {
