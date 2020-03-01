@@ -13,29 +13,31 @@
 #' # these lines require API keys/osrm instances
 #' from <- c(-1.5484, 53.7941) # from <- geo_code("leeds rail station")
 #' to <-   c(-1.5524, 53.8038) # to <- geo_code("university of leeds")
-#' r <- route(from, to, route_fun = cyclestreets::journey)
-#' plot(r)
-#' # mapview::mapview(r) # for interactive map
+#' r1 <- route(from, to, route_fun = cyclestreets::journey)
+#' r2 <- route(from, to, route_fun = cyclestreets::journey, plan = "quietest")
+#' plot(r1)
+#' plot(r2)
 #' r = route(cents_sf[1:3, ], cents_sf[2:4, ], route_fun = cyclestreets::journey) # sf points
 #' summary(r$route_number)
-#' route(flowlines_sf[1:4, ], route_fun = cyclestreets::journey) # lines
+#' route(flowlines_sf[1:4, ], route_fun = cyclestreets::journey, plan = "quietest")
+#' route(flowlines_sf[1:4, ], route_fun = cyclestreets::journey, plan = "balanced")
 #' # with osrm backend - need to set-up osrm first - see routing vignette
 #' route(pct::wight_lines_30, route_fun = osrm::osrmRoute, point_input = TRUE)
 #' # with cyclestreets backend - need to set-up osrm first - see routing vignette
 #' route(pct::wight_lines_30, route_fun = cyclestreets::journey, point_input = TRUE)
 #' }
 route <- function(from = NULL, to = NULL, l = NULL,
-                  route_fun = stplanr::route_cyclestreet,
+                  route_fun = stplanr::route_cyclestreets,
                   n_print = 10, list_output = FALSE, ...) {
   UseMethod(generic = "route")
 }
 #' @export
 route.numeric <- function(from = NULL, to = NULL, l = NULL,
-                          route_fun = stplanr::route_cyclestreet,
+                          route_fun = stplanr::route_cyclestreets,
                           n_print = 10, list_output = FALSE, ...) {
   odm <- od_coords(from, to)
   l <- od_coords2line(odm)
-  route(l, route_fun = route_fun)
+  route(l, route_fun = route_fun, ...)
 }
 #' @export
 route.sf <- function(from = NULL, to = NULL, l = NULL,
@@ -49,9 +51,9 @@ route.sf <- function(from = NULL, to = NULL, l = NULL,
     l <- od_coords2line(ldf)
   }
   list_out <- out <- if (requireNamespace("pbapply", quietly = TRUE)) {
-    pbapply::pblapply(1:nrow(l), function(i) route_i(FUN, ldf, i, l))
+    pbapply::pblapply(1:nrow(l), function(i) route_i(FUN, ldf, i, l, ...))
   } else {
-    lapply(1:nrow(l), route_i, FUN = FUN, ldf = ldf, i = 1)
+    lapply(1:nrow(l), route_i, FUN = FUN, ldf = ldf, i = 1, ...)
   }
 
   list_elements_sf <- most_common_class_of_list(list_out, "sf")
@@ -66,7 +68,7 @@ route.sf <- function(from = NULL, to = NULL, l = NULL,
 }
 #' @export
 route.Spatial <- function(from = NULL, to = NULL, l = NULL,
-                     route_fun = stplanr::route_cyclestreet,
+                     route_fun = stplanr::route_cyclestreets,
                      n_print = 10, list_output = FALSE, ...) {
 
   # error msg in case routing fails
@@ -212,12 +214,12 @@ route_dodgr <- function(from = NULL,
     )
 }
 
-route_i <- function(FUN, ldf, i, l){
+route_i <- function(FUN, ldf, i, l, ...){
   error_fun <- function(e) {
     e
   }
   tryCatch({
-    single_route <- FUN(ldf[i, 1:2], ldf[i, 3:4])
+    single_route <- FUN(ldf[i, 1:2], ldf[i, 3:4], ...)
     sf::st_sf(cbind(
       sf::st_drop_geometry(single_route),
       route_number = i,

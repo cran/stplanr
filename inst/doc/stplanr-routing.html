@@ -18,9 +18,9 @@
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
 div.sourceCode { margin: 1em 0; }
@@ -30,14 +30,16 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -46,9 +48,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -301,34 +303,34 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(stplanr)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(stplanr)</span></code></pre></div>
 <div id="this-vignette-is-work-in-progress---watch-this-space" class="section level2">
 <h2>This vignette is work in progress - watch this space!</h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">roads_iow =<span class="st"> </span>sf<span class="op">::</span><span class="kw">read_sf</span>(<span class="st">&quot;https://github.com/ropensci/stplanr/releases/download/0.3.1/roads_iow.geojson&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>roads_iow =<span class="st"> </span>sf<span class="op">::</span><span class="kw">read_sf</span>(<span class="st">&quot;https://github.com/ropensci/stplanr/releases/download/0.3.1/roads_iow.geojson&quot;</span>)</span></code></pre></div>
 </div>
 <div id="osrm" class="section level1">
 <h1>osrm</h1>
 <p>Then in bash run the following commands to make the <a href="https://hub.docker.com/r/osrm/osrm-backend/">OSRM docker image</a> work for you.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="ex">docker</span> run -t -v <span class="st">&quot;</span><span class="va">${PWD}</span><span class="st">:/data&quot;</span> osrm/osrm-backend osrm-extract -p /opt/car.lua /data/iow.pbf</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="ex">docker</span> run -t -v <span class="st">&quot;</span><span class="va">${PWD}</span><span class="st">:/data&quot;</span> osrm/osrm-backend osrm-partition /data/iow.osrm</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="ex">docker</span> run -t -v <span class="st">&quot;</span><span class="va">${PWD}</span><span class="st">:/data&quot;</span> osrm/osrm-backend osrm-customize /data/iow.osrm</a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="ex">docker</span> run -t -i -p 5000:5000 -v <span class="st">&quot;</span><span class="va">${PWD}</span><span class="st">:/data&quot;</span> osrm/osrm-backend osrm-routed --algorithm mld /data/iow.osrm</a>
-<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="ex">curl</span> <span class="st">&quot;http://127.0.0.1:5000/route/v1/driving/13.388860,52.517037;13.385983,52.496891?steps=true&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="ex">docker</span> run -t -v <span class="st">&quot;</span><span class="va">${PWD}</span><span class="st">:/data&quot;</span> osrm/osrm-backend osrm-extract -p /opt/car.lua /data/iow.pbf</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="ex">docker</span> run -t -v <span class="st">&quot;</span><span class="va">${PWD}</span><span class="st">:/data&quot;</span> osrm/osrm-backend osrm-partition /data/iow.osrm</span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="ex">docker</span> run -t -v <span class="st">&quot;</span><span class="va">${PWD}</span><span class="st">:/data&quot;</span> osrm/osrm-backend osrm-customize /data/iow.osrm</span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="ex">docker</span> run -t -i -p 5000:5000 -v <span class="st">&quot;</span><span class="va">${PWD}</span><span class="st">:/data&quot;</span> osrm/osrm-backend osrm-routed --algorithm mld /data/iow.osrm</span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="ex">curl</span> <span class="st">&quot;http://127.0.0.1:5000/route/v1/driving/13.388860,52.517037;13.385983,52.496891?steps=true&quot;</span></span></code></pre></div>
 <p>Now we can do routing in R!</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">l =<span class="st"> </span>pct<span class="op">::</span>wight_lines_<span class="dv">30</span></a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">p =<span class="st"> </span><span class="kw">line2points</span>(l)</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3">r =<span class="st"> </span>osrm<span class="op">::</span><span class="kw">osrmRoute</span>(<span class="dt">src =</span> p[<span class="dv">1</span>, ], <span class="dt">dst =</span> p[<span class="dv">2</span>, ], <span class="dt">returnclass =</span> <span class="st">&quot;sf&quot;</span>)</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="kw">plot</span>(r)</a></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">route_osrm2 =<span class="st"> </span><span class="cf">function</span>(l) {</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">  p =<span class="st"> </span><span class="kw">line2points</span>(l)</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">  s =<span class="st"> </span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(l)) <span class="op">*</span><span class="st"> </span><span class="dv">2</span> <span class="op">-</span><span class="st"> </span><span class="dv">1</span></a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">  list_out =<span class="st"> </span><span class="kw">lapply</span>(s, <span class="cf">function</span>(i) osrm<span class="op">::</span><span class="kw">osrmRoute</span>(p[i, ], <span class="dt">dst =</span> p[i <span class="op">+</span><span class="st"> </span><span class="dv">1</span>, ], <span class="dt">returnclass =</span> <span class="st">&quot;sf&quot;</span>))</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5">  <span class="kw">do.call</span>(rbind, list_out)</a>
-<a class="sourceLine" id="cb5-6" data-line-number="6">}</a>
-<a class="sourceLine" id="cb5-7" data-line-number="7">routes_osrm =<span class="st"> </span><span class="kw">route_osrm2</span>(l)</a>
-<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="kw">plot</span>(routes_osrm)</a>
-<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co"># tidy up</span></a>
-<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="kw">file.remove</span>(<span class="st">&quot;iow.pbf&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>l =<span class="st"> </span>pct<span class="op">::</span>wight_lines_<span class="dv">30</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>p =<span class="st"> </span><span class="kw">line2points</span>(l)</span>
+<span id="cb4-3"><a href="#cb4-3"></a>r =<span class="st"> </span>osrm<span class="op">::</span><span class="kw">osrmRoute</span>(<span class="dt">src =</span> p[<span class="dv">1</span>, ], <span class="dt">dst =</span> p[<span class="dv">2</span>, ], <span class="dt">returnclass =</span> <span class="st">&quot;sf&quot;</span>)</span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="kw">plot</span>(r)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>route_osrm2 =<span class="st"> </span><span class="cf">function</span>(l) {</span>
+<span id="cb5-2"><a href="#cb5-2"></a>  p =<span class="st"> </span><span class="kw">line2points</span>(l)</span>
+<span id="cb5-3"><a href="#cb5-3"></a>  s =<span class="st"> </span>(<span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(l)) <span class="op">*</span><span class="st"> </span><span class="dv">2</span> <span class="op">-</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a>  list_out =<span class="st"> </span><span class="kw">lapply</span>(s, <span class="cf">function</span>(i) osrm<span class="op">::</span><span class="kw">osrmRoute</span>(p[i, ], <span class="dt">dst =</span> p[i <span class="op">+</span><span class="st"> </span><span class="dv">1</span>, ], <span class="dt">returnclass =</span> <span class="st">&quot;sf&quot;</span>))</span>
+<span id="cb5-5"><a href="#cb5-5"></a>  <span class="kw">do.call</span>(rbind, list_out)</span>
+<span id="cb5-6"><a href="#cb5-6"></a>}</span>
+<span id="cb5-7"><a href="#cb5-7"></a>routes_osrm =<span class="st"> </span><span class="kw">route_osrm2</span>(l)</span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="kw">plot</span>(routes_osrm)</span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="co"># tidy up</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="kw">file.remove</span>(<span class="st">&quot;iow.pbf&quot;</span>)</span></code></pre></div>
 </div>
 
 

@@ -1,3 +1,7 @@
+# stplanr 0.5.1
+
+- Changes for compatibility with R 4.0.0
+
 # stplanr 0.5.0
 
 - `route_graphhopper()` should now work with a local graphhopper instance. See https://github.com/ropensci/stplanr/pull/369
