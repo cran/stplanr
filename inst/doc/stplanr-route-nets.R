@@ -46,13 +46,13 @@ xy_sf <- sf::st_as_sf(data.frame(n = 1:2, x, y), coords = c("x", "y"), crs = crs
 xy_nodes <- stplanr::find_network_nodes(sln = sln, x = x, y = y)
 
 ## ---- out.width="49%", fig.show='hide'----------------------------------------
-plot(rnet$geometry)
-plot(sln_nodes, add = TRUE)
-xy_path <- sum_network_routes(sln = sln, start = xy_nodes[1], end = xy_nodes[2], sumvars = "length")
-# xy_path = sum_network_links(sln = sln, start = xy_nodes[1], end = xy_nodes[2])
-plot(rnet$geometry)
-plot(xy_sf$geometry, add = TRUE)
-plot(xy_path$geometry, add = TRUE, lwd = 5)
+# plot(rnet$geometry)
+# plot(sln_nodes, add = TRUE)
+# xy_path <- sum_network_routes(sln = sln, start = xy_nodes[1], end = xy_nodes[2], sumvars = "length")
+# # xy_path = sum_network_links(sln = sln, start = xy_nodes[1], end = xy_nodes[2])
+# plot(rnet$geometry)
+# plot(xy_sf$geometry, add = TRUE)
+# plot(xy_path$geometry, add = TRUE, lwd = 5)
 
 ## ----netpoint-----------------------------------------------------------------
 new_point_coordinates <- c(-1.540, 53.826)
