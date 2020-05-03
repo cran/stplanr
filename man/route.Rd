@@ -11,6 +11,7 @@ route(
   route_fun = stplanr::route_cyclestreets,
   n_print = 10,
   list_output = FALSE,
+  cl = NULL,
   ...
 )
 }
@@ -31,6 +32,8 @@ should be shown}
 
 \item{list_output}{If FALSE (default) assumes spatial (linestring) object output. Set to TRUE to save output as a list.}
 
+\item{cl}{Cluster}
+
 \item{...}{Arguments passed to the routing function, e.g. \code{\link[=route_cyclestreets]{route_cyclestreets()}}}
 }
 \description{
@@ -39,6 +42,18 @@ and returns the result as a spatial (sf or sp) object.
 The definition of optimal depends on the routing function used
 }
 \examples{
+r <- overline(routes_fast_sf, "length")
+l <- od2line(od_data_sample[2:5, 1:3], cents_sf)
+sln <- stplanr::SpatialLinesNetwork(r)
+# calculate shortest paths
+plot(sln)
+plot(l$geometry, add = TRUE)
+sp <- stplanr::route(
+  l = l,
+  route_fun = stplanr::route_local,
+  sln = sln
+)
+plot(sp["all"], add = TRUE, lwd = 5)
 \donttest{
 # these lines require API keys/osrm instances
 from <- c(-1.5484, 53.7941) # from <- geo_code("leeds rail station")
@@ -49,18 +64,32 @@ plot(r1)
 plot(r2)
 r = route(cents_sf[1:3, ], cents_sf[2:4, ], route_fun = cyclestreets::journey) # sf points
 summary(r$route_number)
-route(flowlines_sf[1:4, ], route_fun = cyclestreets::journey, plan = "quietest")
-route(flowlines_sf[1:4, ], route_fun = cyclestreets::journey, plan = "balanced")
+dl <- od2line(od_data_sample[1:3, ], cents_sf)
+route(dl, route_fun = cyclestreets::journey)
+route(dl, route_fun = cyclestreets::journey, plan = "quietest")
+route(dl, route_fun = cyclestreets::journey, plan = "balanced")
+route(dl, route_fun = cyclestreets::journey, list_output = TRUE)
+route(dl, route_fun = cyclestreets::journey, save_raw = TRUE, list_output = TRUE)
 # with osrm backend - need to set-up osrm first - see routing vignette
 if(require(osrm)) {
   message("You have osrm installed")
   osrm::osrmRoute(c(-1.5, 53.8), c(-1.51, 53.81))
   osrm::osrmRoute(c(-1.5, 53.8), c(-1.51, 53.81), , returnclass = "sf")
   # mapview::mapview(.Last.value) # check it's on the route network
-  route(pct::wight_lines_30[1:2, ], route_fun = osrm::osrmRoute, returnclass = "sf")
+  route(l = pct::wight_lines_30[1:2, ], route_fun = osrm::osrmRoute, returnclass = "sf")
 }
 if(require(cyclestreets)) { # with cyclestreets backend
-  route(pct::wight_lines_30, route_fun = cyclestreets::journey)
+  l <- pct::wight_lines_30
+  system.time(r <- route(l, route_fun = cyclestreets::journey))
+  plot(r)
+  library(parallel)
+  library(cyclestreets)
+  cl <- makeCluster(detectCores())
+  clusterExport(cl, c("journey"))
+  system.time(r2 <- route(l, route_fun = cyclestreets::journey, cl = cl))
+  plot(r2)
+  identical(r, r2)
+  stopCluster(cl)
 }
 }
 }
@@ -68,7 +97,6 @@ if(require(cyclestreets)) { # with cyclestreets backend
 Other routes: 
 \code{\link{line2routeRetry}()},
 \code{\link{line2route}()},
-\code{\link{route_cyclestreets}()},
 \code{\link{route_dodgr}()},
 \code{\link{route_graphhopper}()},
 \code{\link{route_local}()},

@@ -16,8 +16,8 @@ library(stplanr)
 #  sf::write_sf(roads_iow, "roads_iow.geojson")
 #  piggyback::pb_upload("roads_iow.geojson")
 
-## -----------------------------------------------------------------------------
-roads_iow = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/0.3.1/roads_iow.geojson")
+## ---- eval=FALSE--------------------------------------------------------------
+#  roads_iow = sf::read_sf("https://github.com/ropensci/stplanr/releases/download/0.3.1/roads_iow.geojson")
 
 ## ---- echo=FALSE, eval=FALSE--------------------------------------------------
 #  if(!file.exists("iow.pbf"))

@@ -46,6 +46,7 @@ A parallel implementation of this was available until version 0.1.8.
 
 \examples{
 \dontrun{
+# does not run as requires API key
 l <- flowlines[2:5, ]
 r <- line2route(l)
 rq <- line2route(l = l, plan = "quietest", silent = TRUE)
@@ -65,7 +66,6 @@ lines(rq[n, ], col = "green")
 \seealso{
 Other routes: 
 \code{\link{line2routeRetry}()},
-\code{\link{route_cyclestreets}()},
 \code{\link{route_dodgr}()},
 \code{\link{route_graphhopper}()},
 \code{\link{route_local}()},

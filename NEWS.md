@@ -1,3 +1,27 @@
+# stplanr 0.6.0
+
+## BUG FIXES
+
+- Bug in `SpatialLinesNetwork()` fixed thanks to Andrea Gilardi (#394)
+- Updated documentation for finding shortest paths
+- Check `start` and `end` arguments in short path calculations are numeric
+- `dodgr` removed as Suggests until it's back on CRAN (#398)
+- Updates to `dplyr` code to prevent warnings when using the dev version (#395)
+
+## NEW FEATURES
+
+- Improvements to `route()` allowing you to save a list of raw outputs and use `data.table` for faster performance if available
+- A fleet of new `route_rolling_*()` functions have been added:
+  - `route_rolling_gradient()` calculates a rolling gradient from elevation and distance data at the segment level
+  - `route_rolling_average()` calculates the rolling average of values
+  - `route_rolling_diff()` calculates the rolling difference between each value and the next
+- `geo_toptail()` function now has `sf` implementation (#390)
+- New `cl` argument in `route()` for parallel routing (#388)
+- New and updated datasets representing `od_data_sample` in different ways: `od_data_lines` and `od_data_routes`
+- `route_graphhopper()` deprecated (#389)
+- Old functions that use legacy `sp` and `dplyr` code, `sp_aggregate` and `od_aggregate`, have been deprecated
+- New work-in-progress `route_slope*()` functions
+
 # stplanr 0.5.2
 
 ## BUG FIXES
@@ -41,7 +65,7 @@
 - [Fix](https://github.com/ropensci/stplanr/commit/592fba2a6d191135d036af73e7c902c3ef4f758c) in `line2points()`
 - `line_to_points()` function removed in favour of `line2point()`.
 - New function `sln_clean_graph()` removes unconnected elements of `sfNetwork` objects. Credit to Andrea Gilardi. See (#344).
-- New functions `rnet_breakup_vertices()` and `line2vertices()` for breaking up linestrings representing route networks into smaller segments, in preparation for routing. See (#282) (which these functions address) and PR [347](https://github.com/ropensci/stplanr/pull/347) for details.
+- New functions `rnet_breakup_vertices()` and `line2vertices()` for breaking up linestrings representing route networks into smaller segments, in preparation for routing. See (#282) (which these functions address) and PR (#347) for details.
 
 ## BUG FIXES
 

@@ -275,3 +275,482 @@ gtfs2sldf <- function(gtfszip = "") {
   return(gtfslines)
 }
 
+#' Function that estimates flow between points or zones using the radiation model
+#'
+#' This is an implementation of the radiation model proposed in a paper
+#' by Simini et al. (2012).
+#'
+#' @param p A SpatialPoints dataframe, the first column of which contains a unique ID
+#' @param pop_var A character string representing the variable that corresponds
+#' to the population of the zone or point
+#' @param proportion A number representing the proportion of the population who
+#' commute (1, the default, means 100 percent of the population commute to work)
+#' @references
+#' Simini, F., Gonzalez, M.C., Maritan, A., Barabasi, A.L., 2012. A universal model for
+#' mobility and migration patterns. Nature. doi:10.1038/nature10856
+#' @family od
+#' @export
+#' @examples
+#' \donttest{
+#' # load some points data
+#' data(cents)
+#' # plot the points to check they make sense
+#' plot(cents)
+#' class(cents)
+#' # Create test population to model flows
+#' set.seed(2050)
+#' cents$population <- runif(n = nrow(cents), min = 100, max = 1000)
+#' # estimate
+#' flowlines_radiation <- od_radiation(cents, pop_var = "population")
+#' flowlines_radiation$flow
+#' sum(flowlines_radiation$flow, na.rm = TRUE) # the total flow in the system
+#' sum(cents$population) # the total inter-zonal flow
+#' plot(flowlines_radiation, lwd = flowlines_radiation$flow / 100)
+#' points(cents, cex = cents$population / 100)
+#' }
+od_radiation <- function(p, pop_var = "population", proportion = 1) {
+  .Deprecated(msg = "See the od package")
+  l <- points2flow(p)
+  l$flow <- NA
+  for (i in 1:nrow(p)) {
+    for (j in 1:nrow(p)) {
+      if (i == j) next()
+      m <- p[[pop_var]][i]
+      n <- p[[pop_var]][j]
+      sel_flow <- which(l$O == p@data[i, 1] & l$D == p@data[j, 1])
+      # create circle the radius of which is the distance between i and j centered on i
+      radius <- gprojected(shp = l[sel_flow, ], fun = rgeos::gLength)
+      s_circle <- geo_buffer(shp = p[i, ], width = radius)
+      p@proj4string <- s_circle@proj4string
+      ps <- p[-c(i, j), ][s_circle, ]
+      s <- sum(ps[[pop_var]])
+      l$flow[sel_flow] <-
+        p[[pop_var]][i] * proportion * ((m * n) / ((m + s) * (m + n + s)))
+    }
+  }
+  l
+}
+
+#' Plan a route with the graphhopper routing engine
+#'
+#' **Note: See https://github.com/crazycapivara/graphhopper-r for modern interface**
+#'
+#' Provides an R interface to the graphhopper routing engine,
+#' an open source route planning service.
+#'
+#' The function returns a SpatialLinesDataFrame object.
+#' See <https://github.com/graphhopper> for more information.
+#'
+#' @param vehicle A text string representing the vehicle.
+#' Can be bike (default), car or foot. See <https://graphhopper.com/api/1/docs/supported-vehicle-profiles/> for further details.
+#'
+#' @details
+#'
+#' To test graphopper is working for you, try something like this, but with
+#' your own API key:
+#' To use this function you will need to obtain an API key from
+#' <https://graphhopper.com/#directions-api>.
+#' It is assumed that you have set your api key as a system environment
+#' for security reasons (so you avoid typing the API key in your code).
+#' Do this by adding the following to your .Renviron file (see `?.Renviron`
+#' or the 'api-packages' vignette at <https://cran.r-project.org/package=httr>
+#' for more on this):
+#'
+#' `GRAPHHOPPER='FALSE-Key-eccbf612-214e-437d-8b73-06bdf9e6877d'`.
+#'
+#' (Note: key not real, use your own key.)
+#'
+#' `obj <- jsonlite::fromJSON(url)`
+#'
+#' Where `url` is an example api request from
+#'  <https://github.com/graphhopper/directions-api/blob/master/routing.md>.
+#'
+#' @inheritParams route_cyclestreets
+#' @inheritParams od_coords
+#' @family routes
+#' @export
+#' @seealso route_cyclestreet
+#' @examples
+#' \dontrun{
+#' from <- c(-0.12, 51.5)
+#' to <- c(-0.14, 51.5)
+#' r1 <- route_graphhopper(from = from, to = to, silent = FALSE)
+#' r2 <- route_graphhopper(from = from, to = to, silent = FALSE, vehicle = "foot")
+#' r3 <- route_graphhopper(from = from, to = to, silent = FALSE, vehicle = "car")
+#' plot(r1)
+#' plot(r2, add = TRUE, col = "blue") # compare routes
+#' plot(r3, add = TRUE, col = "red")
+#' }
+route_graphhopper <- function(from, to, l = NULL, vehicle = "bike",
+                              silent = TRUE, pat = NULL,
+                              base_url = "https://graphhopper.com") {
+
+  .Deprecated(new = "gh_get_route", package = "graphhopper",
+              msg = "See github.com/crazycapivara/graphhopper-r")
+
+  # Convert character strings to lon/lat if needs be
+  coords <- od_coords(from, to, l)
+
+  if (is.null(pat)) {
+    pat <- api_pat("graphhopper")
+  }
+
+  httrmsg <- httr::modify_url(
+    base_url,
+    path = "/api/1/route",
+    query = list(
+      point = paste0(coords[1, c("fy", "fx")], collapse = ","),
+      point = paste0(coords[1, c("ty", "tx")], collapse = ","),
+      vehicle = vehicle,
+      locale = "en-US",
+      debug = "true",
+      points_encoded = "false",
+      key = pat
+    )
+  )
+  if (silent == FALSE) {
+    print(paste0("The request sent was: ", httrmsg))
+  }
+  httrreq <- httr::GET(httrmsg)
+  httr::stop_for_status(httrreq)
+
+  if (grepl("application/json", httrreq$headers$`content-type`) == FALSE) {
+    stop("Error: Graphhopper did not return a valid result")
+  }
+
+  txt <- httr::content(httrreq, as = "text", encoding = "UTF-8")
+  if (txt == "") {
+    stop("Error: Graphhopper did not return a valid result")
+  }
+
+  obj <- jsonlite::fromJSON(txt)
+
+  if (is.element("message", names(obj))) {
+    if (grepl("Wrong credentials", obj$message) == TRUE) {
+      stop("Invalid API key")
+    }
+  }
+  route <- sp::SpatialLines(list(sp::Lines(list(sp::Line(obj$paths$points[[2]][[1]][, 1:2])), ID = "1")))
+
+  climb <- NA # to set elev variable up
+
+  # get elevation data if it was a bike trip
+  if (vehicle == "bike") {
+    change_elev <- obj$path$descend + obj$paths$ascend
+  } else {
+    change_elev <- NA
+  }
+
+  # Attribute data for the route
+  df <- data.frame(
+    time = obj$paths$time / (1000 * 60),
+    dist = obj$paths$distance,
+    change_elev = change_elev
+  )
+
+  route <- sp::SpatialLinesDataFrame(route, df)
+  sp::proj4string(route) <- sp::CRS("+init=epsg:4326")
+  route
+}
+
+#' Aggregate OD data between polygon geometries
+#'
+#' @section Details:
+#' Origin-destination ('OD') flow data is often provided
+#' in the form of 1 line per flow with zone codes of origin and destination
+#' centroids. This function aggregates OD flows between polygon geometries
+#' allocating the original flows to larger zones based on area.
+#' @inheritParams od2line
+#' @param aggzones A SpatialPolygonsDataFrame containing the new
+#' boundaries to aggregate to.
+#' @param aggzone_points Points representing origins of OD flows
+#' (typically population-weighted centroids)
+#' @param cols A character vector containing the names of columns on which to
+#' apply FUN. By default, all numeric columns are aggregated.
+#' @param aggcols A character vector containing the names of columns in
+#' aggzones to retain in the aggregated data.frame. By default,
+#' only the first column is retained. These columns are renamed with a prefix
+#' of "o_" and "d_".
+#' @param FUN Function to use on aggregation. Default is sum.
+#' @inheritParams sp_aggregate
+#' @return data.frame containing the aggregated od flows.
+#' @family od
+#' @export
+#' @examples
+#' zones$quadrant <- c(1, 2, 1, 4, 5, 6, 7, 1)
+#' aggzones <- rgeos::gUnaryUnion(zones, id = zones@data$quadrant)
+#' aggzones <- sp::SpatialPolygonsDataFrame(aggzones, data.frame(region = c(1:6)), match.ID = FALSE)
+#' sp::proj4string(aggzones) <- sp::proj4string(zones)
+#' aggzones_sf <- sf::st_as_sf(aggzones)
+#' aggzones_sf <- sf::st_set_crs(aggzones_sf, sf::st_crs(zones_sf))
+#' od_agg <- od_aggregate(flow, zones_sf, aggzones_sf)
+#' colSums(od_agg[3:9]) == colSums(flow[3:9])
+#' od_sf_agg <- od2line(od_agg, aggzones_sf)
+#' plot(flowlines, lwd = flowlines$Bicycle)
+#' plot(od_sf_agg$geometry, lwd = od_sf_agg$Bicycle, add = TRUE, col = "red")
+od_aggregate <- function(flow, zones, aggzones,
+                         aggzone_points = NULL,
+                         cols = FALSE,
+                         aggcols = FALSE,
+                         FUN = sum,
+                         prop_by_area = ifelse(identical(FUN, mean) == FALSE, TRUE, FALSE),
+                         digits = getOption("digits")) {
+  UseMethod("od_aggregate", zones)
+  .Deprecated(new = "od_aggregate", package = "od",
+              msg = "See github.com/itsleeds/od")
+
+}
+#' @export
+od_aggregate.sf <- function(flow, zones, aggzones,
+                            aggzone_points = NULL,
+                            cols = FALSE,
+                            aggcols = FALSE,
+                            FUN = sum,
+                            prop_by_area = ifelse(identical(FUN, mean) == FALSE, TRUE, FALSE),
+                            digits = getOption("digits")) {
+  flow_first_col <- colnames(flow)[1]
+  flow_second_col <- colnames(flow)[2]
+  zonesfirstcol <- colnames(zones)[1]
+  aggzonesfirstcol <- colnames(aggzones)[1]
+
+  if (identical(cols, FALSE)) {
+    col_ids <- sapply(flow, is.numeric)
+    cols <- names(col_ids)[col_ids]
+  }
+  if (aggcols == FALSE) {
+    aggcols <- colnames(aggzones)[1]
+  }
+
+  zone_points <- sf::st_centroid(zones)
+  if (is.null(aggzone_points)) {
+    aggzone_points <- sf::st_centroid(aggzones)
+  }
+
+  zones_agg <- zone_points %>%
+    sf::st_join(y = aggzones[aggcols]) %>%
+    sf::st_set_geometry(NULL)
+
+  names(zones_agg)[1] <- flow_first_col
+  zones_agg$new_orig <- zones_agg[, aggcols[1]]
+  zones_agg$new_dest <- zones_agg[, aggcols[1]]
+
+  flow_new_orig <- flow %>%
+    dplyr::inner_join(y = zones_agg[c(flow_first_col, "new_orig")])
+
+  names(zones_agg)[1] <- flow_second_col
+
+  flow_new_dest <- flow_new_orig %>%
+    dplyr::inner_join(y = zones_agg[c(flow_second_col, "new_dest")])
+
+  flow_ag <- flow_new_dest %>%
+    dplyr::group_by(!!rlang::sym("new_orig"), !!rlang::sym("new_dest")) %>%
+    dplyr::summarise_at(.vars = cols, .funs = sum) %>%
+    dplyr::ungroup()
+
+  flow_ag
+
+  # od2line(flow = flow_ag, zones = aggzones) # to export as sf
+}
+#' @export
+od_aggregate.Spatial <- function(flow, zones, aggzones,
+                                 aggzone_points = NULL,
+                                 cols = FALSE,
+                                 aggcols = FALSE,
+                                 FUN = sum,
+                                 prop_by_area = ifelse(identical(FUN, mean) == FALSE, TRUE, FALSE),
+                                 digits = getOption("digits")) {
+  zonesfirstcol <- colnames(zones@data)[1]
+  aggzonesfirstcol <- colnames(aggzones@data)[1]
+
+  if (cols == FALSE) {
+    cols <- unlist(lapply(flow, is, "numeric"))
+    cols <- names(cols[which(cols == TRUE)])
+  }
+  if (aggcols == FALSE) {
+    aggcols <- colnames(aggzones@data)[1]
+  }
+
+  origzones <- zones
+  origaggzones <- aggzones
+
+  if (sp::is.projected(zones) == TRUE & all.equal(zones@proj4string, aggzones@proj4string) == FALSE) {
+    aggzones <- sp::spTransform(aggzones, zones@proj4string)
+  } else {
+    projection <- paste0(
+      "+proj=aea +lat_1=90 +lat_2=-18.416667 ",
+      "+lat_0=0 +lon_0=10 +x_0=0 +y_0=0 +ellps=GRS80",
+      " +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
+    )
+    zones <- sp::spTransform(zones, projection)
+    aggzones <- sp::spTransform(aggzones, projection)
+  }
+
+  zones@data$stplanr_area <- rgeos::gArea(zones, byid = TRUE)
+  zones@data$od_aggregate_charid <- row.names(zones@data)
+  aggzones@data$od_aggregate_charid <- row.names(aggzones@data)
+
+  zoneintersect <- rgeos::gIntersection(zones, aggzones, byid = TRUE)
+  zoneintersect <- sp::SpatialPolygonsDataFrame(zoneintersect,
+                                                data = data.frame(
+                                                  od_aggregate_charid = sapply(zoneintersect@polygons, function(x) x@ID),
+                                                  row.names = sapply(zoneintersect@polygons, function(x) x@ID)
+                                                )
+  )
+  zoneintersect@data$od_aggregate_interarea <- rgeos::gArea(zoneintersect, byid = TRUE)
+  zoneintersect@data$od_aggregate_zone_charid <- stringr::str_split(zoneintersect@data$od_aggregate_charid, " ", simplify = TRUE)[, 1]
+  zoneintersect@data$od_aggregate_aggzone_charid <- stringr::str_split(zoneintersect@data$od_aggregate_charid, " ", simplify = TRUE)[, 2]
+
+  zoneintersect <- merge(zoneintersect, zones@data, by.x = "od_aggregate_zone_charid", by.y = "od_aggregate_charid")
+  zoneintersect@data$od_aggregate_proparea <- zoneintersect@data$od_aggregate_interarea / zoneintersect@data$stplanr_area
+
+  intersectdf <- merge(merge(
+    flow,
+    setNames(zoneintersect@data, paste0("o_", colnames(zoneintersect@data))),
+    by.x = colnames(flow)[1],
+    by.y = paste0("o_", zonesfirstcol)
+  ),
+  setNames(zoneintersect@data, paste0("d_", colnames(zoneintersect@data))),
+  by.x = colnames(flow)[2],
+  by.y = paste0("d_", zonesfirstcol)
+  )
+
+  if (prop_by_area == TRUE & is(zones, "SpatialPolygonsDataFrame") == TRUE) {
+    intersectdf <- intersectdf %>%
+      dplyr::mutate_at(
+        cols, dplyr::funs_("round(.*o_od_aggregate_proparea*d_od_aggregate_proparea)", args = list("digits" = digits))
+      )
+  }
+
+  intersectdf <- intersectdf %>%
+    dplyr::group_by_("o_od_aggregate_aggzone_charid", "d_od_aggregate_aggzone_charid") %>%
+    dplyr::select(dplyr::one_of(c("o_od_aggregate_aggzone_charid", "d_od_aggregate_aggzone_charid", cols))) %>%
+    dplyr::summarise_at(cols, .funs = FUN) %>%
+    dplyr::left_join(setNames(aggzones@data[, c("od_aggregate_charid", aggcols)], c("od_aggregate_charid", paste0("o_", aggcols))),
+                     by = c("o_od_aggregate_aggzone_charid" = "od_aggregate_charid")
+    ) %>%
+    dplyr::left_join(setNames(aggzones@data[, c("od_aggregate_charid", aggcols)], c("od_aggregate_charid", paste0("d_", aggcols))),
+                     by = c("d_od_aggregate_aggzone_charid" = "od_aggregate_charid")
+    )
+  intersectdf <- intersectdf[, c(
+    paste0("o_", c(aggzonesfirstcol, aggcols[which(aggcols != aggzonesfirstcol)])),
+    paste0("d_", c(aggzonesfirstcol, aggcols[which(aggcols != aggzonesfirstcol)])),
+    cols
+  )]
+
+  return(as.data.frame(intersectdf))
+}
+
+#' Aggregate SpatialPolygonsDataFrame to new geometry.
+#'
+#' @section Details:
+#' This function performs aggregation on a SpatialPolygonsDataFrame to a
+#' different geometry specified by another SpatialPolygons object.
+#' @inheritParams od2line
+#' @param aggzones A SpatialPolygonsDataFrame containing the new
+#' boundaries to aggregate to.
+#' @param cols A character vector containing the names of columns on which to
+#' apply FUN. By default, all numeric columns are aggregated.
+#' @param FUN Function to use on aggregation. Default is sum.
+#' @param prop_by_area Boolean value indicating if the values should be
+#' proportionally adjusted based on area. Default is TRUE unless FUN = mean.
+#' @param digits The number of digits to use when proportionally adjusting
+#' values based on area. Default is the value of getOption("digits").
+#'
+#' @return SpatialPolygonsDataFrame
+#' @family od
+#'
+#' @export
+#' @examples
+#' \dontrun{
+#' zones@data$region <- 1
+#' zones@data[c(2, 5), c("region")] <- 2
+#' aggzones <- sp::SpatialPolygonsDataFrame(rgeos::gUnaryUnion(
+#'   zones,
+#'   id = zones@data$region
+#' ), data.frame(region = c(1, 2)))
+#' zones@data$region <- NULL
+#' zones@data$exdata <- 5
+#' library(sp)
+#' sp_aggregate(zones, aggzones)
+#' }
+sp_aggregate <- function(zones, aggzones, cols = FALSE,
+                         FUN = sum,
+                         prop_by_area = ifelse(identical(FUN, mean) == FALSE, TRUE, FALSE),
+                         digits = getOption("digits")) {
+  .Deprecated(new = "od_aggregate", package = "od",
+              msg = "See github.com/itsleeds/od")
+  zonesfirstcol <- colnames(zones@data)[1]
+  aggzonesfirstcol <- colnames(aggzones@data)[1]
+  aggcols <- colnames(aggzones@data)
+
+  if (cols == FALSE) {
+    cols <- unlist(lapply(zones@data, is, "numeric"))
+    cols <- names(cols[which(cols == TRUE)])
+    cols <- cols[which(cols != zonesfirstcol)]
+  }
+
+  origzones <- zones
+  origaggzones <- aggzones
+
+  if (sp::is.projected(zones) == TRUE & all.equal(zones@proj4string, aggzones@proj4string) == FALSE) {
+    aggzones <- sp::spTransform(aggzones, zones@proj4string)
+  } else {
+    projection <- paste0(
+      "+proj=aea +lat_1=90 +lat_2=-18.416667 ",
+      "+lat_0=0 +lon_0=10 +x_0=0 +y_0=0 +ellps=GRS80",
+      " +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
+    )
+    zones <- sp::spTransform(zones, projection)
+    aggzones <- sp::spTransform(aggzones, projection)
+  }
+
+  zones@data$stplanr_area <- rgeos::gArea(zones, byid = TRUE)
+  zones@data$od_aggregate_charid <- row.names(zones@data)
+  aggzones@data$od_aggregate_charid <- row.names(aggzones@data)
+
+  zoneintersect <- rgeos::gIntersection(zones, aggzones, byid = TRUE)
+  zoneintersect <- sp::SpatialPolygonsDataFrame(zoneintersect,
+                                                data = data.frame(
+                                                  od_aggregate_charid = sapply(zoneintersect@polygons, function(x) x@ID),
+                                                  row.names = sapply(zoneintersect@polygons, function(x) x@ID)
+                                                )
+  )
+  zoneintersect@data$od_aggregate_interarea <- rgeos::gArea(zoneintersect, byid = TRUE)
+  zoneintersect@data$od_aggregate_zone_charid <- stringr::str_split(zoneintersect@data$od_aggregate_charid, " ", simplify = TRUE)[, 1]
+  zoneintersect@data$od_aggregate_aggzone_charid <- stringr::str_split(zoneintersect@data$od_aggregate_charid, " ", simplify = TRUE)[, 2]
+
+  zoneintersect <- merge(zoneintersect, zones@data, by.x = "od_aggregate_zone_charid", by.y = "od_aggregate_charid")
+  zoneintersect@data$od_aggregate_proparea <- zoneintersect@data$od_aggregate_interarea / zoneintersect@data$stplanr_area
+
+  intersectdf <- zoneintersect@data
+
+  if (prop_by_area == TRUE & is(zones, "SpatialPolygonsDataFrame") == TRUE) {
+    intersectdf <- intersectdf %>%
+      dplyr::mutate_at(
+        cols, dplyr::funs_("round(.*od_aggregate_proparea)", args = list("digits" = digits))
+      )
+  }
+
+  intersectdf <- intersectdf %>%
+    dplyr::group_by_("od_aggregate_aggzone_charid") %>%
+    dplyr::select(dplyr::one_of(c("od_aggregate_aggzone_charid", cols))) %>%
+    dplyr::summarise_at(cols, .funs = FUN) %>%
+    dplyr::left_join(setNames(aggzones@data[, c("od_aggregate_charid", aggcols)], c("od_aggregate_aggzone_charid", aggcols)),
+                     by = "od_aggregate_aggzone_charid"
+    )
+  intersectdf <- as.data.frame(
+    intersectdf,
+    intersectdf$od_aggregate_aggzone_charid
+  )
+  intersectdf <- intersectdf[, c(
+    c(aggzonesfirstcol, aggcols[which(aggcols != aggzonesfirstcol)]),
+    cols
+  )]
+
+  aggzones <- origaggzones
+  aggzones@data <- intersectdf
+
+  return(aggzones)
+}
+
+
