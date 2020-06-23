@@ -11,12 +11,30 @@ library(sf)
 ## ---- out.width="40%", fig.show='hold', fig.width=5, message=FALSE------------
 sample_routes <- routes_fast_sf[2:6, 1]
 sample_routes$value <- rep(1:3, length.out = 5)
-rnet <- overline2(sample_routes, attrib = "value")
+rnet <- overline(sample_routes, attrib = "value")
 plot(sample_routes["value"], lwd = sample_routes$value, main = "Routes")
 plot(rnet["value"], lwd = rnet$value, main = "Route network")
 
 ## ----rnets1, message=FALSE, warning=FALSE, out.width="100%", fig.width=6, fig.height=6, echo=FALSE----
 # knitr::include_graphics("route-networks.png")
+
+## -----------------------------------------------------------------------------
+touching_list = st_intersects(sample_routes)
+g = igraph::graph.adjlist(touching_list)
+igraph::is_connected(g)
+
+## ---- eval=FALSE--------------------------------------------------------------
+#  # piggyback::pb_download_url("r_key_roads_test.Rds")
+#  u = "https://github.com/ropensci/stplanr/releases/download/0.6.0/r_key_roads_test.Rds"
+#  rnet_disconnected = readRDS(url(u))
+#  touching_list = sf::st_intersects(rnet_disconnected)
+#  g = igraph::graph.adjlist(touching_list)
+#  igraph::is_connected(g)
+#  #> [1] FALSE
+#  sf:::plot.sfc_LINESTRING(rnet_disconnected$geometry)
+
+## ---- eval=FALSE--------------------------------------------------------------
+#  rnet_disconnected$group = rnet_igroup(rnet_disconnected)
 
 ## ----rnet-routing1------------------------------------------------------------
 sln <- SpatialLinesNetwork(rnet)
