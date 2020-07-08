@@ -1,7 +1,7 @@
-c53cf076e026fb71eeebdb28f988d0dd *DESCRIPTION
+1d22bc9aef31c11e6a08ddc78a216453 *DESCRIPTION
 54007ce744145f7ca8677b8663fac4a6 *LICENSE
-d19705400fa97d9712a9d0779b438c66 *NAMESPACE
-22037416baf0ff3d8a195ac5760391a6 *NEWS.md
+5e03b7350cfcabbe6a2d56c9914bcd67 *NAMESPACE
+73c67fc8a6d966bad6f0d4f573eabf87 *NEWS.md
 5c3c3ed369dd1b5b9b333e03069a90bf *R/RcppExports.R
 81cac5a5f79d2028313ac707abe342e6 *R/SpatialLinesNetwork.R
 7a9d1df8e9abf6a4bad6c9bc5a1fdf5a *R/as_sf_fun.R
@@ -27,9 +27,10 @@ f5d779f126fb73e0a969ba3b6b7a42eb *R/loadABS.R
 a89e4fd492aba1e05979a91c8e61ee7d *R/quadrants.R
 7087acc13de0d4cccf7ca0cb56e2123f *R/rnet-clean.R
 8b55323f8f5808dc3a612153fe45ee25 *R/route-transport-api.R
-943f300302ac656a059ca6a3082536c4 *R/route.R
+f6bf7c029be77cd25ca0779ce3fea703 *R/route.R
 7807a455c21a67e1b403e93ce76dc076 *R/route_cyclestreets.R
 4c8871a6df437793022126906d186049 *R/route_funs.R
+e2a749e64fecda295fbdb04c000b9644 *R/route_google.R
 9be3ccb14b61b8197be017853ac9cb88 *R/route_local.R
 80373be226bbe90639fc621925e3ab2c *R/slope.R
 e188479113a14fe8f6f2d4408c960b33 *R/stplanr-package.R
@@ -67,7 +68,7 @@ c23babba48a2124a1104da50f7280145 *data/zones.rda
 abfb6dd2a0db96a54b552f0b311c1652 *inst/benchmarks.R
 4f3a3c9d45885de41bb133c3d9a1d375 *inst/doc/stplanr-od.R
 bad87d4d933f30da2129a88565ee58e0 *inst/doc/stplanr-od.Rmd
-71393a2c5c16de6bb2427bd3d5a0801a *inst/doc/stplanr-od.html
+8431736603283e00ef8b03992388fe1a *inst/doc/stplanr-od.html
 38d03bb387da2a44bd3842164440bef5 *inst/doc/stplanr-paper.R
 cf10fd7624efc1d03416e318a8bdf1a2 *inst/doc/stplanr-paper.Rmd
 d7c603c4e9db460002461b4a5619a94b *inst/doc/stplanr-paper.html
@@ -77,12 +78,12 @@ d7c603c4e9db460002461b4a5619a94b *inst/doc/stplanr-paper.html
 ecafdc4772f04a7cb9ca43870f93d789 *inst/doc/stplanr-route-nets.R
 4ed48c7aaa965521b3bbabbc55a0c270 *inst/doc/stplanr-route-nets.Rmd
 df60c89ace4b93c89b3f7be52a626c24 *inst/doc/stplanr-route-nets.html
-18f144b802fb1dafc38f654aaf13a00e *inst/doc/stplanr-routing.R
-fec0cb30fe9e4d4092a72f5bf20aa5a4 *inst/doc/stplanr-routing.Rmd
-c445676983dc748c491122a31156cf3d *inst/doc/stplanr-routing.html
+44526e8e969a47438f41e76c8d6b198c *inst/doc/stplanr-routing.R
+cc38d8cc7762447b900aa1dd10bde69e *inst/doc/stplanr-routing.Rmd
+e0f27f5e77367da37ea12faaaedc613d *inst/doc/stplanr-routing.html
 9cd7581c20b0a39af556df0aafde613a *inst/doc/stplanr.R
 84195df4a45d3b03d425dc9c384f445f *inst/doc/stplanr.Rmd
-6f957cdae29a8c0af25cb1e228a26b9e *inst/doc/stplanr.html
+707a6f09afce450186339471e7cc7be5 *inst/doc/stplanr.html
 ac3f2f0df88696bffa5c17fbdcc1804c *inst/example-flows-up-hill.R
 61ceb3616b7a0029af1b7d2feba3951f *inst/extdata/SA1Population.csv
 a6003c1f2cb54667d223c86c8da91291 *inst/extdata/SA1Population.xlsx
@@ -97,6 +98,7 @@ c1c7ff4ab480eb10ea7343792e31242a *inst/logo.R
 bf097b02e2175de9e123a672000cce60 *inst/stplanr-logo-vector-only.svg
 91429b24415c75d88b4516bef7bae2b6 *inst/test-SpatialLinesNetwork.R
 f904cc5cb21f464248d38683c909fec4 *inst/test-rnet-igraph-subsetting.R
+5f15c03aa5c34c8d43613afec1d388fa *inst/test-route-local-large.R
 76421a75cc070bca953232fba238720d *inst/test-routing.R
 b90868106c262b18888988c19cec7ac7 *man/SpatialLinesNetwork-class.Rd
 754d668ef4eb38ea62bf1bd4fcdbecb9 *man/SpatialLinesNetwork.Rd
@@ -190,10 +192,11 @@ cd87f13ff3c14330219c40d3cd40cf3d *man/points2flow.Rd
 e67b70a5a2e274866039a5bd0ee88fd2 *man/rnet_get_nodes.Rd
 3b35f508cde7d23f8911f1d4b61c5535 *man/rnet_overpass.Rd
 7d397f3604cd08b91a0c516575ada7e8 *man/rnet_roundabout.Rd
-22fa768c5b338ac55da668a984781afb *man/route.Rd
+ff10c0de4216b4df2260295b6e05b305 *man/route.Rd
 c338a682fef275755e49e5ace2af65e4 *man/route_average_gradient.Rd
 e294190172d1a4d03a31ed738f4acd90 *man/route_cyclestreets.Rd
 db3e3ba355254be4431c533cacd2a6ef *man/route_dodgr.Rd
+cb43de1b307a0b33b06a1f6bc8f2e548 *man/route_google.Rd
 b9d56b53e053675a5682962310d827c2 *man/route_graphhopper.Rd
 33ac23bde1e51b59da0ca57ae74dd193 *man/route_local.Rd
 56aa892b141169941101bc8ce99cd5de *man/route_nearest_point.Rd
@@ -246,5 +249,5 @@ bad87d4d933f30da2129a88565ee58e0 *vignettes/stplanr-od.Rmd
 cf10fd7624efc1d03416e318a8bdf1a2 *vignettes/stplanr-paper.Rmd
 5fb3a04f6f88eb7431e4f8b2d8a2ce92 *vignettes/stplanr-parallel.Rmd
 4ed48c7aaa965521b3bbabbc55a0c270 *vignettes/stplanr-route-nets.Rmd
-fec0cb30fe9e4d4092a72f5bf20aa5a4 *vignettes/stplanr-routing.Rmd
+cc38d8cc7762447b900aa1dd10bde69e *vignettes/stplanr-routing.Rmd
 84195df4a45d3b03d425dc9c384f445f *vignettes/stplanr.Rmd

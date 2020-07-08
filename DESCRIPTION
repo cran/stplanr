@@ -1,7 +1,7 @@
 Package: stplanr
 Type: Package
 Title: Sustainable Transport Planning
-Version: 0.6.1
+Version: 0.6.2
 Authors@R: c(
     person("Robin", "Lovelace", email = "rob00x@gmail.com", role = c("aut", "cre"),
       comment = c(ORCID = "0000-0001-5679-6536")),
@@ -39,15 +39,15 @@ LinkingTo: RcppArmadillo (>= 0.9.100.5.0), Rcpp (>= 0.12.18)
 Suggests: testthat (>= 2.0.0), knitr (>= 1.20), rmarkdown (>= 1.10),
         dodgr (>= 0.0.3), stats19, cyclestreets, pbapply, leaflet,
         rgdal, pct, tmap, bench, openxlsx (>= 4.1.0), osrm, data.table,
-        geodist
+        geodist, mapsapi
 VignetteBuilder: knitr
 URL: https://github.com/ropensci/stplanr,
         https://docs.ropensci.org/stplanr/
 SystemRequirements: GNU make
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2020-06-22 17:16:13 UTC; robin
+Packaged: 2020-07-08 00:31:31 UTC; robin
 Author: Robin Lovelace [aut, cre] (<https://orcid.org/0000-0001-5679-6536>),
   Richard Ellison [aut],
   Malcolm Morgan [aut] (<https://orcid.org/0000-0002-9488-9183>),
@@ -59,4 +59,4 @@ Author: Robin Lovelace [aut, cre] (<https://orcid.org/0000-0001-5679-6536>),
   Mark Padgham [ctb],
   Andrea Gilardi [ctb] (<https://orcid.org/0000-0002-9424-7439>)
 Repository: CRAN
-Date/Publication: 2020-06-23 05:30:03 UTC
+Date/Publication: 2020-07-08 06:20:10 UTC
