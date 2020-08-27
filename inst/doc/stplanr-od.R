@@ -200,7 +200,7 @@ knitr::include_graphics("https://user-images.githubusercontent.com/1825120/61069
 
 ## ---- echo=FALSE, eval=FALSE--------------------------------------------------
 #  # out-takes and test code
-#  u <- "http://www.rita.dot.gov/bts/sites/rita.dot.gov.bts/files/publications/commodity_flow_survey/2007/zip/origin_destination_files.zip"
+#  u <- "https://www.rita.dot.gov/bts/sites/rita.dot.gov.bts/files/publications/commodity_flow_survey/2007/zip/origin_destination_files.zip"
 #  f <- file.path(tempdir(), "origin_destination_files.zip")
 #  download.file(u, f)
 #  unzip(f)

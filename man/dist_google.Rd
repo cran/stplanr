@@ -39,7 +39,7 @@ simultaneous queries, and so will, for example, only returns values for up to
 }
 \section{Details}{
 
-Estimate travel times accounting for the road network - see \url{https://developers.google.com/maps/documentation/distance-matrix/}
+Estimate travel times accounting for the road network - see \url{https://developers.google.com/maps/documentation/distance-matrix/overview}
 Note: Currently returns the json object returned by the Google Maps API and uses the same origins and destinations.
 }
 
@@ -86,17 +86,14 @@ Other od:
 \code{\link{od2odf}()},
 \code{\link{od_aggregate_from}()},
 \code{\link{od_aggregate_to}()},
-\code{\link{od_aggregate}()},
 \code{\link{od_coords2line}()},
 \code{\link{od_coords}()},
 \code{\link{od_dist}()},
 \code{\link{od_id}},
 \code{\link{od_oneway}()},
-\code{\link{od_radiation}()},
 \code{\link{od_to_odmatrix}()},
 \code{\link{odmatrix_to_od}()},
 \code{\link{points2flow}()},
-\code{\link{points2odf}()},
-\code{\link{sp_aggregate}()}
+\code{\link{points2odf}()}
 }
 \concept{od}

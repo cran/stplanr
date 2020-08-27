@@ -18,7 +18,7 @@ data(package = "stplanr")$result[, "Item"]
 ## -----------------------------------------------------------------------------
 od_eg <- read.csv(
   text =
-    "origin, destination, V1, V2
+  "origin, destination, V1, V2
   1, 2, 100, 3
   1, 3, 50, 5"
 )
@@ -32,15 +32,15 @@ head(cents_sf)
 
 ## -----------------------------------------------------------------------------
 library(sf)
-plot(st_geometry(cents_sf))
+class(cents_sf)
+plot(cents_sf)
 
 ## -----------------------------------------------------------------------------
-flow_single_line <- flow[4, ] # select only the first line
-desire_line_single <- od2line(flow = flow_single_line, zones = cents)
+flow_single_line <- od_data_sample[2:3, ] # select only the first line
+desire_line_single <- od2line(flow = flow_single_line, zones = cents_sf)
 
 ## -----------------------------------------------------------------------------
-desire_line_single <- st_as_sf(desire_line_single)
-plot(st_geometry(desire_line_single), lwd = 5)
+plot(desire_line_single$geometry, lwd = 5)
 plot(cents_sf, add = TRUE, cex = 5)
 
 ## -----------------------------------------------------------------------------
@@ -67,16 +67,16 @@ plot(l["Bicycle"], lwd = lwd)
 ## ---- message=FALSE, warning=FALSE--------------------------------------------
 # if the next line returns FALSE the code will not run
 (has_internet <- curl::has_internet())
-(cs_key <- nchar(Sys.getenv("CYCLESTREETSS")))
-if (has_internet & cs_key == 32) {
-  r <- line2route(l, route_fun = route_cyclestreets)
+(cs_key <- nchar(Sys.getenv("CYCLESTREETS")))
+if (has_internet & cs_key == 16) {
+  r <- route(l = l, route_fun = cyclestreets::journey)
+  r <- aggregate(r[c(3, 12)], by = list(r[[1]], r[[2]]), FUN = mean)
 } else {
-  r <- routes_fast[sel, ]
+  r <- routes_fast_sf[sel, ]
 }
 
 ## ---- out.width="500", out.height="500"---------------------------------------
-r_sf <- st_sf(l, geometry = st_as_sfc(r))
-plot(r_sf["Bicycle"], lwd = lwd * 3, reset = FALSE)
+plot(r$geometry, lwd = lwd * 3, reset = FALSE)
 
 ## ---- out.width="500", out.height="500", echo=FALSE, eval=FALSE---------------
 #  # alternative showing buildings:

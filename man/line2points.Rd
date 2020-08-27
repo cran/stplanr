@@ -25,20 +25,14 @@ line vertices. #' The points corresponding with a given line, \code{i}, will be
 that are vertices but not nodes.
 }
 \examples{
-l <- routes_fast_sf[2:4, ]
+l <- routes_fast_sf[2, ]
 lpoints <- line2points(l)
-lpoints_sfc <- line2points(sf::st_geometry(l))
-identical(lpoints, lpoints_sfc)
-line2points(sf::st_linestring(matrix(c(0, 0, 2, 2), ncol = 2, byrow = TRUE)))
+plot(l$geometry)
+plot(lpoints, add = TRUE)
+# test all vertices:
+plot(l$geometry)
 lpoints2 <- line2pointsn(l)
-plot(sf::st_geometry(lpoints), pch = lpoints$id, cex = lpoints$id, col = "black")
 plot(lpoints2$geometry, add = TRUE)
-# in sp data forms (may be depreciated)
-l <- routes_fast[2:4, ]
-lpoints <- line2points(l)
-lpoints2 <- line2pointsn(l)
-plot(lpoints, pch = lpoints$id, cex = lpoints$id)
-points(lpoints2)
 }
 \seealso{
 Other lines: 
@@ -56,7 +50,6 @@ Other lines:
 \code{\link{n_sample_length}()},
 \code{\link{n_vertices}()},
 \code{\link{onewaygeo}()},
-\code{\link{onewayid}()},
 \code{\link{points2line}()},
 \code{\link{toptail_buff}()},
 \code{\link{toptailgs}()},

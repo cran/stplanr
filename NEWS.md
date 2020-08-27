@@ -1,9 +1,17 @@
-# stplanr 0.6.2
+# stplanr 0.7.0
 
+- Issue with `line2points()` on some set-ups fixed (#418)
+- Old `mapshape()`, `line_match()` and `gclip()` functions deprecated, maintained alternatives can now be found in other packages.
+- `sp` objects updated for latest version of `sp` (#364)
+- `sf` objects updated to support more recent CRS encoding (#393)
+- Deprecated functions including `od_aggregate()`, `onewayid()`, `gtfs2sldf()`, and `od_radiation()` have been removed
+
+# stplanr 0.6.2
 
 ## New features
 
 - New interface to Google Directions API via `mapsapi` package (#410)
+- New `quiet` argument in `overline()` makes it less chatty
 
 # stplanr 0.6.1
 
@@ -153,7 +161,7 @@
 
 ## NEW FEATURES
 
-* Various changes to support `dplyr` [0.8.0](https://www.tidyverse.org/articles/2018/12/dplyr-0-8-0-release-candidate/): https://github.com/ropensci/stplanr/pull/275
+* Various changes to support `dplyr` [0.8.0]: https://github.com/ropensci/stplanr/pull/275
 
 
 ## BUG FIXES
@@ -266,7 +274,7 @@ Plans for the next release
 ## BUG FIXES
 
 * Serious bug with `SpatialLinesNetwork()` [fixed](https://github.com/ropensci/stplanr/pull/186).
-* Depreciated `_each()` **dplyr** functions replaced with equivalent `_at` or `_all` functions. See [here](https://blog.rstudio.org/2016/06/27/dplyr-0-5-0/) for more.
+* Depreciated `_each()` **dplyr** functions replaced with equivalent `_at` or `_all` functions.
 
 # stplanr 0.1.7
 

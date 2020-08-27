@@ -9,6 +9,8 @@ library(stplanr)
 library(sf)
 
 ## ---- out.width="40%", fig.show='hold', fig.width=5, message=FALSE------------
+library(stplanr)
+library(sf)
 sample_routes <- routes_fast_sf[2:6, 1]
 sample_routes$value <- rep(1:3, length.out = 5)
 rnet <- overline(sample_routes, attrib = "value")

@@ -58,11 +58,11 @@ validity = function(object) {
 #' represent a transport network for routing and other network analysis
 #' functions. This function and the corresponding SpatialLinesNetwork
 #' class is an implementation of the SpatialLinesNetwork developed by
-#' Edzer Pebesma and presented on \href{http://rpubs.com/edzer/6767}{RPubs}.
+#' Edzer Pebesma and presented on \href{https://rpubs.com/edzer/6767}{RPubs}.
 #' The original implementation has been rewritten to better support large
 #' (i.e., detailed city-size) networks and to provide additional methods
 #' useful for conducting transport research following on from the initial
-#' examples provided by \href{http://rpubs.com/janoskaz/10396}{Janoska(2013)}.
+#' examples provided by \href{https://rpubs.com/janoskaz/10396}{Janoska(2013)}.
 #'
 #' @param sl A SpatialLines or SpatialLinesDataFrame containing the lines to
 #' use to create the network.
@@ -73,25 +73,13 @@ validity = function(object) {
 #' the coordinate system) to use as a tolerance with which to match nodes.
 #'
 #' @references
-#' Pebesma, E. (2013). Spatial Networks, URL:http://rpubs.com/edzer/6767.
+#' Pebesma, E. (2013). Spatial Networks, URL:https://rpubs.com/edzer/6767.
 #'
 #' Janoska, Z. (2013). Find shortest path in spatial network,
-#' URL:http://rpubs.com/janoskaz/10396.
+#' URL:https://rpubs.com/janoskaz/10396.
 #' @family rnet
 #' @export
 #' @examples
-#' sln <- SpatialLinesNetwork(route_network)
-#' class(sln)
-#' weightfield(sln) # field used to determine shortest path
-#' plot(sln)
-#' points(sln2points(sln)[1, ], cex = 5)
-#' points(sln2points(sln)[50, ], cex = 5)
-#' shortpath <- sum_network_routes(sln, 1, 50, sumvars = "length")
-#' plot(shortpath, col = "red", lwd = 4, add = TRUE)
-#' points(sln2points(sln)[35, ], cex = 5)
-#' shortpath <- sum_network_routes(sln, 1, 35, sumvars = "length")
-#' plot(shortpath, col = "red", lwd = 4, add = TRUE)
-#' library(sf)
 #' sln_sf <- SpatialLinesNetwork(route_network_sf)
 #' plot(sln_sf)
 #' shortpath <- sum_network_routes(sln_sf, 1, 50, sumvars = "length")

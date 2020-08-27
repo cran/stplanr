@@ -14,19 +14,6 @@
 
 <title>stplanr: A Package for Transport Planning</title>
 
-<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
-// be compatible with the behavior of Pandoc < 2.8).
-document.addEventListener('DOMContentLoaded', function(e) {
-  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
-  var i, h, a;
-  for (i = 0; i < hs.length; i++) {
-    h = hs[i];
-    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
-    a = h.attributes;
-    while (a.length > 0) h.removeAttribute(a[0].name);
-  }
-});
-</script>
 <script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
 // v0.0.1
 // Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
@@ -47,18 +34,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -78,7 +66,7 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-le
 div.sourceCode
   {   }
 @media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -367,7 +355,7 @@ University of Sydney<br><a class="author_email" href="mailto:#"><a href="mailto:
 <li><p>open source and reproducible, ensuring transparency and encouraging citizen science</p></li>
 </ul>
 <p>This paper sets out to demonstrate that open source software with a command-line interface (CLI) can provide a foundation for transport planning software that meets each of these criteria. R provides a strong basis for progress in this direction because it already contains functionality used in common transport planning workflows. , and greatly improved R’s spatial abilities <span class="citation">(Bivand, Pebesma, and G’omez-Rubio 2013)</span>, work that is being consolidated and extended in the recent package.</p>
-<p>Building on these foundations a number of spatial packages have been developed for applied domains including: disease mapping and modelling, with packages such as and <span class="citation">(Kim and Wakefield 2016; Brown and Zhou 2016)</span>; spatial ecology, with the <strong>adehabitat</strong> family of packages <span class="citation">(Calenge 2006)</span>; and visualisation, with packages such as <strong>SpatialEpi</strong>, <strong>diseasemapping</strong> and <span class="citation">Brown (2016)</span>. However, there has been little prior work to develop R functionality designed specifically for transport planning, with the notable exceptions of <a href="http://r-forge.r-project.org/projects/travelr/">TravelR</a> (a package on R-Forge last updated in 2012) and <a href="https://github.com/ropensci/gtfsr">gtfsr</a> (a package for handling General Transit Feed Specification (GTFS) data).</p>
+<p>Building on these foundations a number of spatial packages have been developed for applied domains including: disease mapping and modelling, with packages such as and <span class="citation">(Kim and Wakefield 2016; Brown and Zhou 2016)</span>; spatial ecology, with the <strong>adehabitat</strong> family of packages <span class="citation">(Calenge 2006)</span>; and visualisation, with packages such as <strong>SpatialEpi</strong>, <strong>diseasemapping</strong> and <span class="citation">Brown (2016)</span>. However, there has been little prior work to develop R functionality designed specifically for transport planning, with the notable exceptions of <a href="https://r-forge.r-project.org/projects/travelr/">TravelR</a> (a package on R-Forge last updated in 2012) and <a href="https://github.com/ropensci/gtfsr">gtfsr</a> (a package for handling General Transit Feed Specification (GTFS) data).</p>
 <p>The purpose of <strong>stplanr</strong> is to provide a toolbox rather than a specific solution for transport planning, with an emphasis on spatial data and active modes. This emphasis is timely given the recent emphasis on sustainability <span class="citation">(Banister 2008)</span> and ‘Big Data’ <span class="citation">(Zheng et al. 2016)</span> in the wider field of transport planning. A major motivation was the lack of R packages, and open source software in general, for transport applications. This may be surprising given the uqiquity of transport problems;<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> R’s proficiency at handling spatial, temporal and travel survey data that describe transport systems; and the growing popularity of R in applied domains <span class="citation">(Jalal et al. 2017; Moore and Hutchinson 2017)</span>. Another motivation is the growth in open access datasets: the main purpose of early versions of the package was to process open origin-destination data <span class="citation">(Lovelace et al. 2017)</span>.</p>
 <p>R is already used in transport applications, as illustrated by recent research that applies packages from other domains to transport problems. For instance, <span class="citation">Efthymiou and Antoniou (2012)</span> use R to analyse the data collected from an online survey focused on car-sharing, bicycle-sharing and electric vehicles. <span class="citation">Efthymiou and Antoniou (2012)</span> also used R to collect and analyse transport-related data from Twitter using packages including , and . These packages were used to download, parse and plot the Twitter data using a method that can be repeated and the results reproduced or updated. More general statistical analyses have also been conducted on transport-related datasets using packages including and <span class="citation">(Diana 2012; Cerin et al. 2013)</span>. Despite the rising use of R for transport research, there has yet been to be a package for transport planning.</p>
 <p>The design of the R language, with its emphasis on flexibility, data processing and statistical modelling, suggests it can provide a powerful environment for transport planning research. There are many quantitative methods in transport planning, many of which fit into the classic ‘four stage’ transport model which involves the following steps <span class="citation">(de Dios Ortuzar and Willumsen 2011)</span>: (1) trip <em>generation</em> to estimate trip freqency from origins; (2) <em>distribution</em> of trips to destinations; (3) <em>modal split</em> of trips between walking, cycling, buses etc.; (4) <em>assignment</em> of trips to the transport route network. To this we would like to add two more stages for the big data age: (0) data processing and exploration; and (5) validation. This sequence is not the only way of transport modelling and some have argued that its dominance has reduced innovation. However it is certainly a common approach and provides a useful schema for classifying the kinds of task that <strong>stplanr</strong> can tackle:</p>
@@ -613,7 +601,7 @@ abline(a = 0, b = 1.5, col = &quot;red&quot;)</code></pre>
 <div id="future-directions-of-travel" class="section level1">
 <h1>Future directions of travel</h1>
 <p>This paper has demonstrated the great potential for R to be used for transport planning. R’s flexibility, powerful GIS capabilities  and free accessibility makes it well-suited to the needs of transport planners and researchers, especially those wanting to avoid the high costs of market-leading products. Rather than ‘reinvent the wheel’ (e.g. with a new class system), <strong>stplanr</strong> builds on existing packages and  classes to work with common transport data formats.</p>
-<p>It is useful to see <strong>stplanr</strong>, and R for transport planning in general, as an addition tool in the transport planner’s cabinet. It can be understood as one part of a wider movement that is making transport planning a more open and democratic process. Other developments in this movement include the increasing availability of open data  and the rise of open source products for transport modelling, such as <a href="http://www.dlr.de/ts/en/desktopdefault.aspx/tabid-9883/16931_read-41000/">SUMO</a>, <a href="https://www.matsim.org/">MATSim</a> and <a href="https://its.mit.edu/software/mitsimlab">MITSIMLAB</a> . <strong>stplanr</strong>, with its focus on GIS operations rather than microscopic vehicle-level behaviour, can complement such software and help make better use of new open data sources.</p>
+<p>It is useful to see <strong>stplanr</strong>, and R for transport planning in general, as an addition tool in the transport planner’s cabinet. It can be understood as one part of a wider movement that is making transport planning a more open and democratic process. Other developments in this movement include the increasing availability of open data  and the rise of open source products for transport modelling, such as <a href="https://www.dlr.de/ts/en/desktopdefault.aspx/tabid-9883/16931_read-41000/">SUMO</a>, <a href="https://www.matsim.org/">MATSim</a> and <a href="https://its.mit.edu/software/mitsimlab">MITSIMLAB</a> . <strong>stplanr</strong>, with its focus on GIS operations rather than microscopic vehicle-level behaviour, can complement such software and help make better use of new open data sources.</p>
 <p>Because transport planning is an inherently spatial activity, <strong>stplanr</strong> occupies an important niche in the transport planning software landscape, with its focus on spatial transport data. There is great potential for development of <strong>stplanr</strong> in many directions. Desirable developments include the additional of functions for modelling modal split, for examample with functions to create commonly distance decay curves which are commonly found in active travel research  and improving the computational efficiency of existing functions to make the methods more scalable for large databases. Our priority for <strong>stplanr</strong> however, is to keep the focus on geographic functions for transport planning. There are many opportunities in this direction, including:</p>
 <ul>
 <li>Functions to assess the environment surrounding routes, e.g. via integration with the in-development <strong>osmdata</strong> package.</li>
@@ -629,8 +617,8 @@ abline(a = 0, b = 1.5, col = &quot;red&quot;)</code></pre>
 <!-- https://github.com/Robinlovelace/stplanr -->
 </div>
 <div id="references" class="section level1 unnumbered">
-<h1 class="unnumbered">References</h1>
-<div id="refs" class="references hanging-indent">
+<h1>References</h1>
+<div id="refs" class="references">
 <div id="ref-balmer_matsim-t:_2009">
 <p>Balmer, Michael, Marcel Rieser, and Kai Nagel. 2009. “MATSim-T: Architecture and Simulation Times.” <em>Multi-Agent Systems for Traffic and Transportation Engineering</em>, 57–78. <a href="https://svn.vsp.tu-berlin.de/repos/public-svn/publications/vspwp/2008/08-03/3aug08.pdf">https://svn.vsp.tu-berlin.de/repos/public-svn/publications/vspwp/2008/08-03/3aug08.pdf</a>.</p>
 </div>
@@ -689,7 +677,7 @@ abline(a = 0, b = 1.5, col = &quot;red&quot;)</code></pre>
 <p>Waddell, Paul. 2002. “UrbanSim: Modeling Urban Development for Land Use, Transportation, and Environmental Planning.” <em>Journal of the American Planning Association</em> 68 (3): 297–314.</p>
 </div>
 <div id="ref-zheng_big_2016">
-<p>Zheng, Xinhu, Wei Chen, Pu Wang, Dayong Shen, Songhang Chen, Xiao Wang, Qingpeng Zhang, and Liuqing Yang. 2016. “Big Data for Social Transportation.” <em>IEEE Transactions on Intelligent Transportation Systems</em> 17 (3): 620–30. <a href="http://ieeexplore.ieee.org/abstract/document/7359138/">http://ieeexplore.ieee.org/abstract/document/7359138/</a>.</p>
+<p>Zheng, Xinhu, Wei Chen, Pu Wang, Dayong Shen, Songhang Chen, Xiao Wang, Qingpeng Zhang, and Liuqing Yang. 2016. “Big Data for Social Transportation.” <em>IEEE Transactions on Intelligent Transportation Systems</em> 17 (3): 620–30. <a href="https://ieeexplore.ieee.org/abstract/document/7359138/">https://ieeexplore.ieee.org/abstract/document/7359138/</a>.</p>
 </div>
 </div>
 </div>

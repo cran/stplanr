@@ -14,7 +14,7 @@ Returns a vector of the same length as the number of lines,
 with the number of vertices per line or polygon.
 }
 \details{
-See \url{http://gis.stackexchange.com/questions/58147/} for more information.
+See \url{https://gis.stackexchange.com/questions/58147/} for more information.
 }
 \examples{
 n_vertices(routes_fast)
@@ -36,7 +36,6 @@ Other lines:
 \code{\link{mats2line}()},
 \code{\link{n_sample_length}()},
 \code{\link{onewaygeo}()},
-\code{\link{onewayid}()},
 \code{\link{points2line}()},
 \code{\link{toptail_buff}()},
 \code{\link{toptailgs}()},
