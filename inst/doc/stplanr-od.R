@@ -4,6 +4,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   eval = TRUE
 )
+has_webshot <- "webshot" %in% installed.packages()
 
 ## ----setup, message=FALSE-----------------------------------------------------
 library(stplanr)
@@ -52,7 +53,7 @@ plot(l$geometry)
 ## -----------------------------------------------------------------------------
 plot(l)
 
-## -----------------------------------------------------------------------------
+## ---- eval=has_webshot--------------------------------------------------------
 library(leaflet)
 leaflet() %>%
   addTiles() %>%
@@ -151,9 +152,6 @@ knitr::include_graphics("https://user-images.githubusercontent.com/1825120/62073
 ## ---- echo=FALSE--------------------------------------------------------------
 # tmap_save(.Last.value, "tmap-london.png")
 knitr::include_graphics("https://user-images.githubusercontent.com/1825120/61066243-12dc6d80-a3fd-11e9-8805-826a47c553f6.png")
-
-## ---- echo=FALSE--------------------------------------------------------------
-knitr::include_graphics("https://geocompr.robinlovelace.net/figures/desire-1.png")
 
 ## ---- eval=FALSE, echo=FALSE--------------------------------------------------
 #  saveRDS(od_all, "od_all.Rds")
