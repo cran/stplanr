@@ -23,10 +23,11 @@ automatically by \code{\link[=geo_select_aeq]{geo_select_aeq()}})}
 This function performs operations on projected data.
 }
 \examples{
-shp <- routes_fast_sf[2:4, ]
-plot(geo_projected(shp, sf::st_buffer, dist = 100)$geometry)
-shp <- routes_fast[2:4, ]
-geo_projected(shp, fun = rgeos::gBuffer, width = 100, byid = TRUE)
-rlength <- geo_projected(routes_fast, fun = rgeos::gLength, byid = TRUE)
-plot(routes_fast$length, rlength)
+lib_versions <- sf::sf_extSoftVersion()
+lib_versions
+# fails on some systems (with early versions of PROJ)
+if(lib_versions[3] >= "6.3.1") {
+  shp <- routes_fast_sf[2:4, ]
+  geo_projected(shp, sf::st_buffer, dist = 100)
+}
 }

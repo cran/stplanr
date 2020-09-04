@@ -1,7 +1,7 @@
 Package: stplanr
 Type: Package
 Title: Sustainable Transport Planning
-Version: 0.7.1
+Version: 0.7.2
 Authors@R: c(
     person("Robin", "Lovelace", email = "rob00x@gmail.com", role = c("aut", "cre"),
       comment = c(ORCID = "0000-0001-5679-6536")),
@@ -24,7 +24,8 @@ Description: Tools for transport planning with an emphasis on spatial transport
     interfaces to routing services such as <https://cyclestreets.net/>;
     calculation of route segment attributes such as bearing and aggregate flow;
     and 'travel watershed' analysis.
-    See Lovelace and Ellison (2018) <doi:10.32614/RJ-2018-053>.
+    See Lovelace and Ellison (2018) <doi:10.32614/RJ-2018-053> and vignettes
+    for details.
 License: MIT + file LICENSE
 BugReports: https://github.com/ropensci/stplanr/issues
 LazyData: yes
@@ -47,7 +48,7 @@ SystemRequirements: GNU make
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2020-08-28 09:06:21 UTC; robin
+Packaged: 2020-09-04 20:01:12 UTC; robin
 Author: Robin Lovelace [aut, cre] (<https://orcid.org/0000-0001-5679-6536>),
   Richard Ellison [aut],
   Malcolm Morgan [aut] (<https://orcid.org/0000-0002-9488-9183>),
@@ -59,4 +60,4 @@ Author: Robin Lovelace [aut, cre] (<https://orcid.org/0000-0001-5679-6536>),
   Mark Padgham [ctb],
   Andrea Gilardi [ctb] (<https://orcid.org/0000-0002-9424-7439>)
 Repository: CRAN
-Date/Publication: 2020-08-28 11:30:07 UTC
+Date/Publication: 2020-09-04 20:50:03 UTC

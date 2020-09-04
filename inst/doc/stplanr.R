@@ -80,8 +80,8 @@ if (has_internet & cs_key == 16) {
   r <- routes_fast_sf[sel, ]
 }
 
-## ---- out.width="500", out.height="500"---------------------------------------
-plot(r$geometry, lwd = lwd * 3, reset = FALSE)
+## ---- out.width="500", out.height="500", eval=FALSE---------------------------
+#  plot(r$geometry, lwd = lwd * 3, reset = FALSE)
 
 ## ---- out.width="500", out.height="500", echo=FALSE, eval=FALSE---------------
 #  # alternative showing buildings:
