@@ -14,39 +14,83 @@
 
 <title>Parallel routing and performance with stplanr</title>
 
-<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
-// v0.0.1
-// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
-
-document.addEventListener('DOMContentLoaded', function() {
-  const codeList = document.getElementsByClassName("sourceCode");
-  for (var i = 0; i < codeList.length; i++) {
-    var linkList = codeList[i].getElementsByTagName('a');
-    for (var j = 0; j < linkList.length; j++) {
-      if (linkList[j].innerHTML === "") {
-        linkList[j].setAttribute('aria-hidden', 'true');
-      }
-    }
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
   }
 });
 </script>
+<style type="text/css">
+a.anchor-section {margin-left: 10px; visibility: hidden; color: inherit;}
+a.anchor-section::before {content: '#';}
+.hasAnchor:hover a.anchor-section {visibility: visible;}
+</style>
+<script>// Anchor sections v1.0 written by Atsushi Yasumoto on Oct 3rd, 2020.
+document.addEventListener('DOMContentLoaded', function() {
+  // Do nothing if AnchorJS is used
+  if (typeof window.anchors === 'object' && anchors.hasOwnProperty('hasAnchorJSLink')) {
+    return;
+  }
+
+  const h = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+  // Do nothing if sections are already anchored
+  if (Array.from(h).some(x => x.classList.contains('hasAnchor'))) {
+    return null;
+  }
+
+  // Use section id when pandoc runs with --section-divs
+  const section_id = function(x) {
+    return ((x.classList.contains('section') || (x.tagName === 'SECTION'))
+            ? x.id : '');
+  };
+
+  // Add anchors
+  h.forEach(function(x) {
+    const id = x.id || section_id(x.parentElement);
+    if (id === '') {
+      return null;
+    }
+    let anchor = document.createElement('a');
+    anchor.href = '#' + id;
+    anchor.classList = ['anchor-section'];
+    x.classList.add('hasAnchor');
+    x.appendChild(anchor);
+  });
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -66,7 +110,7 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-le
 div.sourceCode
   {   }
 @media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -320,113 +364,113 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <p>The code in this vignette provides a basic introduction to parallel routing. Routing is something that is highly parallelisable because each route can be calculated independently of the others. The code should be fairly self-explanatory. No results are shown and the code is not run to reduce package build times.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(stplanr)</span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(sf)</span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">library</span>(dplyr)</span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="kw">library</span>(tmap)</span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="kw">library</span>(parallel)</span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="kw">library</span>(cyclestreets)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stplanr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tmap)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parallel)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cyclestreets)</span></code></pre></div>
 <div id="with-old-route_cyclestreets-function" class="section level1">
 <h1>With old route_cyclestreets function</h1>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># ?route</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a>l =<span class="st"> </span>flowlines_sf <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>()</span>
-<span id="cb2-4"><a href="#cb2-4"></a>t1 =<span class="st"> </span><span class="kw">Sys.time</span>()</span>
-<span id="cb2-5"><a href="#cb2-5"></a>routes_route_cyclestreet =<span class="st"> </span><span class="kw">line2route</span>(l)</span>
-<span id="cb2-6"><a href="#cb2-6"></a><span class="kw">Sys.time</span>() <span class="op">-</span><span class="st"> </span>t1</span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="kw">ncol</span>(routes_route_cyclestreet)</span>
-<span id="cb2-8"><a href="#cb2-8"></a><span class="kw">nrow</span>(routes_route_cyclestreet)</span>
-<span id="cb2-9"><a href="#cb2-9"></a><span class="kw">names</span>(routes_route_cyclestreet)</span>
-<span id="cb2-10"><a href="#cb2-10"></a>routes_route_cyclestreet_joined =<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">inner_join</span>(routes_route_cyclestreet, sf<span class="op">::</span><span class="kw">st_drop_geometry</span>(l))</span>
-<span id="cb2-11"><a href="#cb2-11"></a><span class="kw">Sys.time</span>() <span class="op">-</span><span class="st"> </span>t1</span>
-<span id="cb2-12"><a href="#cb2-12"></a>rnet_go_dutch =<span class="st"> </span><span class="kw">overline</span>(routes_route_cyclestreet_joined, <span class="st">&quot;All&quot;</span>)</span>
-<span id="cb2-13"><a href="#cb2-13"></a><span class="kw">Sys.time</span>() <span class="op">-</span><span class="st"> </span>t1</span>
-<span id="cb2-14"><a href="#cb2-14"></a><span class="kw">tm_shape</span>(rnet_go_dutch) <span class="op">+</span></span>
-<span id="cb2-15"><a href="#cb2-15"></a><span class="st">  </span><span class="kw">tm_lines</span>(<span class="dt">lwd =</span> <span class="dv">5</span>, <span class="dt">col =</span> <span class="st">&quot;All&quot;</span>, <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>), <span class="dt">palette =</span> <span class="st">&quot;viridis&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ?route</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>l <span class="ot">=</span> flowlines_sf <span class="sc">%&gt;%</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>()</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>t1 <span class="ot">=</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>routes_route_cyclestreet <span class="ot">=</span> <span class="fu">line2route</span>(l)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.time</span>() <span class="sc">-</span> t1</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ncol</span>(routes_route_cyclestreet)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(routes_route_cyclestreet)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(routes_route_cyclestreet)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>routes_route_cyclestreet_joined <span class="ot">=</span> dplyr<span class="sc">::</span><span class="fu">inner_join</span>(routes_route_cyclestreet, sf<span class="sc">::</span><span class="fu">st_drop_geometry</span>(l))</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.time</span>() <span class="sc">-</span> t1</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>rnet_go_dutch <span class="ot">=</span> <span class="fu">overline</span>(routes_route_cyclestreet_joined, <span class="st">&quot;All&quot;</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.time</span>() <span class="sc">-</span> t1</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(rnet_go_dutch) <span class="sc">+</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_lines</span>(<span class="at">lwd =</span> <span class="dv">5</span>, <span class="at">col =</span> <span class="st">&quot;All&quot;</span>, <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>), <span class="at">palette =</span> <span class="st">&quot;viridis&quot;</span>)</span></code></pre></div>
 </div>
 <div id="with-new-route-function" class="section level1">
 <h1>With new route function</h1>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># ?route</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a>t1 =<span class="st"> </span><span class="kw">Sys.time</span>()</span>
-<span id="cb3-3"><a href="#cb3-3"></a>routes_journey =<span class="st"> </span><span class="kw">route</span>(<span class="dt">l =</span> l, <span class="dt">route_fun =</span> cyclestreets<span class="op">::</span>journey)</span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="kw">ncol</span>(routes_journey)</span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="kw">nrow</span>(routes_journey)</span>
-<span id="cb3-6"><a href="#cb3-6"></a></span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="kw">Sys.time</span>() <span class="op">-</span><span class="st"> </span>t1</span>
-<span id="cb3-8"><a href="#cb3-8"></a><span class="kw">names</span>(routes_journey)</span>
-<span id="cb3-9"><a href="#cb3-9"></a>rnet_go_dutch_journey =<span class="st"> </span><span class="kw">overline</span>(routes_journey, <span class="st">&quot;All&quot;</span>)</span>
-<span id="cb3-10"><a href="#cb3-10"></a><span class="kw">Sys.time</span>() <span class="op">-</span><span class="st"> </span>t1</span>
-<span id="cb3-11"><a href="#cb3-11"></a>rnet_go_dutch_agg =<span class="st"> </span><span class="kw">overline</span>(routes_journey, <span class="st">&quot;All&quot;</span>)</span>
-<span id="cb3-12"><a href="#cb3-12"></a><span class="kw">Sys.time</span>() <span class="op">-</span><span class="st"> </span>t1</span>
-<span id="cb3-13"><a href="#cb3-13"></a><span class="kw">tm_shape</span>(rnet_go_dutch_agg) <span class="op">+</span></span>
-<span id="cb3-14"><a href="#cb3-14"></a><span class="st">  </span><span class="kw">tm_lines</span>(<span class="dt">lwd =</span> <span class="dv">5</span>, <span class="dt">col =</span> <span class="st">&quot;All&quot;</span>, <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>), <span class="dt">palette =</span> <span class="st">&quot;viridis&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ?route</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>t1 <span class="ot">=</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>routes_journey <span class="ot">=</span> <span class="fu">route</span>(<span class="at">l =</span> l, <span class="at">route_fun =</span> cyclestreets<span class="sc">::</span>journey)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ncol</span>(routes_journey)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(routes_journey)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.time</span>() <span class="sc">-</span> t1</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(routes_journey)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>rnet_go_dutch_journey <span class="ot">=</span> <span class="fu">overline</span>(routes_journey, <span class="st">&quot;All&quot;</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.time</span>() <span class="sc">-</span> t1</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>rnet_go_dutch_agg <span class="ot">=</span> <span class="fu">overline</span>(routes_journey, <span class="st">&quot;All&quot;</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.time</span>() <span class="sc">-</span> t1</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(rnet_go_dutch_agg) <span class="sc">+</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_lines</span>(<span class="at">lwd =</span> <span class="dv">5</span>, <span class="at">col =</span> <span class="st">&quot;All&quot;</span>, <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>), <span class="at">palette =</span> <span class="st">&quot;viridis&quot;</span>)</span></code></pre></div>
 </div>
 <div id="with-new-route-function-in-parallel" class="section level1">
 <h1>With new route function in parallel</h1>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># ?route</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a>t1 =<span class="st"> </span><span class="kw">Sys.time</span>()</span>
-<span id="cb4-3"><a href="#cb4-3"></a></span>
-<span id="cb4-4"><a href="#cb4-4"></a></span>
-<span id="cb4-5"><a href="#cb4-5"></a><span class="co"># load parallel stuff</span></span>
-<span id="cb4-6"><a href="#cb4-6"></a>cl &lt;-<span class="st"> </span><span class="kw">makeCluster</span>(<span class="kw">detectCores</span>())</span>
-<span id="cb4-7"><a href="#cb4-7"></a><span class="kw">clusterExport</span>(cl, <span class="kw">c</span>(<span class="st">&quot;journey&quot;</span>))</span>
-<span id="cb4-8"><a href="#cb4-8"></a><span class="kw">Sys.time</span>() <span class="op">-</span><span class="st"> </span>t1</span>
-<span id="cb4-9"><a href="#cb4-9"></a>routes_journey_par =<span class="st"> </span><span class="kw">route</span>(<span class="dt">l =</span> l, <span class="dt">route_fun =</span> cyclestreets<span class="op">::</span>journey, <span class="dt">cl =</span> cl) <span class="co"># multi-core</span></span>
-<span id="cb4-10"><a href="#cb4-10"></a><span class="kw">stopCluster</span>(cl) <span class="co"># kill cluster</span></span>
-<span id="cb4-11"><a href="#cb4-11"></a></span>
-<span id="cb4-12"><a href="#cb4-12"></a><span class="kw">Sys.time</span>() <span class="op">-</span><span class="st"> </span>t1</span>
-<span id="cb4-13"><a href="#cb4-13"></a><span class="kw">Sys.time</span>() <span class="op">-</span><span class="st"> </span>t1</span>
-<span id="cb4-14"><a href="#cb4-14"></a><span class="kw">names</span>(routes_journey_par)</span>
-<span id="cb4-15"><a href="#cb4-15"></a>rnet_go_dutch_journey =<span class="st"> </span><span class="kw">overline</span>(routes_journey_par, <span class="st">&quot;All&quot;</span>)</span>
-<span id="cb4-16"><a href="#cb4-16"></a><span class="kw">Sys.time</span>() <span class="op">-</span><span class="st"> </span>t1</span>
-<span id="cb4-17"><a href="#cb4-17"></a>rnet_go_dutch_agg =<span class="st"> </span><span class="kw">overline</span>(routes_journey_par, <span class="st">&quot;All&quot;</span>)</span>
-<span id="cb4-18"><a href="#cb4-18"></a><span class="kw">Sys.time</span>() <span class="op">-</span><span class="st"> </span>t1</span>
-<span id="cb4-19"><a href="#cb4-19"></a><span class="kw">tm_shape</span>(rnet_go_dutch_agg) <span class="op">+</span></span>
-<span id="cb4-20"><a href="#cb4-20"></a><span class="st">  </span><span class="kw">tm_lines</span>(<span class="dt">lwd =</span> <span class="dv">5</span>, <span class="dt">col =</span> <span class="st">&quot;All&quot;</span>, <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>), <span class="dt">palette =</span> <span class="st">&quot;viridis&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ?route</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>t1 <span class="ot">=</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># load parallel stuff</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>cl <span class="ot">&lt;-</span> <span class="fu">makeCluster</span>(<span class="fu">detectCores</span>())</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">clusterExport</span>(cl, <span class="fu">c</span>(<span class="st">&quot;journey&quot;</span>))</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.time</span>() <span class="sc">-</span> t1</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>routes_journey_par <span class="ot">=</span> <span class="fu">route</span>(<span class="at">l =</span> l, <span class="at">route_fun =</span> cyclestreets<span class="sc">::</span>journey, <span class="at">cl =</span> cl) <span class="co"># multi-core</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">stopCluster</span>(cl) <span class="co"># kill cluster</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.time</span>() <span class="sc">-</span> t1</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.time</span>() <span class="sc">-</span> t1</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(routes_journey_par)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>rnet_go_dutch_journey <span class="ot">=</span> <span class="fu">overline</span>(routes_journey_par, <span class="st">&quot;All&quot;</span>)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.time</span>() <span class="sc">-</span> t1</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>rnet_go_dutch_agg <span class="ot">=</span> <span class="fu">overline</span>(routes_journey_par, <span class="st">&quot;All&quot;</span>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.time</span>() <span class="sc">-</span> t1</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(rnet_go_dutch_agg) <span class="sc">+</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_lines</span>(<span class="at">lwd =</span> <span class="dv">5</span>, <span class="at">col =</span> <span class="st">&quot;All&quot;</span>, <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>), <span class="at">palette =</span> <span class="st">&quot;viridis&quot;</span>)</span></code></pre></div>
 </div>
 <div id="in-parallel-with-quietness-plan" class="section level1">
 <h1>In parallel with quietness plan</h1>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># ?route</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a>t1 =<span class="st"> </span><span class="kw">Sys.time</span>()</span>
-<span id="cb5-3"><a href="#cb5-3"></a></span>
-<span id="cb5-4"><a href="#cb5-4"></a></span>
-<span id="cb5-5"><a href="#cb5-5"></a><span class="co"># load parallel stuff</span></span>
-<span id="cb5-6"><a href="#cb5-6"></a><span class="kw">library</span>(parallel)</span>
-<span id="cb5-7"><a href="#cb5-7"></a><span class="kw">library</span>(cyclestreets)</span>
-<span id="cb5-8"><a href="#cb5-8"></a>cl &lt;-<span class="st"> </span><span class="kw">makeCluster</span>(<span class="kw">detectCores</span>())</span>
-<span id="cb5-9"><a href="#cb5-9"></a><span class="kw">clusterExport</span>(cl, <span class="kw">c</span>(<span class="st">&quot;journey&quot;</span>))</span>
-<span id="cb5-10"><a href="#cb5-10"></a><span class="kw">Sys.time</span>() <span class="op">-</span><span class="st"> </span>t1</span>
-<span id="cb5-11"><a href="#cb5-11"></a>routes_journey_par =<span class="st"> </span><span class="kw">route</span>(<span class="dt">l =</span> l, <span class="dt">route_fun =</span> cyclestreets<span class="op">::</span>journey, <span class="dt">cl =</span> cl, <span class="dt">plan =</span> <span class="st">&quot;quietest&quot;</span>) <span class="co"># multi-core</span></span>
-<span id="cb5-12"><a href="#cb5-12"></a><span class="kw">stopCluster</span>(cl) <span class="co"># kill cluster</span></span>
-<span id="cb5-13"><a href="#cb5-13"></a></span>
-<span id="cb5-14"><a href="#cb5-14"></a><span class="kw">Sys.time</span>() <span class="op">-</span><span class="st"> </span>t1</span>
-<span id="cb5-15"><a href="#cb5-15"></a><span class="kw">Sys.time</span>() <span class="op">-</span><span class="st"> </span>t1</span>
-<span id="cb5-16"><a href="#cb5-16"></a><span class="kw">names</span>(routes_journey_par)</span>
-<span id="cb5-17"><a href="#cb5-17"></a>rnet_go_dutch_journey =<span class="st"> </span><span class="kw">overline</span>(routes_journey_par, <span class="st">&quot;All&quot;</span>)</span>
-<span id="cb5-18"><a href="#cb5-18"></a><span class="kw">Sys.time</span>() <span class="op">-</span><span class="st"> </span>t1</span>
-<span id="cb5-19"><a href="#cb5-19"></a>rnet_go_dutch_agg =<span class="st"> </span><span class="kw">overline</span>(routes_journey_par, <span class="st">&quot;All&quot;</span>)</span>
-<span id="cb5-20"><a href="#cb5-20"></a><span class="kw">Sys.time</span>() <span class="op">-</span><span class="st"> </span>t1</span>
-<span id="cb5-21"><a href="#cb5-21"></a><span class="kw">tm_shape</span>(rnet_go_dutch_agg) <span class="op">+</span></span>
-<span id="cb5-22"><a href="#cb5-22"></a><span class="st">  </span><span class="kw">tm_lines</span>(<span class="dt">lwd =</span> <span class="dv">5</span>, <span class="dt">col =</span> <span class="st">&quot;All&quot;</span>, <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>), <span class="dt">palette =</span> <span class="st">&quot;viridis&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ?route</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>t1 <span class="ot">=</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># load parallel stuff</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parallel)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(cyclestreets)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>cl <span class="ot">&lt;-</span> <span class="fu">makeCluster</span>(<span class="fu">detectCores</span>())</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">clusterExport</span>(cl, <span class="fu">c</span>(<span class="st">&quot;journey&quot;</span>))</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.time</span>() <span class="sc">-</span> t1</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>routes_journey_par <span class="ot">=</span> <span class="fu">route</span>(<span class="at">l =</span> l, <span class="at">route_fun =</span> cyclestreets<span class="sc">::</span>journey, <span class="at">cl =</span> cl, <span class="at">plan =</span> <span class="st">&quot;quietest&quot;</span>) <span class="co"># multi-core</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">stopCluster</span>(cl) <span class="co"># kill cluster</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.time</span>() <span class="sc">-</span> t1</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.time</span>() <span class="sc">-</span> t1</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(routes_journey_par)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>rnet_go_dutch_journey <span class="ot">=</span> <span class="fu">overline</span>(routes_journey_par, <span class="st">&quot;All&quot;</span>)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.time</span>() <span class="sc">-</span> t1</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>rnet_go_dutch_agg <span class="ot">=</span> <span class="fu">overline</span>(routes_journey_par, <span class="st">&quot;All&quot;</span>)</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.time</span>() <span class="sc">-</span> t1</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(rnet_go_dutch_agg) <span class="sc">+</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_lines</span>(<span class="at">lwd =</span> <span class="dv">5</span>, <span class="at">col =</span> <span class="st">&quot;All&quot;</span>, <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>), <span class="at">palette =</span> <span class="st">&quot;viridis&quot;</span>)</span></code></pre></div>
 <div id="tests" class="section level2">
 <h2>Tests</h2>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>routes_journey_aggregated =<span class="st"> </span>routes_journey <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># already has data from data frame in there!</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="st">  </span><span class="kw">group_by</span>(id) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-3"><a href="#cb6-3"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">All =</span> <span class="kw">median</span>(All)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-4"><a href="#cb6-4"></a><span class="st">  </span>sf<span class="op">::</span><span class="kw">st_cast</span>(<span class="st">&quot;LINESTRING&quot;</span>)</span>
-<span id="cb6-5"><a href="#cb6-5"></a></span>
-<span id="cb6-6"><a href="#cb6-6"></a></span>
-<span id="cb6-7"><a href="#cb6-7"></a>rnet_journey_dplyr =<span class="st"> </span>routes_journey <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># already has data from data frame in there!</span></span>
-<span id="cb6-8"><a href="#cb6-8"></a><span class="st">  </span><span class="kw">group_by</span>(name, distances) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-9"><a href="#cb6-9"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">All =</span> <span class="kw">sum</span>(All)) </span>
-<span id="cb6-10"><a href="#cb6-10"></a><span class="kw">Sys.time</span>() <span class="op">-</span><span class="st"> </span>t1</span>
-<span id="cb6-11"><a href="#cb6-11"></a><span class="kw">tm_shape</span>(rnet_journey_dplyr) <span class="op">+</span></span>
-<span id="cb6-12"><a href="#cb6-12"></a><span class="st">  </span><span class="kw">tm_lines</span>(<span class="dt">lwd =</span> <span class="dv">5</span>, <span class="dt">col =</span> <span class="st">&quot;All&quot;</span>, <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>), <span class="dt">palette =</span> <span class="st">&quot;viridis&quot;</span>) <span class="co"># quite different...</span></span>
-<span id="cb6-13"><a href="#cb6-13"></a></span>
-<span id="cb6-14"><a href="#cb6-14"></a></span>
-<span id="cb6-15"><a href="#cb6-15"></a>rnet_journey_go_dutch =<span class="st"> </span>routes_journey <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-16"><a href="#cb6-16"></a><span class="st">  </span><span class="kw">group_by</span>(start_longitude, start_latitude, finish_longitude, finish_latitude) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb6-17"><a href="#cb6-17"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">All =</span> <span class="kw">sum</span>(All))</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>routes_journey_aggregated <span class="ot">=</span> routes_journey <span class="sc">%&gt;%</span> <span class="co"># already has data from data frame in there!</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">All =</span> <span class="fu">median</span>(All)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_cast</span>(<span class="st">&quot;LINESTRING&quot;</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>rnet_journey_dplyr <span class="ot">=</span> routes_journey <span class="sc">%&gt;%</span> <span class="co"># already has data from data frame in there!</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(name, distances) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">All =</span> <span class="fu">sum</span>(All)) </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="fu">Sys.time</span>() <span class="sc">-</span> t1</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(rnet_journey_dplyr) <span class="sc">+</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_lines</span>(<span class="at">lwd =</span> <span class="dv">5</span>, <span class="at">col =</span> <span class="st">&quot;All&quot;</span>, <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>), <span class="at">palette =</span> <span class="st">&quot;viridis&quot;</span>) <span class="co"># quite different...</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>rnet_journey_go_dutch <span class="ot">=</span> routes_journey <span class="sc">%&gt;%</span> </span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(start_longitude, start_latitude, finish_longitude, finish_latitude) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">All =</span> <span class="fu">sum</span>(All))</span></code></pre></div>
 </div>
 </div>
 
