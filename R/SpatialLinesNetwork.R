@@ -107,19 +107,19 @@ SpatialLinesNetwork.Spatial <- function(sl, uselonglat = FALSE, tolerance = 0.00
   # line lengths:
   # If uselonglat == FALSE then checks if sl uses longlat coordinate
   # system/projection. If so, passes longlat=TRUE.
-  sl$length <- sapply(sl@lines, function(x)
+  sl$length <- sapply(sl@lines, function(x) {
     sp::LineLength(x@Lines[[1]], longlat = ifelse(
       uselonglat == TRUE, TRUE, ifelse(length(grep(
         "proj=longlat", sp::proj4string(sl)
       )) > 0, TRUE, FALSE)
-    )))
+    ))
+  })
   igraph::E(g)$weight <- sl$length
   new("SpatialLinesNetwork", sl = sl, g = g, nb = gdata$nb, weightfield = "length")
 }
 #' @export
 SpatialLinesNetwork.sf <- function(sl, uselonglat = FALSE, tolerance = 0.000) {
-
-    nodecoords <- as.data.frame(sf::st_coordinates(sl)) %>%
+  nodecoords <- as.data.frame(sf::st_coordinates(sl)) %>%
     dplyr::group_by(.data$L1) %>%
     dplyr::mutate(nrow = dplyr::n(), rownum = 1:dplyr::n()) %>%
     dplyr::filter(.data$rownum == 1 | .data$rownum == (!!dplyr::quo(nrow))) %>%
@@ -151,7 +151,7 @@ SpatialLinesNetwork.sf <- function(sl, uselonglat = FALSE, tolerance = 0.000) {
   igraph::E(g)$weight <- sl$length
   # check it is a single graph
   is_connected <- igraph::is_connected(g)
-  if(!is_connected) {
+  if (!is_connected) {
     warning("Graph composed of multiple subgraphs, consider cleaning it with sln_clean_graph().")
   }
   # largest_group = names(which.max(graph_membership_table))
@@ -169,12 +169,12 @@ SpatialLinesNetwork.sf <- function(sl, uselonglat = FALSE, tolerance = 0.000) {
 #' @export
 sln_clean_graph <- function(sln) {
   g <- sln@g
-  graph_membership = igraph::components(g)$membership
-  graph_membership_table = table(graph_membership)
-  if(length(graph_membership_table) > 1) {
+  graph_membership <- igraph::components(g)$membership
+  graph_membership_table <- table(graph_membership)
+  if (length(graph_membership_table) > 1) {
     message("Input sln composed of ", length(graph_membership_table), " graphs. Selecting the largest.")
-    }
-  largest_group = names(which.max(graph_membership_table))
+  }
+  largest_group <- names(which.max(graph_membership_table))
   connected_vertexes <- igraph::V(g)[which(graph_membership == largest_group)]
   connected_edges <- igraph::E(g)[.inc(connected_vertexes)]
   temp_sl <- sln@sl[as.numeric(connected_edges), ]
@@ -501,47 +501,55 @@ find_network_nodes <- function(sln, x, y = NULL, maxdist = 1000) {
 #' Summarise shortest path between nodes on network
 #'
 #' @section Details:
-#' Find the shortest path on the network between specified nodes and returns
-#' a SpatialLinesdataFrame containing the path(s) and summary statistics of
-#' each one.
+#' Find the shortest path on the network between specified nodes and returns a
+#' `SpatialLinesDataFrame` (or an `sf` object with LINESTRING geometry)
+#' containing the path(s) and summary statistics of each one.
 #'
 #' The start and end arguments must be integers representing the node index.
-#' To find which node is closes to a geographic point, use `find_nearest_node()`
+#' To find which node is closest to a geographic point, use `find_nearest_node()`.
 #'
-#' @param sln The SpatialLinesNetwork to use.
-#' @param start Integer of node indices where route ends.
+#' If the start and end node are identical, the function will return a
+#' degenerate line with just two (identical) points. See
+#' [#444](https://github.com/ropensci/stplanr/issues/444).
+#'
+#' @param sln The SpatialLinesNetwork or sfNetwork to use.
+#' @param start Integer of node indices where route starts.
 #' @param end Integer of node indices where route ends.
 #' @param sumvars Character vector of variables for which to calculate
 #' summary statistics. The default value is `weightfield(sln)`.
 #' @param combinations Boolean value indicating if all combinations of start
 #' and ends should be calculated. If TRUE then every start Node ID will be routed
 #' to every end Node ID. This is faster than passing every combination to start
-#' and end. Default is FALSE.
+#' and end. Default is `FALSE`.
 #' @family rnet
 #'
 #' @examples
-#' # tests fail on dev version of dplyr
 #' sln <- SpatialLinesNetwork(route_network)
 #' weightfield(sln) # field used to determine shortest path
 #' shortpath <- sum_network_routes(sln, start = 1, end = 50, sumvars = "length")
 #' plot(shortpath, col = "red", lwd = 4)
 #' plot(sln, add = TRUE)
+#'
 #' # with sf objects
 #' sln <- SpatialLinesNetwork(route_network_sf)
 #' weightfield(sln) # field used to determine shortest path
 #' shortpath <- sum_network_routes(sln, start = 1, end = 50, sumvars = "length")
 #' plot(sf::st_geometry(shortpath), col = "red", lwd = 4)
 #' plot(sln, add = TRUE)
+#'
 #' # find shortest path between two coordinates
 #' sf::st_bbox(sln@sl)
 #' start_coords <- c(-1.546, 53.826)
 #' end_coords <- c(-1.519, 53.816)
 #' plot(sln)
-#' plot(sf::st_point(start_coords), cex = 3, add = TRUE)
-#' plot(sf::st_point(end_coords), cex = 3, add = TRUE)
+#' plot(sf::st_point(start_coords), cex = 3, add = TRUE, col = "red")
+#' plot(sf::st_point(end_coords), cex = 3, add = TRUE, col = "blue")
 #' nodes <- find_network_nodes(sln, rbind(start_coords, end_coords))
 #' shortpath <- sum_network_routes(sln, nodes[1], nodes[2])
-#' plot(sf::st_geometry(shortpath), col = "red", lwd = 3, add = TRUE)
+#' plot(sf::st_geometry(shortpath), col = "darkred", lwd = 3, add = TRUE)
+#'
+#' # degenerate path
+#' sum_network_routes(sln, start = 1, end = 1)
 #' @export
 sum_network_routes <- function(sln, start, end, sumvars = weightfield(sln), combinations = FALSE) {
   if (!is(sln, "SpatialLinesNetwork") & !is(sln, "sfNetwork")) {
@@ -564,6 +572,86 @@ sum_network_routes <- function(sln, start, end, sumvars = weightfield(sln), comb
     })
 
     if (is(sln, "sfNetwork")) {
+      # Test if routesegs returned at least one "impossible" path (i.e. epath ==
+      # 0L) and SOME start/end nodes are identical but not all of them. In this
+      # case I need to differentiate the two scenarios (i.e. degenerate paths
+      # and regular paths).
+      # See https://github.com/ropensci/stplanr/issues/444 and
+      # https://github.com/ropensci/stplanr/pull/445 for more details.
+      if (
+        any(vapply(routesegs, identical, logical(1), integer(0))) &&
+        (any(start == end) && !all(start == end))
+      ) {
+        # Find ID of identical nodes
+        ID_identical <- which(start == end)
+
+        # Run the sum_network_routes() function independently for the two cases
+        degenerate_paths <- sum_network_routes(
+          sln = sln,
+          start = start[ID_identical],
+          end = end[ID_identical],
+          sumvars = sumvars,
+          combinations = FALSE
+        )
+        regular_paths <- sum_network_routes(
+          sln = sln,
+          start = start[-ID_identical],
+          end = end[-ID_identical],
+          sumvars = sumvars,
+          combinations = FALSE
+        )
+
+        # Combine the results and arrange them in the same order as before
+        all_paths <- rbind(degenerate_paths, regular_paths)
+
+        # I arrange the paths in the original order sorting the ID of the
+        # identical and (not)identical
+        all_paths <- all_paths %>%
+          dplyr::slice(order(c(which(start == end), which(start != end)))) %>%
+          dplyr::mutate(ID = 1:n())
+
+        return(all_paths)
+      }
+
+      # Test if routesegs returned all "impossible" paths (i.e. epath == 0L) and
+      # ALL start/end nodes are identical.
+      # See https://github.com/ropensci/stplanr/issues/444 and
+      # https://github.com/ropensci/stplanr/pull/445 for more details.
+      if (
+        all(vapply(routesegs, identical, logical(1), integer(0))) &&
+        isTRUE(all.equal(start, end))
+      ) {
+        # In that case we are going to return a degenerate LINESTRING object
+        # whose only POINT is given by the common node(s).
+        # I decided to use the following approach in case there are more than 1
+        # start/end nodes and they are all degenerate
+        deg_linestrings <- lapply(
+          start,
+          function(start_end_id) {
+            node_coordinates <- cbind(sln@g$x[start_end_id], sln@g$y[start_end_id])
+            sf::st_linestring(rbind(node_coordinates, node_coordinates))
+          }
+        )
+
+        deg_linestring <- sf::st_sfc(
+          deg_linestrings,
+          crs = sf::st_crs(sln@sl),
+          precision = sf::st_precision(sln@sl)
+        )
+
+        return(
+          sf::st_sf(
+            dplyr::tibble(
+              ID = 1,
+              sum_length = NA,
+              pathfound = FALSE
+            ),
+            geometry = deg_linestring
+          ) %>%
+            dplyr::mutate(ID = 1:n())
+        )
+      }
+
       routecoords <- mapply(function(routesegs, start) {
         linecoords <- sf::st_coordinates(sln@sl[routesegs, ])
         linecoords <- lapply(1:max(linecoords[, "L1"]), function(x) {
@@ -736,9 +824,9 @@ sln2points <- function(sln) {
 #' sln_sf <- SpatialLinesNetwork(route_network_sf)
 #' plot(sln_sf)
 #' nodes_df <- data.frame(
-#'     start = rep(c(1, 2, 3, 4, 5), each = 4),
-#'     end = rep(c(50, 51, 52, 33), times = 5)
-#'   )
+#'   start = rep(c(1, 2, 3, 4, 5), each = 4),
+#'   end = rep(c(50, 51, 52, 33), times = 5)
+#' )
 #' weightfield(sln_sf) # field used to determine shortest path
 #' library(sf)
 #' shortpath_sf <- sum_network_links(sln_sf, nodes_df)

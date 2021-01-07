@@ -8,7 +8,7 @@ or sfNetwork.}
 sln2points(sln)
 }
 \arguments{
-\item{sln}{The SpatialLinesNetwork to use.}
+\item{sln}{The SpatialLinesNetwork or sfNetwork to use.}
 }
 \description{
 Generate spatial points representing nodes on a SpatialLinesNetwork
@@ -33,10 +33,12 @@ Other rnet:
 \code{\link{gsection}()},
 \code{\link{islines}()},
 \code{\link{lineLabels}()},
+\code{\link{overline_spatial}()},
 \code{\link{overline}()},
 \code{\link{plot,SpatialLinesNetwork,ANY-method}},
 \code{\link{plot,sfNetwork,ANY-method}},
 \code{\link{rnet_breakup_vertices}()},
+\code{\link{rnet_group}()},
 \code{\link{sum_network_links}()},
 \code{\link{sum_network_routes}()}
 }

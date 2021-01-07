@@ -28,9 +28,9 @@ of each one.
 sln_sf <- SpatialLinesNetwork(route_network_sf)
 plot(sln_sf)
 nodes_df <- data.frame(
-    start = rep(c(1, 2, 3, 4, 5), each = 4),
-    end = rep(c(50, 51, 52, 33), times = 5)
-  )
+  start = rep(c(1, 2, 3, 4, 5), each = 4),
+  end = rep(c(50, 51, 52, 33), times = 5)
+)
 weightfield(sln_sf) # field used to determine shortest path
 library(sf)
 shortpath_sf <- sum_network_links(sln_sf, nodes_df)
@@ -47,10 +47,12 @@ Other rnet:
 \code{\link{gsection}()},
 \code{\link{islines}()},
 \code{\link{lineLabels}()},
+\code{\link{overline_spatial}()},
 \code{\link{overline}()},
 \code{\link{plot,SpatialLinesNetwork,ANY-method}},
 \code{\link{plot,sfNetwork,ANY-method}},
 \code{\link{rnet_breakup_vertices}()},
+\code{\link{rnet_group}()},
 \code{\link{sln2points}()},
 \code{\link{sum_network_routes}()}
 }

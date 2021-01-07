@@ -5,7 +5,15 @@
 \alias{overline2}
 \title{Convert series of overlapping lines into a route network}
 \usage{
-overline(sl, attrib, fun = sum, na.zero = FALSE, buff_dist = 0, ...)
+overline(
+  sl,
+  attrib,
+  ncores = 1,
+  simplify = TRUE,
+  regionalise = 1e+05,
+  quiet = ifelse(nrow(sl) < 1000, TRUE, FALSE),
+  fun = sum
+)
 
 overline2(
   sl,
@@ -13,25 +21,14 @@ overline2(
   ncores = 1,
   simplify = TRUE,
   regionalise = 1e+05,
-  quiet = NULL
+  quiet = ifelse(nrow(sl) < 1000, TRUE, FALSE),
+  fun = sum
 )
 }
 \arguments{
 \item{sl}{A spatial object representing routes on a transport network}
 
-\item{attrib}{character, column names in sl to be summed}
-
-\item{fun}{The function(s) used to aggregate the grouped values (default:
-sum). If length of \code{fun} is smaller than \code{attrib} then the functions are
-repeated for subsequent attributes.}
-
-\item{na.zero}{Sets whether aggregated values with a value of zero are
-removed.}
-
-\item{buff_dist}{A number specifying the distance in meters of the buffer to be used to crop lines before running the operation.
-If the distance is zero (the default) touching but non-overlapping lines may be aggregated.}
-
-\item{...}{Arguments passed to \code{overline2}}
+\item{attrib}{character, column names in sl to be aggregated}
 
 \item{ncores}{integer, how many cores to use in parallel processing, default = 1}
 
@@ -41,6 +38,9 @@ If the distance is zero (the default) touching but non-overlapping lines may be 
 
 \item{quiet}{Should the the function omit messages? \code{NULL} by default,
 which means the output will only be shown if \code{sl} has more than 1000 rows.}
+
+\item{fun}{Named list of functions to summaries the attributes by? \code{sum} is the default.
+\code{list(sum = sum, average = mean)} will summarise all \code{attrib}utes by sum and mean.}
 }
 \value{
 An \code{sf} object representing a route network
@@ -66,7 +66,9 @@ The following arguments only apply to the \code{sf} implementation of \code{over
 \itemize{
 \item \code{ncores}, the number of cores to use in parallel processing
 \item \code{simplify}, should the final segments be converted back into longer lines? The default
-setting.
+setting is \code{TRUE}. \code{simplify = FALSE} results in straight line segments consisting
+of only 2 vertices (the start and end point),
+resulting in a data frame with many more rows than the simplified results (see examples).
 \item \code{regionalise} the threshold number of rows above which
 regionalisation is used (see details).
 }
@@ -90,14 +92,20 @@ Multicore support is only enabled for the regionalised simplification stage
 as it does not help with other stages.
 }
 \examples{
-
 sl <- routes_fast_sf[2:4, ]
-class(sl)
-class(sl$geometry)
-overline(sl = sl, attrib = "length")
-rnet_sf <- overline(sl = sl, attrib = "length", quiet = FALSE)
-plot(rnet_sf, lwd = rnet_sf$length / mean(rnet_sf$length))
-
+sl$All <- flowlines$All[2:4]
+rnet <- overline(sl = sl, attrib = "All")
+nrow(sl)
+nrow(rnet)
+plot(rnet)
+rnet_mean <- overline(sl, c("All", "av_incline"), fun = list(mean = mean, sum = sum))
+plot(rnet_mean, lwd = rnet_mean$All_sum / mean(rnet_mean$All_sum))
+rnet_sf_raw <- overline(sl, attrib = "length", simplify = FALSE)
+nrow(rnet_sf_raw)
+summary(n_vertices(rnet_sf_raw))
+plot(rnet_sf_raw)
+rnet_sf_raw$n <- 1:nrow(rnet_sf_raw)
+plot(rnet_sf_raw[10:25, ])
 # legacy implementation based on sp data
 # sl <- routes_fast[2:4, ]
 # rnet1 <- overline(sl = sl, attrib = "length")
@@ -109,7 +117,7 @@ plot(rnet_sf, lwd = rnet_sf$length / mean(rnet_sf$length))
 Morgan M and Lovelace R (2020). Travel flow aggregation: Nationally scalable methods
 for interactive and online visualisation of transport behaviour at the road network level.
 Environment and Planning B: Urban Analytics and City Science. July 2020.
-\href{https://doi.org/10.1177/2399808320942779}{doi:10.1177/2399808320942779}
+\doi{10.1177/2399808320942779}.
 
 Rowlingson, B (2015). Overlaying lines and aggregating their values for overlapping
 segments. Reproducible question from \url{https://gis.stackexchange.com}. See
@@ -126,9 +134,11 @@ Other rnet:
 \code{\link{gsection}()},
 \code{\link{islines}()},
 \code{\link{lineLabels}()},
+\code{\link{overline_spatial}()},
 \code{\link{plot,SpatialLinesNetwork,ANY-method}},
 \code{\link{plot,sfNetwork,ANY-method}},
 \code{\link{rnet_breakup_vertices}()},
+\code{\link{rnet_group}()},
 \code{\link{sln2points}()},
 \code{\link{sum_network_links}()},
 \code{\link{sum_network_routes}()}
@@ -143,9 +153,11 @@ Other rnet:
 \code{\link{gsection}()},
 \code{\link{islines}()},
 \code{\link{lineLabels}()},
+\code{\link{overline_spatial}()},
 \code{\link{plot,SpatialLinesNetwork,ANY-method}},
 \code{\link{plot,sfNetwork,ANY-method}},
 \code{\link{rnet_breakup_vertices}()},
+\code{\link{rnet_group}()},
 \code{\link{sln2points}()},
 \code{\link{sum_network_links}()},
 \code{\link{sum_network_routes}()}

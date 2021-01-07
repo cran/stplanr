@@ -9,6 +9,7 @@ route(
   to = NULL,
   l = NULL,
   route_fun = cyclestreets::journey,
+  wait = 0,
   n_print = 10,
   list_output = FALSE,
   cl = NULL,
@@ -27,6 +28,9 @@ should be a spatial object representing desire lines}
 \item{route_fun}{A routing function to be used for converting the straight lines to routes
 \code{\link[=od2line]{od2line()}}}
 
+\item{wait}{How long to wait between routes?
+0 seconds by default, can be useful when sending requests to rate limited APIs.}
+
 \item{n_print}{A number specifying how frequently progress updates
 should be shown}
 
@@ -42,18 +46,35 @@ and returns the result as a spatial (sf or sp) object.
 The definition of optimal depends on the routing function used
 }
 \examples{
-r <- overline(routes_fast_sf[2:5, ], "length")
-l <- od2line(od_data_sample[2:5, 1:3], cents_sf)
-sln <- stplanr::SpatialLinesNetwork(r)
+library(sf)
+l = od_data_lines[2, ]
+r_walk = route(l = l, route_fun = route_osrm, osrm.profile = "foot")
+r_bike = route(l = l, route_fun = route_osrm, osrm.profile = "bike")
+plot(r_walk$geometry)
+\donttest{
+plot(r_bike$geometry, col = "blue", add = TRUE)
+# r_bc = route(l = l, route_fun = route_bikecitizens)
+# plot(r_bc)
+# route(l = l, route_fun = route_bikecitizens, wait = 1)
+library(osrm)
+r_osrm <- route(
+  l = l,
+  route_fun = osrmRoute,
+  returnclass = "sf"
+)
+nrow(r_osrm)
+plot(r_osrm)
+sln <- stplanr::SpatialLinesNetwork(route_network_sf)
 # calculate shortest paths
 plot(sln)
 plot(l$geometry, add = TRUE)
-sp <- stplanr::route(
+r_local <- stplanr::route(
   l = l,
   route_fun = stplanr::route_local,
   sln = sln
 )
-plot(sp["all"], add = TRUE, lwd = 5)
+plot(r_local["all"], add = TRUE, lwd = 5)
+}
 }
 \seealso{
 Other routes: 
@@ -61,6 +82,7 @@ Other routes:
 \code{\link{line2route}()},
 \code{\link{route_dodgr}()},
 \code{\link{route_local}()},
+\code{\link{route_osrm}()},
 \code{\link{route_transportapi_public}()}
 }
 \concept{routes}

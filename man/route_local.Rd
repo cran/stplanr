@@ -4,10 +4,10 @@
 \alias{route_local}
 \title{Plan a route with local data}
 \usage{
-route_local(sln, from, to, l = NULL)
+route_local(sln, from, to, l = NULL, ...)
 }
 \arguments{
-\item{sln}{The SpatialLinesNetwork to use.}
+\item{sln}{The SpatialLinesNetwork or sfNetwork to use.}
 
 \item{from}{An object representing origins
 (if lines are provided as the first argument, from is assigned to \code{l})}
@@ -16,6 +16,8 @@ route_local(sln, from, to, l = NULL)
 
 \item{l}{Only needed if from and to are empty, in which case this
 should be a spatial object representing desire lines}
+
+\item{...}{Arguments to pass to \code{sum_network_links}}
 }
 \description{
 This function returns the shortest path between locations
@@ -31,12 +33,16 @@ plot(r$geometry, add = TRUE, col = "red", lwd = 5)
 plot(cents[c(3, 4), ], add = TRUE)
 r2 <- route_local(sln = sln, cents_sf[3, ], cents_sf[4, ])
 plot(r2$geometry, add = TRUE, col = "blue", lwd = 3)
+l <- flowlines_sf[3:5, ]
+r3 <- route_local(l = l, sln = sln)
+plot(r2$geometry, add = TRUE, col = "blue", lwd = 3)
 }
 \seealso{
 Other routes: 
 \code{\link{line2routeRetry}()},
 \code{\link{line2route}()},
 \code{\link{route_dodgr}()},
+\code{\link{route_osrm}()},
 \code{\link{route_transportapi_public}()},
 \code{\link{route}()}
 }
