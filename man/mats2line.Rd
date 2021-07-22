@@ -4,12 +4,14 @@
 \alias{mats2line}
 \title{Convert 2 matrices to lines}
 \usage{
-mats2line(mat1, mat2)
+mats2line(mat1, mat2, crs = NA)
 }
 \arguments{
 \item{mat1}{Matrix representing origins}
 
 \item{mat2}{Matrix representing destinations}
+
+\item{crs}{Number representing the coordinate system of the data, e.g. 4326}
 }
 \description{
 Convert 2 matrices to lines
@@ -19,6 +21,7 @@ m1 <- matrix(c(1, 2, 1, 2), ncol = 2)
 m2 <- matrix(c(9, 9, 9, 1), ncol = 2)
 l <- mats2line(m1, m2)
 class(l)
+l
 lsf <- sf::st_sf(l, crs = 4326)
 class(lsf)
 plot(lsf)
@@ -33,7 +36,6 @@ Other lines:
 \code{\link{line2points}()},
 \code{\link{line_bearing}()},
 \code{\link{line_breakup}()},
-\code{\link{line_match}()},
 \code{\link{line_midpoint}()},
 \code{\link{line_sample}()},
 \code{\link{line_segment}()},

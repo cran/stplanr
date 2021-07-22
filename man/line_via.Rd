@@ -23,13 +23,14 @@ and generates 3 extra geometries based on points \code{p}:
 }
 }
 \examples{
+library(sf)
 l <- flowlines_sf[2:4, ]
 p <- destinations_sf
 lv <- line_via(l, p)
+lv
 # library(mapview)
 # mapview(lv) +
 #    mapview(lv$leg_orig, col = "red")
-library(sf)
 plot(lv[3], lwd = 9, reset = FALSE)
 plot(lv$leg_orig, col = "red", lwd = 5, add = TRUE)
 plot(lv$leg_via, col = "black", add = TRUE)
@@ -44,7 +45,6 @@ Other lines:
 \code{\link{line2points}()},
 \code{\link{line_bearing}()},
 \code{\link{line_breakup}()},
-\code{\link{line_match}()},
 \code{\link{line_midpoint}()},
 \code{\link{line_sample}()},
 \code{\link{line_segment}()},

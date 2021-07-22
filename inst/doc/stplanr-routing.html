@@ -38,6 +38,7 @@
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
@@ -160,10 +161,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Data: (c) OpenStreetMap contributors, ODbL 1.0 - http://www.openstreetmap.org/copyright</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Routing: OSRM - http://project-osrm.org/</span></span></code></pre></div>
 <p>In the system terminal run the following commands to make the <a href="https://hub.docker.com/r/osrm/osrm-backend/">OSRM docker image</a> work for you.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run -t -v <span class="st">&quot;</span><span class="va">${PWD}</span><span class="st">:/data&quot;</span> osrm/osrm-backend osrm-extract -p /opt/car.lua /data/iow.pbf</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run -t -v <span class="st">&quot;</span><span class="va">${PWD}</span><span class="st">:/data&quot;</span> osrm/osrm-backend osrm-partition /data/iow.osrm</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run -t -v <span class="st">&quot;</span><span class="va">${PWD}</span><span class="st">:/data&quot;</span> osrm/osrm-backend osrm-customize /data/iow.osrm</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run -t -i -p 5000:5000 -v <span class="st">&quot;</span><span class="va">${PWD}</span><span class="st">:/data&quot;</span> osrm/osrm-backend osrm-routed --algorithm mld /data/iow.osrm</span>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-t</span> <span class="at">-v</span> <span class="st">&quot;</span><span class="va">${PWD}</span><span class="st">:/data&quot;</span> osrm/osrm-backend osrm-extract <span class="at">-p</span> /opt/car.lua /data/iow.pbf</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-t</span> <span class="at">-v</span> <span class="st">&quot;</span><span class="va">${PWD}</span><span class="st">:/data&quot;</span> osrm/osrm-backend osrm-partition /data/iow.osrm</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-t</span> <span class="at">-v</span> <span class="st">&quot;</span><span class="va">${PWD}</span><span class="st">:/data&quot;</span> osrm/osrm-backend osrm-customize /data/iow.osrm</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-t</span> <span class="at">-i</span> <span class="at">-p</span> 5000:5000 <span class="at">-v</span> <span class="st">&quot;</span><span class="va">${PWD}</span><span class="st">:/data&quot;</span> osrm/osrm-backend osrm-routed <span class="at">--algorithm</span> mld /data/iow.osrm</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="st">&quot;https://127.0.0.1:5000/route/v1/driving/13.388860,52.517037;13.385983,52.496891?steps=true&quot;</span></span></code></pre></div>
 <p>Now we can do routing in R!</p>
 <p>On a single route:</p>
@@ -181,7 +182,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">=</span> <span class="fu">list.files</span>(<span class="at">pattern =</span> <span class="st">&quot;iow&quot;</span>)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">unlink</span>(<span class="at">x =</span> f, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p>Shut down the docker container.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>docker <span class="kw">ps</span></span>
+<div class="sourceCode" id="cb8"><pre class="sourceCode zsh"><code class="sourceCode zsh"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>docker ps</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>docker stop stupefied_hopper</span></code></pre></div>
 </div>
 
