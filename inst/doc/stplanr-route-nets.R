@@ -1,7 +1,8 @@
 ## ---- include = FALSE---------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = curl::has_internet()
 )
 
 ## ----setup, message=FALSE-----------------------------------------------------
@@ -34,6 +35,9 @@ igraph::is_connected(g)
 #  igraph::is_connected(g)
 #  #> [1] FALSE
 #  sf:::plot.sfc_LINESTRING(rnet_disconnected$geometry)
+
+## ---- echo=FALSE--------------------------------------------------------------
+knitr::include_graphics("https://i.imgur.com/827f761.png")
 
 ## ---- eval=FALSE--------------------------------------------------------------
 #  rnet_disconnected$group = rnet_igroup(rnet_disconnected)

@@ -12,7 +12,7 @@
 
 <meta name="author" content="Robin Lovelace" />
 
-<meta name="date" content="2021-07-22" />
+<meta name="date" content="2021-10-12" />
 
 <title>Introducing stplanr</title>
 
@@ -163,7 +163,7 @@ div.csl-indent {
 
 <h1 class="title toc-ignore">Introducing stplanr</h1>
 <h4 class="author">Robin Lovelace</h4>
-<h4 class="date">2021-07-22</h4>
+<h4 class="date">2021-10-12</h4>
 
 
 
@@ -235,14 +235,14 @@ div.csl-indent {
 </tbody>
 </table>
 <p>What this example OD table means is that 100 units of ‘V1’ and 3 units of V2 travel between zone 1 and zone 2. There is also movement represented between Zone 1 and 3.</p>
-<p>This dataset can also be represent as an ‘od matrix,’ where rows represent the origins and columns destinations. However, for multiple variables (e.g. modes of transport) and to prevent giant and unwieldy sparse matrices, the ‘long’ form represented above is much more common.</p>
+<p>This dataset can also be represent as an ‘od matrix’, where rows represent the origins and columns destinations. However, for multiple variables (e.g. modes of transport) and to prevent giant and unwieldy sparse matrices, the ‘long’ form represented above is much more common.</p>
 <p>Now, imagine that V1 represents the total number of people travelling between the origin and destination and that V2 represents the number who regularly cycle. From this we can get a good indication of where people cycle at the desire line level. (Note: a good source of open OD data has been made available from the <a href="https://wicid.ukdataservice.ac.uk/">wicid.ukdataservice.ac.uk</a> website).</p>
 <p>To extract useful information from this OD dataset, we need to be able to place the lines on the map. What kind of place does a desire line originate from? What about the destination? What is the environment like that it passes through? To answer all these questions we need a geographic representation of the OD table illustrated above.</p>
 </div>
 <div id="converting-od-data-to-desire-lines-with-r" class="section level1">
 <h1>Converting OD data to desire lines with R</h1>
 <p>One problem with OD data is that the rows do not tend to have geography inherently built in. They could contain a variables called <code>lat_origin</code>, <code>lon_origin</code>, <code>lat_destination</code> and <code>lon_destination</code>. But generally they only contain the IDs of geographic zones.</p>
-<p>Work is needed to convert the OD data into ‘desire lines.’ Desire lines are straight lines between the origin and destination and represent where people would go if they were not constrained by the route network (see Figure 3 from <span class="citation">(Lovelace et al. 2017)</span>).</p>
+<p>Work is needed to convert the OD data into ‘desire lines’. Desire lines are straight lines between the origin and destination and represent where people would go if they were not constrained by the route network (see Figure 3 from <span class="citation">(Lovelace et al. 2017)</span>).</p>
 <p>To show how these desire lines are created, we’ll switch to using real OD data provided by <strong>stplanr</strong>. The first three of these is shown below:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(flow[<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">12</span>)])</span></code></pre></div>
 <pre><code>##        Area.of.residence Area.of.workplace All Bicycle
@@ -308,7 +308,7 @@ div.csl-indent {
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>(has_internet <span class="ot">&lt;-</span> curl<span class="sc">::</span><span class="fu">has_internet</span>())</span></code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>(cs_key <span class="ot">&lt;-</span> <span class="fu">nchar</span>(<span class="fu">Sys.getenv</span>(<span class="st">&quot;CYCLESTREETS&quot;</span>)))</span></code></pre></div>
-<pre><code>## [1] 16</code></pre>
+<pre><code>## [1] 0</code></pre>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (has_internet <span class="sc">&amp;</span> cs_key <span class="sc">==</span> <span class="dv">16</span>) {</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> <span class="fu">route</span>(<span class="at">l =</span> l, <span class="at">route_fun =</span> cyclestreets<span class="sc">::</span>journey)</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(r[<span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">12</span>)], <span class="at">by =</span> <span class="fu">list</span>(r[[<span class="dv">1</span>]], r[[<span class="dv">2</span>]]), <span class="at">FUN =</span> mean)</span>
@@ -317,7 +317,7 @@ div.csl-indent {
 <span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>These routes contain the same information on origin and destination, but have additional spatial information about the route network. The routes can be plotted in the same way as the desire lines were plotted:</p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(r<span class="sc">$</span>geometry, <span class="at">lwd =</span> lwd <span class="sc">*</span> <span class="dv">3</span>, <span class="at">reset =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
-<p>The next stage is to aggregate these lines together to create a ‘route network.’ This, and many other functions, are described in the <a href="https://github.com/ropensci/stplanr/blob/master/vignettes/stplanr-paper.Rmd">stplanr-paper vignette</a>.</p>
+<p>The next stage is to aggregate these lines together to create a ‘route network’. This, and many other functions, are described in the <a href="https://github.com/ropensci/stplanr/blob/master/vignettes/stplanr-paper.Rmd">stplanr-paper vignette</a>.</p>
 </div>
 <div id="motivations" class="section level1">
 <h1>Motivations</h1>

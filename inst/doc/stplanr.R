@@ -1,7 +1,6 @@
 ## ---- include=FALSE-----------------------------------------------------------
 library(stplanr)
-build <- curl::has_internet()
-knitr::opts_chunk$set(eval = build)
+knitr::opts_chunk$set(eval = curl::has_internet())
 
 ## ---- eval=FALSE--------------------------------------------------------------
 #  install.packages("stplanr")
@@ -62,11 +61,11 @@ l_bb <- sf::st_bbox(l)
 # l_bb[1] <- NA
 no_na_in_bb <- !any(is.na(as.numeric(l_bb)))
 
-## ---- eval=no_na_in_bb--------------------------------------------------------
+## -----------------------------------------------------------------------------
 lwd <- l$All / mean(l$All)
 plot(st_geometry(l), lwd = lwd)
 
-## ---- eval=no_na_in_bb--------------------------------------------------------
+## -----------------------------------------------------------------------------
 plot(l["Bicycle"], lwd = lwd)
 
 ## ---- message=FALSE, warning=FALSE--------------------------------------------

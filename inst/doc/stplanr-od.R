@@ -2,66 +2,70 @@
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  eval = TRUE
+  eval = FALSE
 )
 has_webshot <- "webshot" %in% installed.packages()
 
+## ---- eval=FALSE--------------------------------------------------------------
+#  install.packages("od")
+#  vignette("od")
+
 ## ----setup, message=FALSE-----------------------------------------------------
-library(stplanr)
-library(dplyr)
-od <- stplanr::od_data_sample %>%
-  select(-matches("rail|name|moto|car|tax|home|la_")) %>%
-  top_n(n = 14, wt = all)
-class(od)
-od
+#  library(stplanr)
+#  library(dplyr)
+#  od <- stplanr::od_data_sample %>%
+#    select(-matches("rail|name|moto|car|tax|home|la_")) %>%
+#    top_n(n = 14, wt = all)
+#  class(od)
+#  od
 
 ## -----------------------------------------------------------------------------
-od[1:3]
+#  od[1:3]
 
 ## -----------------------------------------------------------------------------
-od_matrix <- od_to_odmatrix(od[1:3])
-class(od_matrix)
-od_matrix
+#  od_matrix <- od_to_odmatrix(od[1:3])
+#  class(od_matrix)
+#  od_matrix
 
 ## -----------------------------------------------------------------------------
-lapply(c("all", "bicycle"), function(x) od_to_odmatrix(od[c("geo_code1", "geo_code2", x)]))
+#  lapply(c("all", "bicycle"), function(x) od_to_odmatrix(od[c("geo_code1", "geo_code2", x)]))
 
 ## -----------------------------------------------------------------------------
-odmatrix_to_od(od_matrix)
+#  odmatrix_to_od(od_matrix)
 
 ## -----------------------------------------------------------------------------
-(od_inter <- od %>% filter(geo_code1 != geo_code2))
-(od_intra <- od %>% filter(geo_code1 == geo_code2))
+#  (od_inter <- od %>% filter(geo_code1 != geo_code2))
+#  (od_intra <- od %>% filter(geo_code1 == geo_code2))
 
 ## -----------------------------------------------------------------------------
-(od_min <- od_data_sample[c(1, 2, 9), 1:6])
-(od_oneway <- od_oneway(od_min))
+#  (od_min <- od_data_sample[c(1, 2, 9), 1:6])
+#  (od_oneway <- od_oneway(od_min))
 
 ## -----------------------------------------------------------------------------
-z <- zones_sf
-class(z)
-l <- od2line(flow = od_inter, zones = z)
+#  z <- zones_sf
+#  class(z)
+#  l <- od2line(flow = od_inter, zones = z)
 
 ## -----------------------------------------------------------------------------
-class(l)
-nrow(od) - nrow(l)
-ncol(l) - ncol(od)
+#  class(l)
+#  nrow(od) - nrow(l)
+#  ncol(l) - ncol(od)
 
 ## -----------------------------------------------------------------------------
-plot(l$geometry)
+#  plot(l$geometry)
 
 ## -----------------------------------------------------------------------------
-plot(l)
+#  plot(l)
 
-## ---- eval=has_webshot--------------------------------------------------------
-library(leaflet)
-leaflet() %>%
-  addTiles() %>%
-  addPolygons(data = l)
+## -----------------------------------------------------------------------------
+#  library(leaflet)
+#  leaflet() %>%
+#    addTiles() %>%
+#    addPolygons(data = l)
 
 ## ---- error=TRUE--------------------------------------------------------------
-od$geo_code2[3] <- "nomatch"
-od2line(od, z)
+#  od$geo_code2[3] <- "nomatch"
+#  od2line(od, z)
 
 ## ---- eval=FALSE--------------------------------------------------------------
 #  library(dplyr)
@@ -117,7 +121,7 @@ od2line(od, z)
 #  plot(desire_lines_top["all"])
 
 ## ---- echo=FALSE--------------------------------------------------------------
-knitr::include_graphics("https://user-images.githubusercontent.com/1825120/61058906-030a5c80-a3f0-11e9-90b5-d216964e9681.png")
+#  knitr::include_graphics("https://user-images.githubusercontent.com/1825120/61058906-030a5c80-a3f0-11e9-90b5-d216964e9681.png")
 
 ## ---- eval=FALSE--------------------------------------------------------------
 #  lwd <- desire_lines_top$all / mean(desire_lines_top$all) / 10
@@ -125,7 +129,7 @@ knitr::include_graphics("https://user-images.githubusercontent.com/1825120/61058
 #  plot(desire_lines_top["percent_dont_drive"], lwd = lwd, breaks = c(0, 50, 70, 80, 90, 95, 100))
 
 ## ---- echo=FALSE--------------------------------------------------------------
-knitr::include_graphics("https://user-images.githubusercontent.com/1825120/62073083-e5ceee00-b237-11e9-9cc7-8bf62d0e9b3f.png")
+#  knitr::include_graphics("https://user-images.githubusercontent.com/1825120/62073083-e5ceee00-b237-11e9-9cc7-8bf62d0e9b3f.png")
 
 ## ---- eval=FALSE--------------------------------------------------------------
 #  library(tmap)
@@ -150,8 +154,8 @@ knitr::include_graphics("https://user-images.githubusercontent.com/1825120/62073
 #    )
 
 ## ---- echo=FALSE--------------------------------------------------------------
-# tmap_save(.Last.value, "tmap-london.png")
-knitr::include_graphics("https://user-images.githubusercontent.com/1825120/61066243-12dc6d80-a3fd-11e9-8805-826a47c553f6.png")
+#  # tmap_save(.Last.value, "tmap-london.png")
+#  knitr::include_graphics("https://user-images.githubusercontent.com/1825120/61066243-12dc6d80-a3fd-11e9-8805-826a47c553f6.png")
 
 ## ---- eval=FALSE, echo=FALSE--------------------------------------------------
 #  saveRDS(od_all, "od_all.Rds")
@@ -170,7 +174,7 @@ knitr::include_graphics("https://user-images.githubusercontent.com/1825120/61066
 #  plot(zones_origins, border = NA)
 
 ## ---- echo=FALSE--------------------------------------------------------------
-knitr::include_graphics("https://user-images.githubusercontent.com/1825120/61067619-e7a74d80-a3ff-11e9-8c15-7467717b36ec.png")
+#  knitr::include_graphics("https://user-images.githubusercontent.com/1825120/61067619-e7a74d80-a3ff-11e9-8c15-7467717b36ec.png")
 
 ## ---- eval=FALSE--------------------------------------------------------------
 #  destination_attributes <- desire_lines_top %>%
@@ -184,7 +188,7 @@ knitr::include_graphics("https://user-images.githubusercontent.com/1825120/61067
 #  plot(destination_attributes, border = NA)
 
 ## ---- echo=FALSE--------------------------------------------------------------
-knitr::include_graphics("https://user-images.githubusercontent.com/1825120/61069409-27703400-a404-11e9-9c83-1cd5f2397260.png")
+#  knitr::include_graphics("https://user-images.githubusercontent.com/1825120/61069409-27703400-a404-11e9-9c83-1cd5f2397260.png")
 
 ## ---- out.width="100%", warning=FALSE, eval=FALSE, echo=FALSE-----------------
 #  u <- "https://github.com/ropensci/stplanr/releases/download/0.2.9/lines_cars.Rds"
