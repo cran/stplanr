@@ -60,6 +60,7 @@ l <- l[sel, ]
 l_bb <- sf::st_bbox(l)
 # l_bb[1] <- NA
 no_na_in_bb <- !any(is.na(as.numeric(l_bb)))
+knitr::opts_chunk$set(eval = no_na_in_bb)
 
 ## -----------------------------------------------------------------------------
 lwd <- l$All / mean(l$All)

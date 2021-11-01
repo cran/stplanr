@@ -1,14 +1,14 @@
-16976d381a1c45ad80465160c98ed951 *DESCRIPTION
+db2d307a28e35f34fd2a3fc7b9417ce2 *DESCRIPTION
 54007ce744145f7ca8677b8663fac4a6 *LICENSE
 5186fb9d83a2dcc327b8417c92254199 *NAMESPACE
-6c5b7b8406857c04907748a4a98731e6 *NEWS.md
+731423d80a602db74c5bb57b50e727b8 *NEWS.md
 5c3c3ed369dd1b5b9b333e03069a90bf *R/RcppExports.R
 db9766af2090f17e94754c8418eeca63 *R/SpatialLinesNetwork.R
 7a9d1df8e9abf6a4bad6c9bc5a1fdf5a *R/as_sf_fun.R
 c6046b3e7befe180f1f9d8a53fec6c56 *R/catchmentArea.R
 972284ec153408b2cab138ee021094be *R/crs-funs.R
 4f394918818a22b62ac4ff7f3f7f0ef6 *R/cyclestreets.R
-54361cd69673910696376c588fa69ba5 *R/data.R
+e0bba15850d7531c570ea74dc0edf106 *R/data.R
 c77159a8d675495f047fb17a3e72744e *R/deprecated.R
 d2c9626b75cfc3cc49313a4a46cae642 *R/geo-functions.R
 ae939ca2866a594b2e8cb6167a6308a1 *R/geo_code.R
@@ -41,7 +41,7 @@ ae2559f9480989257caf6bea3f32151e *R/stplanr-package.R
 4f247b8617b88c6e4fb12118c20fca43 *R/toptail.R
 37a39e244d96e9dc306235c13b1add5d *R/utils-pipe.R
 8cb8b084663e885b5fbea0f0de382b21 *README.md
-868463cae71c9f0d151976f672d71c8a *build/partial.rdb
+245e048e087854ba891494829e121c6b *build/partial.rdb
 a8d53fa901f8a0e2b0187f057af3b7ab *build/vignette.rds
 19374b998ee39e26b43ee8b5896fc8f2 *data/ca_local.rda
 fef088aaa2d90be17220e2b11cf1c7fc *data/cents.rda
@@ -86,9 +86,9 @@ ecb53333901ad98c2e56d5c7d16c5121 *inst/doc/stplanr-route-nets.html
 84f9536ab096adb52f75eceb5bd30af4 *inst/doc/stplanr-routing.R
 2a1656b3857ae5c12655dab02c50bfb5 *inst/doc/stplanr-routing.Rmd
 7e4f96ffac8c49605f5bfe5bd4af6011 *inst/doc/stplanr-routing.html
-f4f23340819030996e3d6f301287758d *inst/doc/stplanr.R
-a3bac483893573f46bc9bb32addd5eb3 *inst/doc/stplanr.Rmd
-dc7a170cc991cdab09c86e093e0b118c *inst/doc/stplanr.html
+0c5a3a171285e93132a35c11380e0667 *inst/doc/stplanr.R
+c3f8ec91f46b9205655101b5ca3db8df *inst/doc/stplanr.Rmd
+07c3a3ed7d8134656a78d9f9c3349a04 *inst/doc/stplanr.html
 ac3f2f0df88696bffa5c17fbdcc1804c *inst/example-flows-up-hill.R
 61ceb3616b7a0029af1b7d2feba3951f *inst/extdata/SA1Population.csv
 a6003c1f2cb54667d223c86c8da91291 *inst/extdata/SA1Population.xlsx
@@ -111,7 +111,7 @@ b90868106c262b18888988c19cec7ac7 *man/SpatialLinesNetwork-class.Rd
 80092957a8af3522b53b74a7ef8c030b *man/api_pat.Rd
 a9ea50b60dd4fd8780a4b5b6022c895b *man/as_sf_fun.Rd
 12cb3b5cad40df89bff873a6b7046545 *man/bbox_scale.Rd
-72d251cc4fd87eb3fd518d1c4e4ccb8f *man/ca_local.Rd
+1c781b5278279b6a30d43b4fc08573a1 *man/ca_local.Rd
 3d1d59e23452d49cdbd9217bb5d9a7d3 *man/calc_catchment.Rd
 b9abff9d35d77ee6385d022513dc2d4f *man/calc_catchment_sum.Rd
 7f69ad2d18138f639fd705f7bd735ec5 *man/calc_moving_catchment.Rd
@@ -252,4 +252,4 @@ b4e0e3123864f4773b2151558ea22ef5 *vignettes/stplanr-paper.Rmd
 5fb3a04f6f88eb7431e4f8b2d8a2ce92 *vignettes/stplanr-parallel.Rmd
 a1a15dd6e35beff99ddeaa48a73e964b *vignettes/stplanr-route-nets.Rmd
 2a1656b3857ae5c12655dab02c50bfb5 *vignettes/stplanr-routing.Rmd
-a3bac483893573f46bc9bb32addd5eb3 *vignettes/stplanr.Rmd
+c3f8ec91f46b9205655101b5ca3db8df *vignettes/stplanr.Rmd

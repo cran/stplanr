@@ -1,7 +1,7 @@
 Package: stplanr
 Type: Package
 Title: Sustainable Transport Planning
-Version: 0.8.4
+Version: 0.8.5
 Authors@R: c(
     person("Robin", "Lovelace", email = "rob00x@gmail.com", role = c("aut", "cre"),
       comment = c(ORCID = "0000-0001-5679-6536")),
@@ -28,6 +28,9 @@ Description: Tools for transport planning with an emphasis on spatial transport
     Further information on the package's aim and scope can be found
     in the vignettes and in a paper in the R Journal
     (Lovelace and Ellison 2018) <doi:10.32614/RJ-2018-053>.
+    This package Suggests the 'pct' package which at the time of writing
+    is unavailable on CRAN. You can install it from the repository
+    'itsleeds/pct' on GitHub.
 License: MIT + file LICENSE
 BugReports: https://github.com/ropensci/stplanr/issues
 LazyData: yes
@@ -40,8 +43,8 @@ Imports: sp (>= 1.3.1), curl (>= 3.2), dplyr (>= 0.7.6), httr (>=
         0.6.3), magrittr, sfheaders, data.table, pbapply
 LinkingTo: RcppArmadillo (>= 0.9.100.5.0), Rcpp (>= 0.12.18)
 Suggests: testthat (>= 2.0.0), knitr (>= 1.20), rmarkdown (>= 1.10),
-        dodgr (>= 0.0.3), stats19, cyclestreets, leaflet, rgdal, pct,
-        tmap, openxlsx (>= 4.1.0), osrm, geodist, mapsapi
+        dodgr (>= 0.0.3), cyclestreets, leaflet, rgdal, pct, tmap,
+        openxlsx (>= 4.1.0), osrm, geodist, mapsapi
 VignetteBuilder: knitr
 URL: https://github.com/ropensci/stplanr,
         https://docs.ropensci.org/stplanr/
@@ -49,7 +52,7 @@ SystemRequirements: GNU make
 RoxygenNote: 7.1.2
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2021-10-12 18:00:55 UTC; robin
+Packaged: 2021-10-31 12:06:00 UTC; robin
 Author: Robin Lovelace [aut, cre] (<https://orcid.org/0000-0001-5679-6536>),
   Richard Ellison [aut],
   Malcolm Morgan [aut] (<https://orcid.org/0000-0002-9488-9183>),
@@ -61,4 +64,4 @@ Author: Robin Lovelace [aut, cre] (<https://orcid.org/0000-0001-5679-6536>),
   Mark Padgham [ctb],
   Andrea Gilardi [ctb] (<https://orcid.org/0000-0002-9424-7439>)
 Repository: CRAN
-Date/Publication: 2021-10-12 18:40:02 UTC
+Date/Publication: 2021-11-01 16:10:09 UTC
