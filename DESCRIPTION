@@ -1,7 +1,7 @@
 Package: stplanr
 Type: Package
 Title: Sustainable Transport Planning
-Version: 0.8.5
+Version: 0.8.6
 Authors@R: c(
     person("Robin", "Lovelace", email = "rob00x@gmail.com", role = c("aut", "cre"),
       comment = c(ORCID = "0000-0001-5679-6536")),
@@ -38,13 +38,13 @@ Depends: R (>= 3.5.0)
 Imports: sp (>= 1.3.1), curl (>= 3.2), dplyr (>= 0.7.6), httr (>=
         1.3.1), jsonlite (>= 1.5), stringr (>= 1.3.1), maptools (>=
         0.9.3), raster (>= 2.6.7), rgeos (>= 0.3.28), methods,
-        geosphere (>= 1.5.7), Rcpp (>= 0.12.1), igraph (>= 1.2.2),
-        nabor (>= 0.5.0), rlang (>= 0.2.2), lwgeom (>= 0.1.4), sf (>=
-        0.6.3), magrittr, sfheaders, data.table, pbapply
+        geosphere (>= 1.5.7), Rcpp (>= 0.12.1), nabor (>= 0.5.0), rlang
+        (>= 0.2.2), lwgeom (>= 0.1.4), sf (>= 0.6.3), magrittr,
+        sfheaders, data.table, pbapply
 LinkingTo: RcppArmadillo (>= 0.9.100.5.0), Rcpp (>= 0.12.18)
-Suggests: testthat (>= 2.0.0), knitr (>= 1.20), rmarkdown (>= 1.10),
-        dodgr (>= 0.0.3), cyclestreets, leaflet, rgdal, pct, tmap,
-        openxlsx (>= 4.1.0), osrm, geodist, mapsapi
+Suggests: testthat (>= 2.0.0), knitr (>= 1.20), igraph (>= 1.2.2),
+        rmarkdown (>= 1.10), dodgr (>= 0.0.3), cyclestreets, leaflet,
+        rgdal, pct, tmap, openxlsx (>= 4.1.0), osrm, geodist, mapsapi
 VignetteBuilder: knitr
 URL: https://github.com/ropensci/stplanr,
         https://docs.ropensci.org/stplanr/
@@ -52,7 +52,7 @@ SystemRequirements: GNU make
 RoxygenNote: 7.1.2
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2021-10-31 12:06:00 UTC; robin
+Packaged: 2021-11-25 16:55:44 UTC; robin
 Author: Robin Lovelace [aut, cre] (<https://orcid.org/0000-0001-5679-6536>),
   Richard Ellison [aut],
   Malcolm Morgan [aut] (<https://orcid.org/0000-0002-9488-9183>),
@@ -64,4 +64,4 @@ Author: Robin Lovelace [aut, cre] (<https://orcid.org/0000-0001-5679-6536>),
   Mark Padgham [ctb],
   Andrea Gilardi [ctb] (<https://orcid.org/0000-0002-9424-7439>)
 Repository: CRAN
-Date/Publication: 2021-11-01 16:10:09 UTC
+Date/Publication: 2021-11-26 16:10:07 UTC

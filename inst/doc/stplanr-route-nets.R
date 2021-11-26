@@ -2,7 +2,7 @@
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  eval = curl::has_internet()
+  eval = all(c(curl::has_internet(), requireNamespace("igraph", quietly = TRUE))) 
 )
 
 ## ----setup, message=FALSE-----------------------------------------------------
