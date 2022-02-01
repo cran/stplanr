@@ -14,7 +14,19 @@
 
 <title>stplanr: A Package for Transport Planning</title>
 
-<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -157,7 +169,187 @@ div.csl-indent {
 }
 </style>
 
-<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 
 
@@ -261,7 +453,7 @@ University of Sydney<br><a class="author_email" href="mailto:#"><a href="mailto:
 <p>The above code chunk shows the importance of understanding geographical data when working with transport data. It is only by converting the casualty data into a spatial data class, and adding a coordinate reference system (CRS), that transport planners and researchers can link this important dataset back to the route network. We can now perform GIS operations on the results. The next code chunk, for example, finds all the fatalities that took place within 100 m of the route network, using the function <code>buff_geo</code>:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>rnet_buff_100 <span class="ot">&lt;-</span> <span class="fu">geo_buffer</span>(route_network, <span class="at">width =</span> <span class="dv">100</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>ca_buff <span class="ot">&lt;-</span> ca_local[rnet_buff_100, ]</span></code></pre></div>
-<p>These can be visualised using base R graphics, extended by , as illustrated in Figure . This provides a good start for analysis but for publication-quality plots and interactive plots, designed for public engagement, we recommend using dedicated visualisation packages that work with spatial data such as .</p>
+<p>These can be visualised using base R graphics, extended by , as illustrated in Figure <span class="math inline">\(\ref{fig:fats}\)</span>. This provides a good start for analysis but for publication-quality plots and interactive plots, designed for public engagement, we recommend using dedicated visualisation packages that work with spatial data such as .</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bb, <span class="at">lty =</span> <span class="dv">4</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(rnet_buff_100, <span class="at">col =</span> <span class="st">&quot;grey&quot;</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(ca_local, <span class="at">pch =</span> <span class="dv">4</span>)</span>
@@ -277,7 +469,7 @@ University of Sydney<br><a class="author_email" href="mailto:#"><a href="mailto:
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.frame</span>(cents[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>)])</span></code></pre></div>
 <p>We use <code>od2line</code> to combine <code>flow</code> and <code>cents</code>, to join the former to the latter. We will visualise the <code>l</code> object created below in the next section.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>l <span class="ot">&lt;-</span> <span class="fu">od2line</span>(<span class="at">flow =</span> flow, <span class="at">zones =</span> cents)</span></code></pre></div>
-<p>The data is now in a form that is much easier to analyse. We can plot the data with the command <code>plot(l)</code>, which was not possible before. Because the <code>SpatialLinesDataFrame</code> object also contains data per line, it also helps with visualisation of the flows, as illustrated in Figure .</p>
+<p>The data is now in a form that is much easier to analyse. We can plot the data with the command <code>plot(l)</code>, which was not possible before. Because the <code>SpatialLinesDataFrame</code> object also contains data per line, it also helps with visualisation of the flows, as illustrated in Figure <span class="math inline">\(\ref{fig:lines_routes}\)</span>.</p>
 </div>
 <div id="allocating-flows-to-the-transport-network" class="section level2">
 <h2>Allocating flows to the transport network</h2>
@@ -289,9 +481,9 @@ University of Sydney<br><a class="author_email" href="mailto:#"><a href="mailto:
 <p>The raw output from routing APIs is usually provided as a JSON or GeoJSON text string. By default, <code>route_cyclestreet</code> saves a number of key variables (including length, time, hilliness and busyness variables generated by CycleStreets.net) from the attribute data provided by the API. If the user wants to save the raw output, the <code>save_raw</code> argument can be used:</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>route_bl_raw <span class="ot">&lt;-</span> <span class="fu">route_cyclestreets</span>(<span class="at">from =</span> <span class="st">&quot;Bradford&quot;</span>, <span class="at">to =</span> <span class="st">&quot;Leeds&quot;</span>, <span class="at">save_raw =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p>Additional arguments taken by the <code>route_</code> functions depend on the routing function in question. By changing the <code>plan</code> argument of <code>route_cyclestreet</code> to <code>fastest</code>, <code>quietest</code> or <code>balanced</code>, for example, routes favouring speed, quietness or a balance between speed and quietness will be saved, respectively.</p>
-<p>To automate the creation of route-allocated lines over many desire lines, the <code>line2route</code> function loops over each line, wrapping any <code>route_</code> function as an input. The output is a <code>SpatialLinesDataFrame</code> with the same number of dimensions as the input dataset (see the right panel in Figure ).</p>
+<p>To automate the creation of route-allocated lines over many desire lines, the <code>line2route</code> function loops over each line, wrapping any <code>route_</code> function as an input. The output is a <code>SpatialLinesDataFrame</code> with the same number of dimensions as the input dataset (see the right panel in Figure <span class="math inline">\(\ref{fig:lines_routes}\)</span>).</p>
 <pre><code>routes_fast &lt;- line2route(l = l, route_fun = route_cyclestreet)</code></pre>
-<p>The result of this ‘batch routing’ exercise is illustrated in Figure . The red lines in the left hand panel are very different from the hypothetical straight ‘desire lines’ often used in transport research, highlighting the importance of this route-allocation functionality.</p>
+<p>The result of this ‘batch routing’ exercise is illustrated in Figure <span class="math inline">\(\ref{fig:lines_routes}\)</span>. The red lines in the left hand panel are very different from the hypothetical straight ‘desire lines’ often used in transport research, highlighting the importance of this route-allocation functionality.</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(route_network, <span class="at">lwd =</span> <span class="dv">0</span>)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(l, <span class="at">lwd =</span> l<span class="sc">$</span>All <span class="sc">/</span> <span class="dv">10</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(routes_fast, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span>
@@ -299,9 +491,9 @@ University of Sydney<br><a class="author_email" href="mailto:#"><a href="mailto:
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>rnet <span class="ot">&lt;-</span> <span class="fu">overline</span>(routes_fast, <span class="st">&quot;All&quot;</span>, <span class="at">fun =</span> sum)</span>
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>rnet<span class="sc">$</span>flow <span class="ot">&lt;-</span> rnet<span class="sc">$</span>All <span class="sc">/</span> <span class="fu">mean</span>(rnet<span class="sc">$</span>All) <span class="sc">*</span> <span class="dv">3</span></span>
 <span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(rnet, <span class="at">lwd =</span> rnet<span class="sc">$</span>flow <span class="sc">/</span> <span class="fu">mean</span>(rnet<span class="sc">$</span>flow))</span></code></pre></div>
-<p>To estimate the amount of capacity needed at each segment on the transport network, the <code>overline</code> function demonstrated above, is used to divide line geometries into unique segments and aggregate the overlapping values. The results, illustrated in the right-hand panel of Figure , can be used to estimate where there is most need to improve the transport network, for example informing the decision of where to build new bicycle paths.</p>
+<p>To estimate the amount of capacity needed at each segment on the transport network, the <code>overline</code> function demonstrated above, is used to divide line geometries into unique segments and aggregate the overlapping values. The results, illustrated in the right-hand panel of Figure <span class="math inline">\(\ref{fig:lines_routes}\)</span>, can be used to estimate where there is most need to improve the transport network, for example informing the decision of where to build new bicycle paths.</p>
 <p>Limitations with the <code>route_cyclestreet</code> routing API include its specificity, to one mode (cycling) and a single region (the UK and part of Europe). To overcome these limitations, additional routing APIs were added with the functions <code>route_graphhopper</code>, <code>route_transportapi_public</code> and <code>viaroute</code>. These interface to Graphhopper, TransportAPI and the Open Source Routing Machine (OSRM) routing services, respectively. The great advantage of OSRM is that it allows you to run your own routing services on a local server, greatly increasing the rate of route generation.</p>
-<p>A short example of finding the route by car and bike between New York and Oaxaca demonstrates how <code>route_graphhopper</code> can collect geographical and other data on routes by various modes, anywhere in the world. The output, shown in Table , shows that the function also saves time, distance and (for bike trips) vertical distance climbed for the trips.</p>
+<p>A short example of finding the route by car and bike between New York and Oaxaca demonstrates how <code>route_graphhopper</code> can collect geographical and other data on routes by various modes, anywhere in the world. The output, shown in Table <span class="math inline">\(\ref{tab:xtnyoa}\)</span>, shows that the function also saves time, distance and (for bike trips) vertical distance climbed for the trips.</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ny2oaxaca1 <span class="ot">&lt;-</span> <span class="fu">route_graphhopper</span>(<span class="st">&quot;New York&quot;</span>, <span class="st">&quot;Oaxaca&quot;</span>, <span class="at">vehicle =</span> <span class="st">&quot;bike&quot;</span>)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>ny2oaxaca2 <span class="ot">&lt;-</span> <span class="fu">route_graphhopper</span>(<span class="st">&quot;New York&quot;</span>, <span class="st">&quot;Oaxaca&quot;</span>, <span class="at">vehicle =</span> <span class="st">&quot;car&quot;</span>)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(ny2oaxaca1<span class="sc">@</span>data, ny2oaxaca2<span class="sc">@</span>data)</span></code></pre></div>
@@ -350,11 +542,11 @@ University of Sydney<br><a class="author_email" href="mailto:#"><a href="mailto:
 <span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">projection =</span> <span class="st">&quot;austalbers&quot;</span>,</span>
 <span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">dissolve =</span> <span class="cn">TRUE</span></span>
 <span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>By looking at the data.frame associated with the SpatialPolygonsDataFrame that is returned from the <code>calc_catchment</code> function, the total population within the catchment area can be seen to be nearly 40,000 people. The catchment area can also be plotted as with any other <code>Spatial*</code> object using the <code>plot</code> function using the code below with the result shown in Figure .</p>
+<p>By looking at the data.frame associated with the SpatialPolygonsDataFrame that is returned from the <code>calc_catchment</code> function, the total population within the catchment area can be seen to be nearly 40,000 people. The catchment area can also be plotted as with any other <code>Spatial*</code> object using the <code>plot</code> function using the code below with the result shown in Figure <span class="math inline">\(\ref{fig:catchmentplot}\)</span>.</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sa1income, <span class="at">col =</span> <span class="st">&quot;light grey&quot;</span>)</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(catch800m, <span class="at">col =</span> <span class="fu">rgb</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>), <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(testcycleway, <span class="at">col =</span> <span class="st">&quot;green&quot;</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<p>This simplistic catchment area is useful when the straight-line distance is a reasonable approximation of the route taken to walk (or cycle) to a transport facility. However, this is often not the case. The catchment area in Figure  initially appears reasonable but the red-shaded catchment area includes an area that requires travelling around a bay to access from the (green-coloured) cycleway. To allow for more realistic catchment areas for most situations, <strong>stplanr</strong> provides the <code>calc_network_catchment</code> function that uses the same principle as <code>calc_catchment</code> but also takes into account the transport network.</p>
+<p>This simplistic catchment area is useful when the straight-line distance is a reasonable approximation of the route taken to walk (or cycle) to a transport facility. However, this is often not the case. The catchment area in Figure <span class="math inline">\(\ref{fig:catchmentplot}\)</span> initially appears reasonable but the red-shaded catchment area includes an area that requires travelling around a bay to access from the (green-coloured) cycleway. To allow for more realistic catchment areas for most situations, <strong>stplanr</strong> provides the <code>calc_network_catchment</code> function that uses the same principle as <code>calc_catchment</code> but also takes into account the transport network.</p>
 <p>To use <code>calc_network_catchment</code>, a transport network needs to be prepared that can be used in conjunction with the previous datasets. Preparation of the dataset involves using the <code>SpatialLinesNetwork</code> function to create a network from a <code>SpatialLinesDataFrame</code>. This function combines a <code>SpatialLinesDataFrame</code> with a graph network (using the  package) to provide basic routing functionality. The network is used to calculate the shortest actual paths within the specific catchment distance. This process involves the following code:</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span>(<span class="fu">file.path</span>(data_dir, <span class="st">&quot;sydroads.zip&quot;</span>))</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>sydroads <span class="ot">&lt;-</span> <span class="fu">as</span>(sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">&quot;.&quot;</span>, <span class="st">&quot;roads&quot;</span>), <span class="st">&quot;Spatial&quot;</span>)</span>
@@ -370,7 +562,7 @@ University of Sydney<br><a class="author_email" href="mailto:#"><a href="mailto:
 <span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">distance =</span> <span class="dv">100</span>,</span>
 <span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">projection =</span> <span class="st">&quot;austalbers&quot;</span></span>
 <span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>Once calculated, the network catchment area can be used just as the straight-line network catchment. This includes extracting the catchment population of 128,000 and plotting the original catchment area together with the original area with the results shown in Figure :</p>
+<p>Once calculated, the network catchment area can be used just as the straight-line network catchment. This includes extracting the catchment population of 128,000 and plotting the original catchment area together with the original area with the results shown in Figure <span class="math inline">\(\ref{fig:netcatchplot}\)</span>:</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sa1income, <span class="at">col =</span> <span class="st">&quot;light grey&quot;</span>)</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(catch800m, <span class="at">col =</span> <span class="fu">rgb</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>), <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(netcatch800m, <span class="at">col =</span> <span class="fu">rgb</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.5</span>), <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
@@ -381,7 +573,7 @@ University of Sydney<br><a class="author_email" href="mailto:#"><a href="mailto:
 <h1>Modelling and visualisation</h1>
 <div id="modelling-mode-choice" class="section level2">
 <h2>Modelling mode choice</h2>
-<p>Route-allocated lines allow estimation of <em>route distance</em> and <em>cirquity</em> (route distance divided by Euclidean distance). These variables can help model the rate of flow between origins and destination, as illustrated in the left-hand panel of Figure . The code below demonstrates how objects generated by <strong>stplanr</strong> can be used to undertake such analysis, with the <code>line_length</code> function used to find the distance, in meters, of lat/lon data.</p>
+<p>Route-allocated lines allow estimation of <em>route distance</em> and <em>cirquity</em> (route distance divided by Euclidean distance). These variables can help model the rate of flow between origins and destination, as illustrated in the left-hand panel of Figure <span class="math inline">\(\ref{fig:euclidfastest}\)</span>. The code below demonstrates how objects generated by <strong>stplanr</strong> can be used to undertake such analysis, with the <code>line_length</code> function used to find the distance, in meters, of lat/lon data.</p>
 <pre><code>l$d_euclidean &lt;- line_length(l)
 l$d_rf &lt;- routes_fast@data$length
 plot(l$d_euclidean, l$d_rf,
@@ -389,7 +581,7 @@ plot(l$d_euclidean, l$d_rf,
 abline(a = 0, b = 1)
 abline(a = 0, b = 1.2, col = &quot;green&quot;)
 abline(a = 0, b = 1.5, col = &quot;red&quot;)</code></pre>
-<p>The left hand panel of Figure  shows the expected strong correlation between Euclidean (<span class="math inline">\(d_E\)</span>) and fastest route (<span class="math inline">\(d_{Rf}\)</span>) distance. However, some OD pairs have a proportionally higher route distance than others, as illustrated by distance from the black line in the above plot: this represents : the ratio of network distance to Euclidean distance :</p>
+<p>The left hand panel of Figure <span class="math inline">\(\ref{fig:euclidfastest}\)</span> shows the expected strong correlation between Euclidean (<span class="math inline">\(d_E\)</span>) and fastest route (<span class="math inline">\(d_{Rf}\)</span>) distance. However, some OD pairs have a proportionally higher route distance than others, as illustrated by distance from the black line in the above plot: this represents : the ratio of network distance to Euclidean distance :</p>
 <p><span class="math display">\[
  Q = \frac{d_{Rf}}{d_E}
 \]</span></p>
@@ -417,7 +609,7 @@ abline(a = 0, b = 1.5, col = &quot;red&quot;)</code></pre>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex =</span> l<span class="sc">$</span>All <span class="sc">/</span> <span class="dv">50</span>,</span>
 <span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Euclidean distance (m)&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Proportion of trips by foot&quot;</span></span>
 <span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>Based on the right-hand panel in Figure , there is a clear negative relationship between distance of trips and the proportion of those trips made by walking. This is unsurprising: beyond a certain distance (around 1.5km according the the data presented in the figure above) walking is usually seen as too slow and other modes are considered. According to the academic literature, this ‘distance decay’ is non-linear and there have been a number of functions proposed to fit to distance decay curves . From the range of options we test below just two forms. We will compare the ability of linear and log-square-root functions to fit the data contained in <code>l</code> for walking.</p>
+<p>Based on the right-hand panel in Figure <span class="math inline">\(\ref{fig:euclidfastest}\)</span>, there is a clear negative relationship between distance of trips and the proportion of those trips made by walking. This is unsurprising: beyond a certain distance (around 1.5km according the the data presented in the figure above) walking is usually seen as too slow and other modes are considered. According to the academic literature, this ‘distance decay’ is non-linear and there have been a number of functions proposed to fit to distance decay curves . From the range of options we test below just two forms. We will compare the ability of linear and log-square-root functions to fit the data contained in <code>l</code> for walking.</p>
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>lm1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(pwalk <span class="sc">~</span> d_euclidean, <span class="at">data =</span> l<span class="sc">@</span>data, <span class="at">weights =</span> All)</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>lm2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(pwalk <span class="sc">~</span> d_rf, <span class="at">data =</span> l<span class="sc">@</span>data, <span class="at">weights =</span> All)</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>lm3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(pwalk <span class="sc">~</span> d_rf <span class="sc">+</span> <span class="fu">I</span>(d_rf<span class="sc">^</span><span class="fl">0.5</span>),</span>
@@ -525,10 +717,10 @@ Zheng, Xinhu, Wei Chen, Pu Wang, Dayong Shen, Songhang Chen, Xiao Wang, Qingpeng
 </div>
 </div>
 </div>
-<div class="footnotes">
+<div class="footnotes footnotes-end-of-document">
 <hr />
 <ol>
-<li id="fn1"><p> Many people can think of things that could be improved on their local transport networks, especially for walking, cycling and wheel-chairs. But most lack the evidence to communicate the issues, and potential solutions, to others.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p> Many people can think of things that could be improved on their local transport networks, especially for walking, cycling and wheel-chairs. But most lack the evidence to communicate the issues, and potential solutions, to others. <a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 <li id="fn2"><p>An API key is needed for this function to work. This can be requested (or purchased for large scale routing) from <a href="https://www.cyclestreets.net/api/apply/">cyclestreets.net/api/apply</a>. See <code>?route_cyclestreet</code> for details. Thanks to Martin Lucas-Smith and Simon Nuttall for making this possible.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
