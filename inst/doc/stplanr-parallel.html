@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     </style>
 
 
+
 <style type="text/css">
   code {
     white-space: pre;
@@ -329,11 +330,16 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">Parallel routing and performance with stplanr</h1>
+<h1 class="title toc-ignore">Parallel routing and performance with
+stplanr</h1>
 
 
 
-<p>The code in this vignette provides a basic introduction to parallel routing. Routing is something that is highly parallelisable because each route can be calculated independently of the others. The code should be fairly self-explanatory. No results are shown and the code is not run to reduce package build times.</p>
+<p>The code in this vignette provides a basic introduction to parallel
+routing. Routing is something that is highly parallelisable because each
+route can be calculated independently of the others. The code should be
+fairly self-explanatory. No results are shown and the code is not run to
+reduce package build times.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stplanr)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>

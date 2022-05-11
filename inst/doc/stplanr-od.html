@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     </style>
 
 
+
 <style type="text/css">
   code {
     white-space: pre;
@@ -357,24 +358,82 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<p>Note: an updated version of this vignette, called ‘od’, is available in the <code>od</code> package. View it as follows:</p>
+<p>Note: an updated version of this vignette, called ‘od’, is available
+in the <code>od</code> package. View it as follows:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;od&quot;</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">vignette</span>(<span class="st">&quot;od&quot;</span>)</span></code></pre></div>
 <div id="introduction-what-is-od-data" class="section level1">
 <h1>Introduction: what is OD data?</h1>
-<p>As the name suggests, origin-destination (OD) data represents movement through geographic space, from an origin (O) to a destination (D). Sometimes also called ‘<a href="https://www.ons.gov.uk/census/2011census/2011censusdata/originanddestinationdata">flow data</a>’, OD datasets contain details of trips between two geographic points or, more commonly, zones (which are often represented by a zone centroid). Most OD datasets refer to start and end locations with ‘ID’ columns containing character strings such as <code>zone1</code>. These IDs refer to a geographic feature in a separate geographic dataset. Origin and destination locations are sometimes represented as geographic coordinates.</p>
-<p>OD datasets typically contain multiple non geographic attributes. These usually include, at a minimum, the number of trips that take place from the origin to the destination over a given time period (e.g. a typical work day). Additional attributes can include breakdown by the mode(s) of transport used for the trips. Usually only a single mode is captured (trips made by a combination of cycle-train-walk modes are often counted only as ‘train’ trips). Additional disaggregations of overall counts may include trip counts at different time periods.</p>
-<p>Many OD datasets omit information. If there is only one time period, then this resides in the metadata for the whole data set. There is rarely any information about the path taken between the start and end points. It is typically the job of the analyst to use a routing service (such as <a href="https://github.com/riatelab/osrm">OSRM</a>, <a href="https://symbolixau.github.io/googleway/articles/googleway-vignette.html#google-directions-api">Google Directions API</a>, <a href="https://github.com/Robinlovelace/cyclestreets/">CycleStreets.net</a> or <a href="https://github.com/GIScience/openrouteservice-r/">OpenRouteService</a>) or an assignment model (such as those contained in proprietary software such as <a href="https://saturnsoftware2.co.uk/">SATURN</a> and <a href="https://www.ptvgroup.com/en/solutions/products/ptv-visum/">Visum</a>) to identify likely routes with reference to shortest path algorithms or generalised cost minimisation algorithms (which account for monetary plus time and quality ‘costs’).</p>
+<p>As the name suggests, origin-destination (OD) data represents
+movement through geographic space, from an origin (O) to a destination
+(D). Sometimes also called ‘<a href="https://www.ons.gov.uk/census/2011census/2011censusdata/originanddestinationdata">flow
+data</a>’, OD datasets contain details of trips between two geographic
+points or, more commonly, zones (which are often represented by a zone
+centroid). Most OD datasets refer to start and end locations with ‘ID’
+columns containing character strings such as <code>zone1</code>. These
+IDs refer to a geographic feature in a separate geographic dataset.
+Origin and destination locations are sometimes represented as geographic
+coordinates.</p>
+<p>OD datasets typically contain multiple non geographic attributes.
+These usually include, at a minimum, the number of trips that take place
+from the origin to the destination over a given time period (e.g. a
+typical work day). Additional attributes can include breakdown by the
+mode(s) of transport used for the trips. Usually only a single mode is
+captured (trips made by a combination of cycle-train-walk modes are
+often counted only as ‘train’ trips). Additional disaggregations of
+overall counts may include trip counts at different time periods.</p>
+<p>Many OD datasets omit information. If there is only one time period,
+then this resides in the metadata for the whole data set. There is
+rarely any information about the path taken between the start and end
+points. It is typically the job of the analyst to use a routing service
+(such as <a href="https://github.com/riatelab/osrm">OSRM</a>, <a href="https://symbolixau.github.io/googleway/articles/googleway-vignette.html#google-directions-api">Google
+Directions API</a>, <a href="https://github.com/Robinlovelace/cyclestreets/">CycleStreets.net</a>
+or <a href="https://github.com/GIScience/openrouteservice-r/">OpenRouteService</a>)
+or an assignment model (such as those contained in proprietary software
+such as <a href="https://saturnsoftware2.co.uk/">SATURN</a> and <a href="https://www.ptvgroup.com/en/solutions/products/ptv-visum/">Visum</a>)
+to identify likely routes with reference to shortest path algorithms or
+generalised cost minimisation algorithms (which account for monetary
+plus time and quality ‘costs’).</p>
 </div>
 <div id="the-importance-of-od-data" class="section level1">
 <h1>The importance of OD data</h1>
-<p>Despite the rather dull name, OD datasets are a vital part of the modern world: they underpin analysis and models that influence current <em>and future</em> transport systems. Historically, these models, and the OD datasets that drove them, were used to plan for car-dominated cities <span class="citation">(Boyce and Williams 2015)</span>. Now that there is growing evidence of the negative impacts car domination, however, there is a strong argument for transport models being re-purposed. Origin-destination data can be part of the solution.</p>
-<p>From a health perspective transport planning, supported by OD data and analysed primarily using proprietary software and opaque methods, has failed: roads are now the largest cause of death of young people worldwide, killing more than <a href="https://www.who.int/publications/i/item/9789241565684">1 million</a> people each year <span class="citation">(World Health Organization 2018)</span>. Even ignoring problems such as air pollution, obesity and climate change, it is clear that current transport systems are unsustainable. There are other reasons why transport data analysis and software are important <span class="citation">(Lovelace and Ellison 2018)</span>.</p>
-<p>The purpose of this vignette is to introduce OD data, an important component of many transport planning models, with examples based on data and functions from the stplanr package. The aim is to enable you to use OD data to inform more sustainable transport plans, for example by identifying ‘desire lines’ along which policies could cause a modal switch away from cars and towards lower energy modes such as walking, cycling, and public transport.</p>
+<p>Despite the rather dull name, OD datasets are a vital part of the
+modern world: they underpin analysis and models that influence current
+<em>and future</em> transport systems. Historically, these models, and
+the OD datasets that drove them, were used to plan for car-dominated
+cities <span class="citation">(Boyce and Williams 2015)</span>. Now that
+there is growing evidence of the negative impacts car domination,
+however, there is a strong argument for transport models being
+re-purposed. Origin-destination data can be part of the solution.</p>
+<p>From a health perspective transport planning, supported by OD data
+and analysed primarily using proprietary software and opaque methods,
+has failed: roads are now the largest cause of death of young people
+worldwide, killing more than <a href="https://www.who.int/publications/i/item/9789241565684">1
+million</a> people each year <span class="citation">(World Health
+Organization 2018)</span>. Even ignoring problems such as air pollution,
+obesity and climate change, it is clear that current transport systems
+are unsustainable. There are other reasons why transport data analysis
+and software are important <span class="citation">(Lovelace and Ellison
+2018)</span>.</p>
+<p>The purpose of this vignette is to introduce OD data, an important
+component of many transport planning models, with examples based on data
+and functions from the stplanr package. The aim is to enable you to use
+OD data to inform more sustainable transport plans, for example by
+identifying ‘desire lines’ along which policies could cause a modal
+switch away from cars and towards lower energy modes such as walking,
+cycling, and public transport.</p>
 </div>
 <div id="an-example-od-dataset" class="section level1">
 <h1>An example OD dataset</h1>
-<p>OD data can be accessed from a range of sources (we will see code that downloads many thousands of OD pairs later in this vignette). Some ‘data carpentry’ may be needed before the OD data is ready for analysis. This vignette does not cover cleaning OD data: we assume you know R and come with ‘tidy’ data <span class="citation">(Wickham 2014)</span>, in which each row represents travel between an origin and a destination (typically zones represented by zone IDs), and each column represents an attribute such as number of trips or vehichle counts by mode or straight line distance.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>OD data can be accessed from a range of sources (we will see code
+that downloads many thousands of OD pairs later in this vignette). Some
+‘data carpentry’ may be needed before the OD data is ready for analysis.
+This vignette does not cover cleaning OD data: we assume you know R and
+come with ‘tidy’ data <span class="citation">(Wickham 2014)</span>, in
+which each row represents travel between an origin and a destination
+(typically zones represented by zone IDs), and each column represents an
+attribute such as number of trips or vehichle counts by mode or straight
+line distance.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
 <p>In simple terms OD data looks like this:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stplanr)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
@@ -385,10 +444,13 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>od</span></code></pre></div>
 <!-- The next section discusses this, and other, representations of OD data. -->
 <!-- # Representations of OD data -->
-<p>Like all data, the object <code>od</code>, created in the preceding code chunk, comes from a specific context: the 2011 <a href="https://ukdataservice.ac.uk/learning-hub/census/">UK Census</a> questions:</p>
+<p>Like all data, the object <code>od</code>, created in the preceding
+code chunk, comes from a specific context: the 2011 <a href="https://ukdataservice.ac.uk/learning-hub/census/">UK Census</a>
+questions:</p>
 <ul>
 <li>In your main job, what is the address of your workplace?</li>
-<li>How do you usually travel to work (for the longest part, by distance, of your usual journey to work)?
+<li>How do you usually travel to work (for the longest part, by
+distance, of your usual journey to work)?
 <ul>
 <li>Work mainly at or from home</li>
 <li>Underground, metro, light rail, tram</li>
@@ -396,73 +458,166 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li>…</li>
 </ul></li>
 </ul>
-<p>The object <code>od</code> is a data frame containing aggregated answers to these questions (see <code>?pct::get_od()</code> for details). It is <em>implicitly geographic</em>: the first two columns refer to geographic entities but do not contain coordinates themselves (OD coordinates are covered below). Other columns contain attributes associated with each OD pair, typically counting how many people travel by mode of transport. OD data can be represented in a number of ways, as outlined in the next sections.</p>
+<p>The object <code>od</code> is a data frame containing aggregated
+answers to these questions (see <code>?pct::get_od()</code> for
+details). It is <em>implicitly geographic</em>: the first two columns
+refer to geographic entities but do not contain coordinates themselves
+(OD coordinates are covered below). Other columns contain attributes
+associated with each OD pair, typically counting how many people travel
+by mode of transport. OD data can be represented in a number of ways, as
+outlined in the next sections.</p>
 </div>
 <div id="origin-destination-pairs-long-form" class="section level1">
 <h1>Origin-destination pairs (long form)</h1>
-<p>The most useful way of representing OD data is the ‘long’ data frame format described above. This is increasingly the format used by official statistical agencies, including the UK’s Office for National Statistics (ONS), who provide origin destination data as a <code>.csv</code> file. Typically, the first column is the zone code of origin and the second column is the zone code of the destination, as is the case with the object <code>od</code>. Subsequent columns contain attributes such as <code>all</code>, meaning trips by all modes, as illustrated below (we will see a matrix representation of this subset of the data in the next section):</p>
+<p>The most useful way of representing OD data is the ‘long’ data frame
+format described above. This is increasingly the format used by official
+statistical agencies, including the UK’s Office for National Statistics
+(ONS), who provide origin destination data as a <code>.csv</code> file.
+Typically, the first column is the zone code of origin and the second
+column is the zone code of the destination, as is the case with the
+object <code>od</code>. Subsequent columns contain attributes such as
+<code>all</code>, meaning trips by all modes, as illustrated below (we
+will see a matrix representation of this subset of the data in the next
+section):</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>od[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]</span></code></pre></div>
-<p><code>geo_code1</code> refers to the origin, <code>geo_code2</code> refers to the destination.</p>
-<p>Additional columns can represent addition attributes, such as number of trips by time, mode of travel, type of person, or trip purpose. The <code>od</code> dataset contains column names representing mode of travel (train, bus, bicycle etc), as can be seen with <code>names(od[-(1:2)])</code>. These ‘mode’ columns contain integers in the example data, but contain characters, dates and other data types, taking advantage of the flexibility of data frames.</p>
+<p><code>geo_code1</code> refers to the origin, <code>geo_code2</code>
+refers to the destination.</p>
+<p>Additional columns can represent addition attributes, such as number
+of trips by time, mode of travel, type of person, or trip purpose. The
+<code>od</code> dataset contains column names representing mode of
+travel (train, bus, bicycle etc), as can be seen with
+<code>names(od[-(1:2)])</code>. These ‘mode’ columns contain integers in
+the example data, but contain characters, dates and other data types,
+taking advantage of the flexibility of data frames.</p>
 </div>
 <div id="origin-destination-matrices" class="section level1">
 <h1>Origin destination matrices</h1>
-<p>The ‘OD matrix’ representation of OD data represents each attribute column in the long form as a separate matrix. Instead of rows representing OD pairs, rows represent all travel from each origin to all destinations (represented as columns). The <strong>stplanr</strong> function <code>od_to_odmatrix()</code> converts between the ‘long’ to the ‘matrix’ form on a per column basis, as illustrated below:</p>
+<p>The ‘OD matrix’ representation of OD data represents each attribute
+column in the long form as a separate matrix. Instead of rows
+representing OD pairs, rows represent all travel from each origin to all
+destinations (represented as columns). The <strong>stplanr</strong>
+function <code>od_to_odmatrix()</code> converts between the ‘long’ to
+the ‘matrix’ form on a per column basis, as illustrated below:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>od_matrix <span class="ot">&lt;-</span> <span class="fu">od_to_odmatrix</span>(od[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>])</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(od_matrix)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>od_matrix</span></code></pre></div>
-<p>Note that row and column names are now zone codes. The cell in row 1 and column 2 (<code>od_matrix[1, 2]</code>), for example, reports that there are 94 trips from zone <code>E02002361</code> to zone <code>E02002393</code>. In the case above, no people travel between the majority of the OD pair combinations, as represented by the <code>NA</code>s. OD matrices are a relatively rudimentary data structure that pre-date R’s <code>data.frame</code> class. Typically, they only contained integer counts, providing small and simple datasets that could be used in 20<sup>th</sup> Century transport modelling software running on limited 20<sup>th</sup> Century hardware.</p>
-<p>Although ‘OD matrix’ is still sometimes used informally to refer to any OD datadset, the long OD pair representation is recommended: OD matrices become unwieldy for large OD datasets, which are likely to be sparse, with many empty cells represented by NAs. Furthermore, to represent many attributes in matix format, multiple lists of OD matrices or ‘OD arrays’ must be created. This is demonstrated in the code chunk below, which represents travel between OD pairs by all modes and by bike:</p>
+<p>Note that row and column names are now zone codes. The cell in row 1
+and column 2 (<code>od_matrix[1, 2]</code>), for example, reports that
+there are 94 trips from zone <code>E02002361</code> to zone
+<code>E02002393</code>. In the case above, no people travel between the
+majority of the OD pair combinations, as represented by the
+<code>NA</code>s. OD matrices are a relatively rudimentary data
+structure that pre-date R’s <code>data.frame</code> class. Typically,
+they only contained integer counts, providing small and simple datasets
+that could be used in 20<sup>th</sup> Century transport modelling
+software running on limited 20<sup>th</sup> Century hardware.</p>
+<p>Although ‘OD matrix’ is still sometimes used informally to refer to
+any OD datadset, the long OD pair representation is recommended: OD
+matrices become unwieldy for large OD datasets, which are likely to be
+sparse, with many empty cells represented by NAs. Furthermore, to
+represent many attributes in matix format, multiple lists of OD matrices
+or ‘OD arrays’ must be created. This is demonstrated in the code chunk
+below, which represents travel between OD pairs by all modes and by
+bike:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">c</span>(<span class="st">&quot;all&quot;</span>, <span class="st">&quot;bicycle&quot;</span>), <span class="cf">function</span>(x) <span class="fu">od_to_odmatrix</span>(od[<span class="fu">c</span>(<span class="st">&quot;geo_code1&quot;</span>, <span class="st">&quot;geo_code2&quot;</span>, x)]))</span></code></pre></div>
-<p>The function <code>odmatrix_to_od()</code> can converts OD matrices back into the more convenient long form:</p>
+<p>The function <code>odmatrix_to_od()</code> can converts OD matrices
+back into the more convenient long form:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">odmatrix_to_od</span>(od_matrix)</span></code></pre></div>
 </div>
 <div id="inter-and-intra-zonal-flows" class="section level1">
 <h1>Inter and intra-zonal flows</h1>
-<p>A common, and sometimes problematic, feature of OD data is ‘intra-zonal flows’. These are trips that start and end in the same zone. The proportion of travel that is intra-zonal depends largely on the size of the zones used. It is often useful to separate intra-zonal and inter-zonal flows at the outset, as demonstrated below:</p>
+<p>A common, and sometimes problematic, feature of OD data is
+‘intra-zonal flows’. These are trips that start and end in the same
+zone. The proportion of travel that is intra-zonal depends largely on
+the size of the zones used. It is often useful to separate intra-zonal
+and inter-zonal flows at the outset, as demonstrated below:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(od_inter <span class="ot">&lt;-</span> od <span class="sc">%&gt;%</span> <span class="fu">filter</span>(geo_code1 <span class="sc">!=</span> geo_code2))</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>(od_intra <span class="ot">&lt;-</span> od <span class="sc">%&gt;%</span> <span class="fu">filter</span>(geo_code1 <span class="sc">==</span> geo_code2))</span></code></pre></div>
-<p>Intra-zonal OD pairs represent short trips (up to the size of the zone within which the trips take place) so are sometimes ignored in OD data analyis. However, intra-zonal flows can be valuable, for example in measuring the amount of localised transport activity and as a sign of local economies.</p>
+<p>Intra-zonal OD pairs represent short trips (up to the size of the
+zone within which the trips take place) so are sometimes ignored in OD
+data analyis. However, intra-zonal flows can be valuable, for example in
+measuring the amount of localised transport activity and as a sign of
+local economies.</p>
 </div>
 <div id="oneway-lines" class="section level1">
 <h1>Oneway lines</h1>
-<p>Another subtly with some (<a href="https://icaci.org/files/documents/ICC_proceedings/ICC2013/_extendedAbstract/393_proceeding.pdf">symetric</a>, where origins and destinations can be the same points) OD data is that oneway flows can hide the extent of bidirectional flows in plots and other types of analysis. This is illustrated below for a sample of the <code>od</code> dataset:</p>
+<p>Another subtly with some (<a href="https://icaci.org/files/documents/ICC_proceedings/ICC2013/_extendedAbstract/393_proceeding.pdf">symetric</a>,
+where origins and destinations can be the same points) OD data is that
+oneway flows can hide the extent of bidirectional flows in plots and
+other types of analysis. This is illustrated below for a sample of the
+<code>od</code> dataset:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(od_min <span class="ot">&lt;-</span> od_data_sample[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">9</span>), <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>])</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>(od_oneway <span class="ot">&lt;-</span> <span class="fu">od_oneway</span>(od_min))</span></code></pre></div>
-<p>Note that in the second dataset there are only 2 rows instead of 3. The function <code>od_oneway()</code> aggregates oneway lines to produce bidirectional flows. By default, it returns the sum of each numeric column for each bidirectional origin-destination pair.</p>
+<p>Note that in the second dataset there are only 2 rows instead of 3.
+The function <code>od_oneway()</code> aggregates oneway lines to produce
+bidirectional flows. By default, it returns the sum of each numeric
+column for each bidirectional origin-destination pair.</p>
 </div>
 <div id="desire-lines" class="section level1">
 <h1>Desire lines</h1>
-<p>The previous representations of OD data are all implicitly geographic: their coordinates are not contained in the data, but associated with another object that <em>is</em> geographic, typically a zone or a zone centroid. This is problematic, meaning that multiple objects or files are required to fully represent the same data. Desire line representations overcome this issue. They are geographic lines between origin and destination, with the same attributes as in the ‘long’ representation.</p>
-<p><code>od2line()</code> can convert long form OD data to desire lines. The second argument is a zone or a centroid dataset that contains ‘zone IDs’ that match the IDs in the first and second columns of the OD data, as illustrated below:</p>
+<p>The previous representations of OD data are all implicitly
+geographic: their coordinates are not contained in the data, but
+associated with another object that <em>is</em> geographic, typically a
+zone or a zone centroid. This is problematic, meaning that multiple
+objects or files are required to fully represent the same data. Desire
+line representations overcome this issue. They are geographic lines
+between origin and destination, with the same attributes as in the
+‘long’ representation.</p>
+<p><code>od2line()</code> can convert long form OD data to desire lines.
+The second argument is a zone or a centroid dataset that contains ‘zone
+IDs’ that match the IDs in the first and second columns of the OD data,
+as illustrated below:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> zones_sf</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(z)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>l <span class="ot">&lt;-</span> <span class="fu">od2line</span>(<span class="at">flow =</span> od_inter, <span class="at">zones =</span> z)</span></code></pre></div>
-<p>The preceding code chunk created a zones object called <code>z</code>, the coordinates of which were used to convert the object <code>od</code> into <code>l</code>, which are geographic desire lines. The desire line object is stored in as a geographic simple features object, which has the same number of rows as does the object <code>od</code> and one more column:</p>
+<p>The preceding code chunk created a zones object called
+<code>z</code>, the coordinates of which were used to convert the object
+<code>od</code> into <code>l</code>, which are geographic desire lines.
+The desire line object is stored in as a geographic simple features
+object, which has the same number of rows as does the object
+<code>od</code> and one more column:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(l)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(od) <span class="sc">-</span> <span class="fu">nrow</span>(l)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ncol</span>(l) <span class="sc">-</span> <span class="fu">ncol</span>(od)</span></code></pre></div>
-<p>The new column is the geometry column, which can be plotted as follows:</p>
+<p>The new column is the geometry column, which can be plotted as
+follows:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(l<span class="sc">$</span>geometry)</span></code></pre></div>
-<p>By default, plotting <code>l</code> shows the attributes for each line:</p>
+<p>By default, plotting <code>l</code> shows the attributes for each
+line:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(l)</span></code></pre></div>
-<p>Because these lines have a coordinate reference system (CRS) inherited from the zones data, they can also be plotted on an interactive map, as follows (result only shown if webshot is installed):</p>
+<p>Because these lines have a coordinate reference system (CRS)
+inherited from the zones data, they can also be plotted on an
+interactive map, as follows (result only shown if webshot is
+installed):</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(leaflet)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">leaflet</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addTiles</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addPolygons</span>(<span class="at">data =</span> l)</span></code></pre></div>
 <div id="non-matching-ids" class="section level2">
 <h2>Non-matching IDs</h2>
-<p>Note that in some OD datasets there may be IDs that match no zone. We can simulate this situation by setting the third origin ID of <code>od</code> to <code>nomatch</code>, a string that is not in the zones ID:</p>
+<p>Note that in some OD datasets there may be IDs that match no zone. We
+can simulate this situation by setting the third origin ID of
+<code>od</code> to <code>nomatch</code>, a string that is not in the
+zones ID:</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>od<span class="sc">$</span>geo_code2[<span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="st">&quot;nomatch&quot;</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">od2line</span>(od, z)</span></code></pre></div>
-<p>You should clean your OD data and ensure all ids in the first two columns match the ids in the first column of the zone data before running <code>od2line()</code>.</p>
+<p>You should clean your OD data and ensure all ids in the first two
+columns match the ids in the first column of the zone data before
+running <code>od2line()</code>.</p>
 </div>
 </div>
 <div id="a-larger-example-commuter-trips-in-london" class="section level1">
 <h1>A larger example: commuter trips in London</h1>
-<p>The minimal example dataset we’ve been using so far is fine for demonstrating the key concepts of OD data. But for more advanced topic, and to get an idea of what is possible with OD data at a city level, it helps to have a larger dataset.</p>
-<p>We will use an example dataset representing commuting in London, accessed as follows (note: these code chunks are not evaluated in the vignette because it starts by downloading 2.4 million rows and could take a few minutes to run). First, we can use the <code>pct</code> package to download official data from the UK (note the addition of the % active column):</p>
+<p>The minimal example dataset we’ve been using so far is fine for
+demonstrating the key concepts of OD data. But for more advanced topic,
+and to get an idea of what is possible with OD data at a city level, it
+helps to have a larger dataset.</p>
+<p>We will use an example dataset representing commuting in London,
+accessed as follows (note: these code chunks are not evaluated in the
+vignette because it starts by downloading 2.4 million rows and could
+take a few minutes to run). First, we can use the <code>pct</code>
+package to download official data from the UK (note the addition of the
+% active column):</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># get nationwide OD data</span></span>
@@ -483,33 +638,57 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>  od_all<span class="sc">$</span>geo_code1 <span class="sc">%in%</span> centroids_london<span class="sc">$</span>msoa11cd <span class="sc">&amp;</span></span>
 <span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    od_all<span class="sc">$</span>geo_code2 <span class="sc">%in%</span> centroids_london<span class="sc">$</span>msoa11cd,</span>
 <span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div>
-<p>Now that we have the input OD data (in <code>od_london</code>) and zones (population-weighted centroids in <code>cents_london</code> in this case), can can convert them to desire lines:</p>
+<p>Now that we have the input OD data (in <code>od_london</code>) and
+zones (population-weighted centroids in <code>cents_london</code> in
+this case), can can convert them to desire lines:</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>desire_lines_london <span class="ot">&lt;-</span> <span class="fu">od2line</span>(od_london, centroids_london)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(desire_lines_london)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># &gt; 352654</span></span></code></pre></div>
-<p>Even after filering flows to keep only those with origins <em>and</em> destinations in London, there are still more than 300k flows. That is a lot to plot. So we’ll further subset them, first so they only contain inter-zonal flows (which are actually lines, intra-zonal flows are lines with length 0, which are essentially points) and second to contain only flows containing above a threshold level of flows:</p>
+<p>Even after filering flows to keep only those with origins
+<em>and</em> destinations in London, there are still more than 300k
+flows. That is a lot to plot. So we’ll further subset them, first so
+they only contain inter-zonal flows (which are actually lines,
+intra-zonal flows are lines with length 0, which are essentially points)
+and second to contain only flows containing above a threshold level of
+flows:</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>min_trips_threshold <span class="ot">&lt;-</span> <span class="dv">20</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>desire_lines_inter <span class="ot">&lt;-</span> desire_lines_london <span class="sc">%&gt;%</span> <span class="fu">filter</span>(geo_code1 <span class="sc">!=</span> geo_code2)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>desire_lines_intra <span class="ot">&lt;-</span> desire_lines_london <span class="sc">%&gt;%</span> <span class="fu">filter</span>(geo_code1 <span class="sc">==</span> geo_code2)</span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>desire_lines_top <span class="ot">&lt;-</span> desire_lines_inter <span class="sc">%&gt;%</span> <span class="fu">filter</span>(all <span class="sc">&gt;=</span> min_trips_threshold)</span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(desire_lines_top)</span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># &gt; 28879</span></span></code></pre></div>
-<p>If we do any analysis on this dataset, it’s important to know how representative it is of all flows. A crude way to do this is to calculate the proportion of lines and trips that are covered in the dataset:</p>
+<p>If we do any analysis on this dataset, it’s important to know how
+representative it is of all flows. A crude way to do this is to
+calculate the proportion of lines and trips that are covered in the
+dataset:</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(desire_lines_top) <span class="sc">/</span> <span class="fu">nrow</span>(desire_lines_london)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># &gt; 0.08189046</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(desire_lines_top<span class="sc">$</span>all) <span class="sc">/</span> <span class="fu">sum</span>(desire_lines_london<span class="sc">$</span>all)</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># &gt; 0.557343</span></span></code></pre></div>
-<p>This shows that only 8% of the lines contain more than half (55%) of the total number of trips.</p>
+<p>This shows that only 8% of the lines contain more than half (55%) of
+the total number of trips.</p>
 </div>
 <div id="plotting-origin-destination-data" class="section level1">
 <h1>Plotting origin-destination data</h1>
-<p>Once you have an OD dataset of a size that can be plotted (20,000 desire lines is quick to plot on most computers) a logical next stage is to plot it, e.g. with <code>sf</code>’s <code>plot()</code> method:</p>
+<p>Once you have an OD dataset of a size that can be plotted (20,000
+desire lines is quick to plot on most computers) a logical next stage is
+to plot it, e.g. with <code>sf</code>’s <code>plot()</code> method:</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(desire_lines_top[<span class="st">&quot;all&quot;</span>])</span></code></pre></div>
-<p>You may be disapointed by the result, which is more of a ‘hay stack’ plot than an intuitive illustration of flows across the city. To overcome this issue, you can set the aesthetics to emphasize with important flows, e.g. by line width in <code>sf</code>’s plotting system:</p>
+<p>You may be disapointed by the result, which is more of a ‘hay stack’
+plot than an intuitive illustration of flows across the city. To
+overcome this issue, you can set the aesthetics to emphasize with
+important flows, e.g. by line width in <code>sf</code>’s plotting
+system:</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>lwd <span class="ot">&lt;-</span> desire_lines_top<span class="sc">$</span>all <span class="sc">/</span> <span class="fu">mean</span>(desire_lines_top<span class="sc">$</span>all) <span class="sc">/</span> <span class="dv">10</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>desire_lines_top<span class="sc">$</span>percent_dont_drive <span class="ot">&lt;-</span> <span class="dv">100</span> <span class="sc">-</span> desire_lines_top<span class="sc">$</span>car_driver <span class="sc">/</span> desire_lines_top<span class="sc">$</span>all <span class="sc">*</span> <span class="dv">100</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(desire_lines_top[<span class="st">&quot;percent_dont_drive&quot;</span>], <span class="at">lwd =</span> lwd, <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">50</span>, <span class="dv">70</span>, <span class="dv">80</span>, <span class="dv">90</span>, <span class="dv">95</span>, <span class="dv">100</span>))</span></code></pre></div>
-<p>This is better, but is still not ideal: the code was not intuitive to write, and the result is still not publication quality. Instead, it makes sense to make a dedicated mapping package such <strong>tmap</strong>, as outlined in the <a href="https://geocompr.robinlovelace.net/adv-map.html">visualisation chapter</a> of the open source book <em>Geocomputation with R</em> <span class="citation">(Lovelace, Nowosad, and Meunchow 2019)</span>. As shown in the transport chapter of that book, OD flows can be visualised with the following code:</p>
+<p>This is better, but is still not ideal: the code was not intuitive to
+write, and the result is still not publication quality. Instead, it
+makes sense to make a dedicated mapping package such
+<strong>tmap</strong>, as outlined in the <a href="https://geocompr.robinlovelace.net/adv-map.html">visualisation
+chapter</a> of the open source book <em>Geocomputation with R</em> <span class="citation">(Lovelace, Nowosad, and Meunchow 2019)</span>. As shown
+in the transport chapter of that book, OD flows can be visualised with
+the following code:</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tmap)</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>desire_lines_top <span class="ot">&lt;-</span> desire_lines_top <span class="sc">%&gt;%</span></span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Active)</span>
@@ -530,17 +709,30 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.bg.alpha =</span> <span class="fl">0.5</span>,</span>
 <span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.bg.color =</span> <span class="st">&quot;white&quot;</span></span>
 <span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
-<p>The above plot contains much information, providing a visual overview of the transport pattern in the city, telling us that:</p>
+<p>The above plot contains much information, providing a visual overview
+of the transport pattern in the city, telling us that:</p>
 <ul>
 <li>It is a monocentric city, with most flows going to the centre.</li>
-<li>Active transport is geographically dependent, dominating in the central north of the city and with limited uptake on the outskirts of the city.</li>
-<li>Although the city centre dominates, there are many small clusters of flows in the outer region, for example near Heathrow airport, which is located in the far west of the map.</li>
+<li>Active transport is geographically dependent, dominating in the
+central north of the city and with limited uptake on the outskirts of
+the city.</li>
+<li>Although the city centre dominates, there are many small clusters of
+flows in the outer region, for example near Heathrow airport, which is
+located in the far west of the map.</li>
 </ul>
-<p>Plotting OD data in this way can tell us much about cities, each of which has a different travel pattern. You can use the same code to visualise mobility patterns in any city. See Section <a href="https://geocompr.robinlovelace.net/transport.html#desire-lines">12.4</a> of <em>Geocomputation with R</em> to see results for Bristol, a more polycentric city with a lower average percentage of travel by walking and cycling.</p>
+<p>Plotting OD data in this way can tell us much about cities, each of
+which has a different travel pattern. You can use the same code to
+visualise mobility patterns in any city. See Section <a href="https://geocompr.robinlovelace.net/transport.html#desire-lines">12.4</a>
+of <em>Geocomputation with R</em> to see results for Bristol, a more
+polycentric city with a lower average percentage of travel by walking
+and cycling.</p>
 </div>
 <div id="summaries-by-origin-and-destination" class="section level1">
 <h1>Summaries by origin and destination</h1>
-<p>It is possible to group OD data by origin and destination to gain information at the zone level. The code and resulting plot below, for example, summarises the number of people departing from each zone by mode:</p>
+<p>It is possible to group OD data by origin and destination to gain
+information at the zone level. The code and resulting plot below, for
+example, summarises the number of people departing from each zone by
+mode:</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>zones_london <span class="ot">&lt;-</span> pct<span class="sc">::</span><span class="fu">get_pct_zones</span>(<span class="st">&quot;london&quot;</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">&quot;geo_code&quot;</span>)</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>origin_attributes <span class="ot">&lt;-</span> desire_lines_top <span class="sc">%&gt;%</span></span>
@@ -553,11 +745,15 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(zones_origins, <span class="at">border =</span> <span class="cn">NA</span>)</span></code></pre></div>
 <p>We can observe a number of features, including that:</p>
 <ul>
-<li>Rail is much more common in the south, reflecting the greater density of the local rail network, with short distances between stops, in the South of the city.</li>
+<li>Rail is much more common in the south, reflecting the greater
+density of the local rail network, with short distances between stops,
+in the South of the city.</li>
 <li>Cars dominat in the outer fringes, especiall in the West.</li>
-<li>Taxi and motorbike use have intriguing clusters in the West (perhaps around the wealthy Kensington area for taxis).</li>
+<li>Taxi and motorbike use have intriguing clusters in the West (perhaps
+around the wealthy Kensington area for taxis).</li>
 </ul>
-<p>The pattern is quite different when we calculate the destinations:</p>
+<p>The pattern is quite different when we calculate the
+destinations:</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>destination_attributes <span class="ot">&lt;-</span> desire_lines_top <span class="sc">%&gt;%</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  sf<span class="sc">::</span><span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(geo_code2) <span class="sc">%&gt;%</span></span>
@@ -570,18 +766,39 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="further-reading" class="section level1">
 <h1>Further reading</h1>
-<p>Despite the importance of origin-destination datasets for transport research, there are surprisingly few guides dedicated to working with them using open source software. The following suggestions are based on my own reading — if you have any other suggestions of good resources for working with OD data, let me know!</p>
+<p>Despite the importance of origin-destination datasets for transport
+research, there are surprisingly few guides dedicated to working with
+them using open source software. The following suggestions are based on
+my own reading — if you have any other suggestions of good resources for
+working with OD data, let me know!</p>
 <ul>
-<li>Section <a href="https://geocompr.robinlovelace.net/transport.html#desire-lines">12.4</a> of <em>Geocomputation with R</em> <span class="citation">(Lovelace, Nowosad, and Meunchow 2019)</span> puts OD data in the wider context of geographic transport data.</li>
-<li><span class="citation">Martin et al. (2018)</span> describe methods for classifying OD pairs based on demographic data.</li>
-<li>The <a href="https://kepler.gl/demo/ukcommute">kepler.gl</a> website provides a nifty web application for visualising OD data.</li>
-<li>Documentation for the open source microscopic transport modelling software <a href="https://sumo.dlr.de/userdoc/Demand/Importing_O/D_Matrices.html">SUMO</a> describes ways of reading-in OD file formats not covered in this vignette.</li>
-<li>An excellent introduction to modelling and visualising OD data in the <a href="https://github.com/rCarto/flows/blob/master/vignettes/flows.Rmd">introductory vignette</a> of the <code>flows</code> R package.</li>
+<li>Section <a href="https://geocompr.robinlovelace.net/transport.html#desire-lines">12.4</a>
+of <em>Geocomputation with R</em> <span class="citation">(Lovelace,
+Nowosad, and Meunchow 2019)</span> puts OD data in the wider context of
+geographic transport data.</li>
+<li><span class="citation">Martin et al. (2018)</span> describe methods
+for classifying OD pairs based on demographic data.</li>
+<li>The <a href="https://kepler.gl/demo/ukcommute">kepler.gl</a> website
+provides a nifty web application for visualising OD data.</li>
+<li>Documentation for the open source microscopic transport modelling
+software <a href="https://sumo.dlr.de/userdoc/Demand/Importing_O/D_Matrices.html">SUMO</a>
+describes ways of reading-in OD file formats not covered in this
+vignette.</li>
+<li>An excellent introduction to modelling and visualising OD data in
+the <a href="https://github.com/riatelab/flows/blob/master/vignettes/flows.Rmd">introductory
+vignette</a> of the <code>flows</code> R package.</li>
 </ul>
 </div>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
-<p>In summary, <code>stplanr</code> provides many functions for working with OD data. OD data is an important component in transport planning and modelling that can, if used with creativity and skill, could assist with sustainable transport planning and the global <a href="https://www.sei.org/wp-content/uploads/2019/01/realizing-a-just-and-equitable-transition-away-from-fossil-fuels.pdf">transition away from fossil fuels</a>. There are many other things can be done with OD data, some of which could be supported by future versions of this package. To suggest new features of otherwise get in touch, see the <code>stplanr</code> issue tracker at <a href="https://github.com/ropensci/stplanr/issues">github.com/ropensci/stplanr</a>.</p>
+<p>In summary, <code>stplanr</code> provides many functions for working
+with OD data. OD data is an important component in transport planning
+and modelling that can, if used with creativity and skill, could assist
+with sustainable transport planning and the global <a href="https://www.sei.org/wp-content/uploads/2019/01/realizing-a-just-and-equitable-transition-away-from-fossil-fuels.pdf">transition
+away from fossil fuels</a>. There are many other things can be done with
+OD data, some of which could be supported by future versions of this
+package. To suggest new features of otherwise get in touch, see the
+<code>stplanr</code> issue tracker at <a href="https://github.com/ropensci/stplanr/issues">github.com/ropensci/stplanr</a>.</p>
 <!-- # Applications -->
 <!-- This is represented in the file `lines_cars.Rds`, representing the top 20,000 desire lines at the MSOA-MSOA level in England and Wales by the number of car km used for travel to work, which can be downloaded, read-in and plotted as follows: -->
 <!-- Based on the estimate of the average energy use per km being 2.5 MJ, and that these return trips are made on average 200 times per year, with a circuity of 1.3, we can estimate the total energy use of the 'high energy commutes' as follows: -->
@@ -592,29 +809,48 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h1 class="unnumbered">References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-boyce_forecasting_2015" class="csl-entry">
-Boyce, David E., and Huw C. W. L. Williams. 2015. <em>Forecasting <span>Urban</span> <span>Travel</span>: <span>Past</span>, <span>Present</span> and <span>Future</span></em>. Edward Elgar Publishing.
+Boyce, David E., and Huw C. W. L. Williams. 2015. <em>Forecasting
+<span>Urban</span> <span>Travel</span>: <span>Past</span>,
+<span>Present</span> and <span>Future</span></em>. Edward Elgar
+Publishing.
 </div>
 <div id="ref-lovelace_stplanr_2018" class="csl-entry">
-Lovelace, Robin, and Richard Ellison. 2018. <span>“Stplanr: <span>A Package</span> for <span>Transport Planning</span>.”</span> <em>The R Journal</em> 10 (2): 7–23. <a href="https://doi.org/10.32614/RJ-2018-053">https://doi.org/10.32614/RJ-2018-053</a>.
+Lovelace, Robin, and Richard Ellison. 2018. <span>“Stplanr: <span>A
+Package</span> for <span>Transport Planning</span>.”</span> <em>The R
+Journal</em> 10 (2): 7–23. <a href="https://doi.org/10.32614/RJ-2018-053">https://doi.org/10.32614/RJ-2018-053</a>.
 </div>
 <div id="ref-lovelace_geocomputation_2019" class="csl-entry">
-Lovelace, Robin, Jakub Nowosad, and Jannes Meunchow. 2019. <em>Geocomputation with <span>R</span></em>. CRC Press. <a href="https://geocompr.robinlovelace.net/">https://geocompr.robinlovelace.net/</a>.
+Lovelace, Robin, Jakub Nowosad, and Jannes Meunchow. 2019.
+<em>Geocomputation with <span>R</span></em>. CRC Press. <a href="https://geocompr.robinlovelace.net/">https://geocompr.robinlovelace.net/</a>.
 </div>
 <div id="ref-martin_origin-destination_2018" class="csl-entry">
-Martin, David, Christopher Gale, Samantha Cockings, and Andrew Harfoot. 2018. <span>“Origin-Destination Geodemographics for Analysis of Travel to Work Flows.”</span> <em>Computers, Environment and Urban Systems</em> 67 (January): 68–79. <a href="https://doi.org/10.1016/j.compenvurbsys.2017.09.002">https://doi.org/10.1016/j.compenvurbsys.2017.09.002</a>.
+Martin, David, Christopher Gale, Samantha Cockings, and Andrew Harfoot.
+2018. <span>“Origin-Destination Geodemographics for Analysis of Travel
+to Work Flows.”</span> <em>Computers, Environment and Urban Systems</em>
+67 (January): 68–79. <a href="https://doi.org/10.1016/j.compenvurbsys.2017.09.002">https://doi.org/10.1016/j.compenvurbsys.2017.09.002</a>.
 </div>
 <div id="ref-wickham_tidy_2014" class="csl-entry">
-Wickham, Hadley. 2014. <span>“Tidy <span>Data</span>.”</span> <em>Journal of Statistical Software</em> 59 (10). <a href="https://doi.org/10.18637/jss.v059.i10">https://doi.org/10.18637/jss.v059.i10</a>.
+Wickham, Hadley. 2014. <span>“Tidy <span>Data</span>.”</span>
+<em>Journal of Statistical Software</em> 59 (10). <a href="https://doi.org/10.18637/jss.v059.i10">https://doi.org/10.18637/jss.v059.i10</a>.
 </div>
 <div id="ref-world_health_organization_global_2018" class="csl-entry">
-World Health Organization. 2018. <em>Global <span>Status</span> <span>Report</span> <span>On</span> <span>Road</span> <span>Safety</span> 2018</em>. S.l. <a href="https://www.who.int/publications/i/item/9789241565684">https://www.who.int/publications/i/item/9789241565684</a>.
+World Health Organization. 2018. <em>Global <span>Status</span>
+<span>Report</span> <span>On</span> <span>Road</span>
+<span>Safety</span> 2018</em>. S.l. <a href="https://www.who.int/publications/i/item/9789241565684">https://www.who.int/publications/i/item/9789241565684</a>.
 </div>
 </div>
 </div>
 <div class="footnotes footnotes-end-of-document">
 <hr />
 <ol>
-<li id="fn1"><p> It may be difficult to convert between ‘number of trip’ and ‘number of vehicle’ counts for modes in which a single vehicle can contain many people, such as cars (a problem that can be overcome when surveys differentiate between car driver and ‘car passenger’ as distinct modes), buses and trams if occupancy levels are unknown. Typically OD data only report single stage trips, but multi-modal trips such as walk-rail-cycle can be represented when such a combination of modes is represented by a new, unique, mode. <a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p> It may be difficult to convert between ‘number of trip’
+and ‘number of vehicle’ counts for modes in which a single vehicle can
+contain many people, such as cars (a problem that can be overcome when
+surveys differentiate between car driver and ‘car passenger’ as distinct
+modes), buses and trams if occupancy levels are unknown. Typically OD
+data only report single stage trips, but multi-modal trips such as
+walk-rail-cycle can be represented when such a combination of modes is
+represented by a new, unique, mode.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 
