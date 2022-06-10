@@ -104,7 +104,8 @@ knitr::opts_chunk$set(fig.width = 7, fig.height = 5, eval = FALSE)
 #  # Remove unzipped files
 #  file.remove(list.files(pattern = "^(smallsa1|testcycleway).*"))
 
-## ----calccatchment, results='hide'--------------------------------------------
+## ----calccatchment, results='hide', eval=FALSE--------------------------------
+#  remotes::install_github("ropensci/stplanr")
 #  catch800m <- calc_catchment(
 #    polygonlayer = sa1income,
 #    targetlayer = testcycleway,

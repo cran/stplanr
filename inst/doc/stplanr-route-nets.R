@@ -42,33 +42,6 @@ knitr::include_graphics("https://i.imgur.com/827f761.png")
 ## ---- eval=FALSE--------------------------------------------------------------
 #  rnet_disconnected$group = rnet_igroup(rnet_disconnected)
 
-## ----rnet-routing1------------------------------------------------------------
-sln <- SpatialLinesNetwork(rnet)
-class(sln)
-
-## -----------------------------------------------------------------------------
-class(sln@sl)
-nrow(sln@sl)
-class(sln@g)
-length(igraph::edge.attributes(sln@g)[["weight"]])
-class(sln@nb)
-length(unique(unlist(sln@nb)))
-identical(sln@sl$geometry, rnet$geometry)
-
-## -----------------------------------------------------------------------------
-sln_nodes <- sln2points(sln)
-nrow(sln_nodes)
-length(sln@nb)
-
-## -----------------------------------------------------------------------------
-rnet_coordinates <- sf::st_coordinates(rnet)
-set.seed(85)
-x <- runif(n = 2, min = min(rnet_coordinates[, 1]), max = max(rnet_coordinates[, 1]))
-y <- runif(n = 2, min = min(rnet_coordinates[, 2]), max = max(rnet_coordinates[, 2]))
-crs <- sf::st_crs(rnet)
-xy_sf <- sf::st_as_sf(data.frame(n = 1:2, x, y), coords = c("x", "y"), crs = crs)
-xy_nodes <- stplanr::find_network_nodes(sln = sln, x = x, y = y)
-
 ## ---- out.width="49%", fig.show='hide'----------------------------------------
 # plot(rnet$geometry)
 # plot(sln_nodes, add = TRUE)
@@ -80,14 +53,7 @@ xy_nodes <- stplanr::find_network_nodes(sln = sln, x = x, y = y)
 
 ## ----netpoint-----------------------------------------------------------------
 new_point_coordinates <- c(-1.540, 53.826)
-p <- sf::st_sf(geometry = sf::st_sfc(sf::st_point(new_point_coordinates)), crs = crs)
-
-## ---- fig.show='hold', out.width="49%"----------------------------------------
-sln_new <- sln_add_node(sln = sln, p = p)
-route_new <- route_local(sln = sln_new, from = p, to = xy_sf[1, ])
-plot(sln_new)
-plot(p, add = TRUE)
-plot(route_new, lwd = 5, add = TRUE)
+p <- sf::st_sf(geometry = sf::st_sfc(sf::st_point(new_point_coordinates)), crs = 4326)
 
 ## ---- message=FALSE, warning=FALSE, out.width="100%", fig.width=6, fig.height=6, echo=FALSE, eval=FALSE----
 #  # Show solutions to https://github.com/ropensci/stplanr/issues/237

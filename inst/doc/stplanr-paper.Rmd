@@ -34,6 +34,13 @@ knitr::opts_chunk$set(fig.width = 7, fig.height = 5, eval = FALSE)
 This paper has now been peer reviewed and published by the R Journal.
 Please see the published version at [journal.r-project.org](https://journal.r-project.org/archive/2018/RJ-2018-053/index.html) and cite it as @lovelace_stplanr_2018.
 
+The code presented in this paper requires stplanr 0.8.5 or earlier, which can be installed as follows:
+
+```r
+remotes::install_github("ropensci/stplanr", ref = "v0.8.5")
+```
+
+
 # Introduction
 
 Transport planning can broadly be defined as the process of designing
@@ -82,7 +89,7 @@ there has been little prior work to develop R functionality designed
 specifically for transport planning, with the notable exceptions of
 [TravelR](https://r-forge.r-project.org/projects/travelr/) (a package on
 R-Forge last updated in 2012) and
-[gtfsr](https://github.com/ropensci/gtfsr) (a package for handling
+[tidytransit](https://github.com/r-transit/tidytransit) (a package for handling
 General Transit Feed Specification (GTFS) data).
 
 The purpose of **stplanr** is to provide a toolbox rather than a
@@ -264,7 +271,7 @@ ca_sp <- SpatialPointsDataFrame(coords = ca_cycle[3:4], data = ca_cycle[1:2])
 ```
 
 Now that this casualty data has been cleaned, subsetted (to only include serious cycle crashes) and converted into a spatial class system, we can analyse them using geographical datasets of the type commonly used by **stplanr**.
-The following code, for example, geographically subsets the dataset to include only crashes that occured within the bounding box of a [route network dataset](https://github.com/ropensci/stplanr/blob/master/data/route_network.rda?raw=true) provided by **stplanr** (from version 0.1.7 and beyond) using the function `bb2poly`, which converts a spatial dataset into a box, represented as a rectangular `SpatialPolygonsDataFrame`:
+The following code, for example, geographically subsets the dataset to include only crashes that occured within the bounding box of a route network dataset provided by **stplanr** (from version 0.1.7 and beyond) using the function `bb2poly`, which converts a spatial dataset into a box, represented as a rectangular `SpatialPolygonsDataFrame`:
 
 ```{r, eval=FALSE}
 data("route_network") # devtools::install_github("ropensci/splanr")version 0.1.7
@@ -467,7 +474,8 @@ Calculating the catchment area is straightforward and in addition to specifying 
 Since proportioning the areas assumes projected data, unprojected data are automatically projected to either a common projection (if one is already projected) or a specified projection.
 It should be emphasised that the choice of projection is important and has an effect on the results meaning setting a local projection is recommended to achieve the most accurate results.
 
-```{r calccatchment, results='hide'}
+```{r calccatchment, results='hide', eval=FALSE}
+remotes::install_github("ropensci/stplanr")
 catch800m <- calc_catchment(
   polygonlayer = sa1income,
   targetlayer = testcycleway,
