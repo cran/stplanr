@@ -1,7 +1,7 @@
-529002fce45457bfd233bf5a7a3d0081 *DESCRIPTION
+e63aed38c5d942d68453512534f88113 *DESCRIPTION
 54007ce744145f7ca8677b8663fac4a6 *LICENSE
 3abb12bc2ac6237b192f71e0f5df71b5 *NAMESPACE
-a734ce542006afc31c4aea4f81eb5d4f *NEWS.md
+08a6575adac2e48814b0765473ad58e5 *NEWS.md
 5c3c3ed369dd1b5b9b333e03069a90bf *R/RcppExports.R
 23863de6129f442a7fc1db319e2ea5ef *R/data.R
 c77159a8d675495f047fb17a3e72744e *R/deprecated.R
@@ -21,7 +21,7 @@ fe785acbf30344736fc0da00fb21c574 *R/quadrants.R
 38f3a1d14573f83ebd56353432b0794b *R/rnet-clean.R
 54a16436218de69bf27f215d2027cc09 *R/rnet_boundary_points.R
 6d85a84965f18548b34b231e6eee000b *R/rnet_group.R
-791a82dcb408cd71d63e3b97cd768045 *R/route.R
+7d06b545f3deefed59ce78a521489ae7 *R/route.R
 02cf8ea18f94b4f186a823922c593e6f *R/route_bikecitizens.R
 700fb0324d117b54d93744d88988e0fa *R/route_funs.R
 cf6b8f6422be855a536fc74f4d10e49d *R/route_google.R
@@ -29,11 +29,11 @@ cf6b8f6422be855a536fc74f4d10e49d *R/route_google.R
 e0a279b80b37bd91b31d92d8a06c9357 *R/route_osrm.R
 d2dacc17ad96627e17efe2f6f7b50cb7 *R/slope.R
 1a391b34a46e18645ba10d10cf3ec804 *R/stplanr-package.R
-bd78b8a92a2ff722911b32f991d5e56b *R/toptail.R
+7b4e41c9a3f76d86f31ddddf11ed8cfe *R/toptail.R
 37a39e244d96e9dc306235c13b1add5d *R/utils-pipe.R
 7c31bbede2b6f6f5ec56874c439a80b0 *README.md
-1961639f6f4f7f9efffa91b624b3d060 *build/partial.rdb
-4782eb031a9d069264f6932276424f4e *build/vignette.rds
+0c6ad5b3446721162c89589e8077ab1c *build/partial.rdb
+c356bdbb17341a28756d0a841808bb0c *build/vignette.rds
 9e36b765f7b0c7b384f3bbedbb19f369 *data/cents_sf.rda
 76acee4be2b1e98fd49138d2a49f90ac *data/destinations_sf.rda
 8725961ec650a8332f4bffa0aefcfde2 *data/flow.rda
@@ -56,8 +56,8 @@ ce4dfc4155bcfdf7e63320802d0ccf60 *inst/doc/stplanr-od.R
 b5498eb11294bbff2c557654942b5e55 *inst/doc/stplanr-od.Rmd
 b23ddfe9a1378a0d2e0851f21324b9b3 *inst/doc/stplanr-od.html
 f5437ebade9cb3fdef065911a6a5eabe *inst/doc/stplanr-paper.R
-62d48f021fea9844be3cc3f2945359db *inst/doc/stplanr-paper.Rmd
-d382abb4e81de3a3ebf68105f731ed42 *inst/doc/stplanr-paper.html
+13484be531ae268526d766d0a7d8c932 *inst/doc/stplanr-paper.Rmd
+3ccc845df4b3c01a50ddcec8ddc55591 *inst/doc/stplanr-paper.html
 4001ab3bed961aaae8ffb02c3f447e80 *inst/doc/stplanr-parallel.R
 5fb3a04f6f88eb7431e4f8b2d8a2ce92 *inst/doc/stplanr-parallel.Rmd
 c62f6574692c23837538774949a317e8 *inst/doc/stplanr-parallel.html
@@ -69,7 +69,7 @@ c62f6574692c23837538774949a317e8 *inst/doc/stplanr-parallel.html
 1fa83fd4daceceff01e9523a84c7e5b5 *inst/doc/stplanr-routing.html
 0c5a3a171285e93132a35c11380e0667 *inst/doc/stplanr.R
 c3f8ec91f46b9205655101b5ca3db8df *inst/doc/stplanr.Rmd
-c5603a32af51c4df428d70d0e2a8ed9c *inst/doc/stplanr.html
+c2beb64e5db523e98d939397a3c65bd3 *inst/doc/stplanr.html
 ac3f2f0df88696bffa5c17fbdcc1804c *inst/example-flows-up-hill.R
 61ceb3616b7a0029af1b7d2feba3951f *inst/extdata/SA1Population.csv
 a6003c1f2cb54667d223c86c8da91291 *inst/extdata/SA1Population.xlsx
@@ -108,7 +108,7 @@ d6c7e02271188aa287ccf1efbed3b528 *man/geo_code.Rd
 ca1f4ed85a0c1e2a177300b9a5e8541c *man/geo_length.Rd
 afe6354b86ade3db832763f93e4e9f51 *man/geo_projected.Rd
 80c1cab9d0f6b1036055d4060d2c9210 *man/geo_select_aeq.Rd
-7d275b4d08e67b1f0ec8052729c51111 *man/geo_toptail.Rd
+6b8b96beaa75cb8b3d8652890d8a9ca5 *man/geo_toptail.Rd
 398391117b867675143b503d75587c1c *man/gsection.Rd
 ab2f16b584516e6276d153f80c8337f7 *man/is_linepoint.Rd
 2b970cc0a121ec3cb964c388fc6f7660 *man/islines.Rd
@@ -183,7 +183,7 @@ e974e01278a788fc08232cc4f3928cd8 *vignettes/references.bib
 6e653b42241ab87962ab5b25192c7d24 *vignettes/reqfiles.RData
 02ad838e37c9c2664760582ea5d91a2d *vignettes/stplanr-citation.bib
 b5498eb11294bbff2c557654942b5e55 *vignettes/stplanr-od.Rmd
-62d48f021fea9844be3cc3f2945359db *vignettes/stplanr-paper.Rmd
+13484be531ae268526d766d0a7d8c932 *vignettes/stplanr-paper.Rmd
 5fb3a04f6f88eb7431e4f8b2d8a2ce92 *vignettes/stplanr-parallel.Rmd
 9ebb6324251502515c14c2a558c7cf7b *vignettes/stplanr-route-nets.Rmd
 2a1656b3857ae5c12655dab02c50bfb5 *vignettes/stplanr-routing.Rmd
