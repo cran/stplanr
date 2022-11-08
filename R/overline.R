@@ -146,7 +146,7 @@ overline <- function(sl,
                      attrib,
                      ncores = 1,
                      simplify = TRUE,
-                     regionalise = 1e5,
+                     regionalise = 1e9,
                      quiet = ifelse(nrow(sl) < 1000, TRUE, FALSE),
                      fun = sum) {
   UseMethod("overline")
@@ -166,7 +166,7 @@ overline2 <-
            attrib,
            ncores = 1,
            simplify = TRUE,
-           regionalise = 1e5,
+           regionalise = 1e9,
            quiet = ifelse(nrow(sl) < 1000, TRUE, FALSE),
            fun = sum) {
     if(as.character(unique(sf::st_geometry_type(sl))) == "MULTILINESTRING") {
@@ -175,6 +175,10 @@ overline2 <-
     }
     if (!"sfc_LINESTRING" %in% class(sf::st_geometry(sl))) {
       stop("Only LINESTRING is supported")
+    }
+    if (is(sl, "data.table")) {
+      sl_df <- as.data.frame(sf::st_drop_geometry(sl))
+      sl <- sf::st_sf(sl_df, geometry = sl$geometry)
     }
     if (any(c("1", "2", "3", "4", "grid") %in% attrib)) {
       stop("1, 2, 3, 4, grid are not a permitted column names, please rename that column")
