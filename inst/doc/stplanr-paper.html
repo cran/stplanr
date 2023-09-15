@@ -410,7 +410,7 @@ and cite it as <span class="citation">Lovelace and Ellison
 (2018)</span>.</p>
 <p>The code presented in this paper requires stplanr 0.8.5 or earlier,
 which can be installed as follows:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;ropensci/stplanr&quot;</span>, <span class="at">ref =</span> <span class="st">&quot;v0.8.5&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;ropensci/stplanr&quot;</span>, <span class="at">ref =</span> <span class="st">&quot;v0.8.5&quot;</span>)</span></code></pre></div>
 </div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
@@ -552,8 +552,8 @@ and <strong>rio</strong> packages).</p>
 <p>The package can be installed and loaded in the usual way (see the
 package’s <a href="https://github.com/ropensci/stplanr">README</a> for
 dependencies and access to development versions):</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;stplanr&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stplanr)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;stplanr&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">library</span>(stplanr)</span></code></pre></div>
 <p>As illustrated by the message emitted when <strong>stplanr</strong>
 is loaded, it depends on . This means that the spatial data classes
 commonly used in the package will work with generic R functions such as
@@ -632,7 +632,7 @@ Australian Bureau of Statistics (ABS) and the UK’s Stats19 road traffic
 casualty dataset. A brief example of the latter is demonstrated below,
 which begins with downloading the data (warning this downloads ~100 MB
 of data):</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dl_stats19</span>() <span class="co"># download and extract stats19 road traffic casualty data</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">dl_stats19</span>() <span class="co"># download and extract stats19 road traffic casualty data</span></span></code></pre></div>
 <pre><code>#&gt; [1] &quot;Data saved at: /tmp/RtmpppF3E2/Accidents0514.csv&quot;
 #&gt; [2] &quot;Data saved at: /tmp/RtmpppF3E2/Casualties0514.csv&quot;
 #&gt; [3] &quot;Data saved at: /tmp/RtmpppF3E2/Vehicles0514.csv&quot;  </code></pre>
@@ -641,18 +641,18 @@ of data):</p>
 <code>read_stats19_</code> functions (note these call
 <code>format_stats19_</code> functions internally to clean the datasets
 and add correct labels to the variables):</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ac <span class="ot">&lt;-</span> <span class="fu">read_stats19_ac</span>()</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ca <span class="ot">&lt;-</span> <span class="fu">read_stats19_ca</span>()</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>ve <span class="ot">&lt;-</span> <span class="fu">read_stats19_ve</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>ac <span class="ot">&lt;-</span> <span class="fu">read_stats19_ac</span>()</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>ca <span class="ot">&lt;-</span> <span class="fu">read_stats19_ca</span>()</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>ve <span class="ot">&lt;-</span> <span class="fu">read_stats19_ve</span>()</span></code></pre></div>
 <p>The resulting datasets (representing accident, casualty and vehicle
 level data, respectively) can be merged and made geographic, as
 illustrated below:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>ca_ac <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(ca, ac)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>ca_cycle <span class="ot">&lt;-</span> ca_ac <span class="sc">%&gt;%</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Casualty_Severity <span class="sc">==</span> <span class="st">&quot;Fatal&quot;</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(Latitude)) <span class="sc">%&gt;%</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">Age =</span> Age_of_Casualty, <span class="at">Mode =</span> Casualty_Type, Longitude, Latitude)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>ca_sp <span class="ot">&lt;-</span> <span class="fu">SpatialPointsDataFrame</span>(<span class="at">coords =</span> ca_cycle[<span class="dv">3</span><span class="sc">:</span><span class="dv">4</span>], <span class="at">data =</span> ca_cycle[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>ca_ac <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(ca, ac)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>ca_cycle <span class="ot">&lt;-</span> ca_ac <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="fu">filter</span>(Casualty_Severity <span class="sc">==</span> <span class="st">&quot;Fatal&quot;</span> <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(Latitude)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">Age =</span> Age_of_Casualty, <span class="at">Mode =</span> Casualty_Type, Longitude, Latitude)</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>ca_sp <span class="ot">&lt;-</span> <span class="fu">SpatialPointsDataFrame</span>(<span class="at">coords =</span> ca_cycle[<span class="dv">3</span><span class="sc">:</span><span class="dv">4</span>], <span class="at">data =</span> ca_cycle[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])</span></code></pre></div>
 <p>Now that this casualty data has been cleaned, subsetted (to only
 include serious cycle crashes) and converted into a spatial class
 system, we can analyse them using geographical datasets of the type
@@ -663,11 +663,11 @@ occured within the bounding box of a route network dataset provided by
 function <code>bb2poly</code>, which converts a spatial dataset into a
 box, represented as a rectangular
 <code>SpatialPolygonsDataFrame</code>:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;route_network&quot;</span>) <span class="co"># devtools::install_github(&quot;ropensci/splanr&quot;)version 0.1.7</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">proj4string</span>(ca_sp) <span class="ot">&lt;-</span> <span class="fu">proj4string</span>(route_network)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>bb <span class="ot">&lt;-</span> <span class="fu">bb2poly</span>(route_network)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">proj4string</span>(bb) <span class="ot">&lt;-</span> <span class="fu">proj4string</span>(route_network)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>ca_local <span class="ot">&lt;-</span> ca_sp[bb, ]</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;route_network&quot;</span>) <span class="co"># devtools::install_github(&quot;ropensci/splanr&quot;)version 0.1.7</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">proj4string</span>(ca_sp) <span class="ot">&lt;-</span> <span class="fu">proj4string</span>(route_network)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>bb <span class="ot">&lt;-</span> <span class="fu">bb2poly</span>(route_network)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="fu">proj4string</span>(bb) <span class="ot">&lt;-</span> <span class="fu">proj4string</span>(route_network)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>ca_local <span class="ot">&lt;-</span> ca_sp[bb, ]</span></code></pre></div>
 <p>The above code chunk shows the importance of understanding
 geographical data when working with transport data. It is only by
 converting the casualty data into a spatial data class, and adding a
@@ -676,17 +676,17 @@ researchers can link this important dataset back to the route network.
 We can now perform GIS operations on the results. The next code chunk,
 for example, finds all the fatalities that took place within 100 m of
 the route network, using the function <code>buff_geo</code>:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>rnet_buff_100 <span class="ot">&lt;-</span> <span class="fu">geo_buffer</span>(route_network, <span class="at">width =</span> <span class="dv">100</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>ca_buff <span class="ot">&lt;-</span> ca_local[rnet_buff_100, ]</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>rnet_buff_100 <span class="ot">&lt;-</span> <span class="fu">geo_buffer</span>(route_network, <span class="at">width =</span> <span class="dv">100</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>ca_buff <span class="ot">&lt;-</span> ca_local[rnet_buff_100, ]</span></code></pre></div>
 <p>These can be visualised using base R graphics, extended by , as
 illustrated in Figure <span class="math inline">\(\ref{fig:fats}\)</span>. This provides a good
 start for analysis but for publication-quality plots and interactive
 plots, designed for public engagement, we recommend using dedicated
 visualisation packages that work with spatial data such as .</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(bb, <span class="at">lty =</span> <span class="dv">4</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(rnet_buff_100, <span class="at">col =</span> <span class="st">&quot;grey&quot;</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(ca_local, <span class="at">pch =</span> <span class="dv">4</span>)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(ca_buff, <span class="at">cex =</span> <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">plot</span>(bb, <span class="at">lty =</span> <span class="dv">4</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="fu">plot</span>(rnet_buff_100, <span class="at">col =</span> <span class="st">&quot;grey&quot;</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="fu">points</span>(ca_local, <span class="at">pch =</span> <span class="dv">4</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="fu">points</span>(ca_buff, <span class="at">cex =</span> <span class="dv">3</span>)</span></code></pre></div>
 </div>
 <div id="creating-geographic-desire-lines" class="section level2">
 <h2>Creating geographic desire lines</h2>
@@ -695,8 +695,8 @@ is origin-destination (‘OD’) data. This can be presented either as a
 matrix or (more commonly) a long table of OD pairs. An example of this
 type of raw data is provided below (see <code>?flow</code> to see how
 this dataset was created).</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;flow&quot;</span>, <span class="at">package =</span> <span class="st">&quot;stplanr&quot;</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(flow[<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">12</span>)])</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;flow&quot;</span>, <span class="at">package =</span> <span class="st">&quot;stplanr&quot;</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">head</span>(flow[<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">12</span>)])</span></code></pre></div>
 <p>Although the flow data displayed above describes movement over
 geographical space, it contains no explicitly geographical information.
 Instead, the coordinates of the origins and destinations are linked to a
@@ -710,12 +710,12 @@ represented as such <code>Spatial*</code> objects, which use the
 <strong>stplanr</strong> with R’s spatial packages, especially
 <strong>sp</strong>, which defines the <code>S4</code> spatial object
 system.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;cents&quot;</span>, <span class="at">package =</span> <span class="st">&quot;stplanr&quot;</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">as.data.frame</span>(cents[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>)])</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;cents&quot;</span>, <span class="at">package =</span> <span class="st">&quot;stplanr&quot;</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="fu">as.data.frame</span>(cents[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>)])</span></code></pre></div>
 <p>We use <code>od2line</code> to combine <code>flow</code> and
 <code>cents</code>, to join the former to the latter. We will visualise
 the <code>l</code> object created below in the next section.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>l <span class="ot">&lt;-</span> <span class="fu">od2line</span>(<span class="at">flow =</span> flow, <span class="at">zones =</span> cents)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>l <span class="ot">&lt;-</span> <span class="fu">od2line</span>(<span class="at">flow =</span> flow, <span class="at">zones =</span> cents)</span></code></pre></div>
 <p>The data is now in a form that is much easier to analyse. We can plot
 the data with the command <code>plot(l)</code>, which was not possible
 before. Because the <code>SpatialLinesDataFrame</code> object also
@@ -745,15 +745,15 @@ below with <code>route_cyclestreet</code>, which uses the <a href="https://www.c
 routing service “by cyclists for cyclists” that offers a range route
 strategies (primarily ‘fastest’, ‘quietest’ and ‘balanced’) that are
 based on a detailed analysis of cyclist wayfinding:<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>route_bl <span class="ot">&lt;-</span> <span class="fu">route_cyclestreets</span>(<span class="at">from =</span> <span class="st">&quot;Bradford&quot;</span>, <span class="at">to =</span> <span class="st">&quot;Leeds&quot;</span>)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>route_c1_c2 <span class="ot">&lt;-</span> <span class="fu">route_cyclestreets</span>(cents[<span class="dv">1</span>, ], cents[<span class="dv">2</span>, ])</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>route_bl <span class="ot">&lt;-</span> <span class="fu">route_cyclestreets</span>(<span class="at">from =</span> <span class="st">&quot;Bradford&quot;</span>, <span class="at">to =</span> <span class="st">&quot;Leeds&quot;</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>route_c1_c2 <span class="ot">&lt;-</span> <span class="fu">route_cyclestreets</span>(cents[<span class="dv">1</span>, ], cents[<span class="dv">2</span>, ])</span></code></pre></div>
 <p>The raw output from routing APIs is usually provided as a JSON or
 GeoJSON text string. By default, <code>route_cyclestreet</code> saves a
 number of key variables (including length, time, hilliness and busyness
 variables generated by CycleStreets.net) from the attribute data
 provided by the API. If the user wants to save the raw output, the
 <code>save_raw</code> argument can be used:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>route_bl_raw <span class="ot">&lt;-</span> <span class="fu">route_cyclestreets</span>(<span class="at">from =</span> <span class="st">&quot;Bradford&quot;</span>, <span class="at">to =</span> <span class="st">&quot;Leeds&quot;</span>, <span class="at">save_raw =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>route_bl_raw <span class="ot">&lt;-</span> <span class="fu">route_cyclestreets</span>(<span class="at">from =</span> <span class="st">&quot;Bradford&quot;</span>, <span class="at">to =</span> <span class="st">&quot;Leeds&quot;</span>, <span class="at">save_raw =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p>Additional arguments taken by the <code>route_</code> functions
 depend on the routing function in question. By changing the
 <code>plan</code> argument of <code>route_cyclestreet</code> to
@@ -771,13 +771,13 @@ the input dataset (see the right panel in Figure <span class="math inline">\(\re
 lines in the left hand panel are very different from the hypothetical
 straight ‘desire lines’ often used in transport research, highlighting
 the importance of this route-allocation functionality.</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(route_network, <span class="at">lwd =</span> <span class="dv">0</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(l, <span class="at">lwd =</span> l<span class="sc">$</span>All <span class="sc">/</span> <span class="dv">10</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(routes_fast, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>routes_fast<span class="sc">$</span>All <span class="ot">&lt;-</span> l<span class="sc">$</span>All</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>rnet <span class="ot">&lt;-</span> <span class="fu">overline</span>(routes_fast, <span class="st">&quot;All&quot;</span>, <span class="at">fun =</span> sum)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>rnet<span class="sc">$</span>flow <span class="ot">&lt;-</span> rnet<span class="sc">$</span>All <span class="sc">/</span> <span class="fu">mean</span>(rnet<span class="sc">$</span>All) <span class="sc">*</span> <span class="dv">3</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(rnet, <span class="at">lwd =</span> rnet<span class="sc">$</span>flow <span class="sc">/</span> <span class="fu">mean</span>(rnet<span class="sc">$</span>flow))</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">plot</span>(route_network, <span class="at">lwd =</span> <span class="dv">0</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="fu">plot</span>(l, <span class="at">lwd =</span> l<span class="sc">$</span>All <span class="sc">/</span> <span class="dv">10</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="fu">lines</span>(routes_fast, <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>routes_fast<span class="sc">$</span>All <span class="ot">&lt;-</span> l<span class="sc">$</span>All</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>rnet <span class="ot">&lt;-</span> <span class="fu">overline</span>(routes_fast, <span class="st">&quot;All&quot;</span>, <span class="at">fun =</span> sum)</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>rnet<span class="sc">$</span>flow <span class="ot">&lt;-</span> rnet<span class="sc">$</span>All <span class="sc">/</span> <span class="fu">mean</span>(rnet<span class="sc">$</span>All) <span class="sc">*</span> <span class="dv">3</span></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="fu">plot</span>(rnet, <span class="at">lwd =</span> rnet<span class="sc">$</span>flow <span class="sc">/</span> <span class="fu">mean</span>(rnet<span class="sc">$</span>flow))</span></code></pre></div>
 <p>To estimate the amount of capacity needed at each segment on the
 transport network, the <code>overline</code> function demonstrated
 above, is used to divide line geometries into unique segments and
@@ -801,9 +801,9 @@ geographical and other data on routes by various modes, anywhere in the
 world. The output, shown in Table <span class="math inline">\(\ref{tab:xtnyoa}\)</span>, shows that the function
 also saves time, distance and (for bike trips) vertical distance climbed
 for the trips.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>ny2oaxaca1 <span class="ot">&lt;-</span> <span class="fu">route_graphhopper</span>(<span class="st">&quot;New York&quot;</span>, <span class="st">&quot;Oaxaca&quot;</span>, <span class="at">vehicle =</span> <span class="st">&quot;bike&quot;</span>)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>ny2oaxaca2 <span class="ot">&lt;-</span> <span class="fu">route_graphhopper</span>(<span class="st">&quot;New York&quot;</span>, <span class="st">&quot;Oaxaca&quot;</span>, <span class="at">vehicle =</span> <span class="st">&quot;car&quot;</span>)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(ny2oaxaca1<span class="sc">@</span>data, ny2oaxaca2<span class="sc">@</span>data)</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>ny2oaxaca1 <span class="ot">&lt;-</span> <span class="fu">route_graphhopper</span>(<span class="st">&quot;New York&quot;</span>, <span class="st">&quot;Oaxaca&quot;</span>, <span class="at">vehicle =</span> <span class="st">&quot;bike&quot;</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>ny2oaxaca2 <span class="ot">&lt;-</span> <span class="fu">route_graphhopper</span>(<span class="st">&quot;New York&quot;</span>, <span class="st">&quot;Oaxaca&quot;</span>, <span class="at">vehicle =</span> <span class="st">&quot;car&quot;</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="fu">rbind</span>(ny2oaxaca1<span class="sc">@</span>data, ny2oaxaca2<span class="sc">@</span>data)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -869,13 +869,13 @@ these datasets (<code>smallsa1</code>) contains population data for
 Statistical Area 1 (SA1) zones in Sydney, Australia. The second contains
 hypothetical cycleways aligned to streets in Sydney. The code below
 unzips the datasets and reads in the shapefiles.</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>data_dir <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="at">package =</span> <span class="st">&quot;stplanr&quot;</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span>(<span class="fu">file.path</span>(data_dir, <span class="st">&quot;smallsa1.zip&quot;</span>))</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span>(<span class="fu">file.path</span>(data_dir, <span class="st">&quot;testcycleway.zip&quot;</span>))</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>sa1income <span class="ot">&lt;-</span> <span class="fu">as</span>(sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">&quot;smallsa1.shp&quot;</span>), <span class="st">&quot;Spatial&quot;</span>)</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>testcycleway <span class="ot">&lt;-</span> <span class="fu">as</span>(sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">&quot;testcycleway.shp&quot;</span>), <span class="st">&quot;Spatial&quot;</span>)</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove unzipped files</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="fu">file.remove</span>(<span class="fu">list.files</span>(<span class="at">pattern =</span> <span class="st">&quot;^(smallsa1|testcycleway).*&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>data_dir <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="at">package =</span> <span class="st">&quot;stplanr&quot;</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="fu">unzip</span>(<span class="fu">file.path</span>(data_dir, <span class="st">&quot;smallsa1.zip&quot;</span>))</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="fu">unzip</span>(<span class="fu">file.path</span>(data_dir, <span class="st">&quot;testcycleway.zip&quot;</span>))</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>sa1income <span class="ot">&lt;-</span> <span class="fu">as</span>(sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">&quot;smallsa1.shp&quot;</span>), <span class="st">&quot;Spatial&quot;</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>testcycleway <span class="ot">&lt;-</span> <span class="fu">as</span>(sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">&quot;testcycleway.shp&quot;</span>), <span class="st">&quot;Spatial&quot;</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="co"># Remove unzipped files</span></span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="fu">file.remove</span>(<span class="fu">list.files</span>(<span class="at">pattern =</span> <span class="st">&quot;^(smallsa1|testcycleway).*&quot;</span>))</span></code></pre></div>
 <p>Calculating the catchment area is straightforward and in addition to
 specifying the required datasets, only a vector containing column names
 to calculate statistics and a distance is required. Since proportioning
@@ -885,15 +885,15 @@ a specified projection. It should be emphasised that the choice of
 projection is important and has an effect on the results meaning setting
 a local projection is recommended to achieve the most accurate
 results.</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;ropensci/stplanr&quot;</span>)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>catch800m <span class="ot">&lt;-</span> <span class="fu">calc_catchment</span>(</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">polygonlayer =</span> sa1income,</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">targetlayer =</span> testcycleway,</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">calccols =</span> <span class="fu">c</span>(<span class="st">&quot;Total&quot;</span>),</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">distance =</span> <span class="dv">800</span>,</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">projection =</span> <span class="st">&quot;austalbers&quot;</span>,</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">dissolve =</span> <span class="cn">TRUE</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;ropensci/stplanr&quot;</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>catch800m <span class="ot">&lt;-</span> <span class="fu">calc_catchment</span>(</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>  <span class="at">polygonlayer =</span> sa1income,</span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>  <span class="at">targetlayer =</span> testcycleway,</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a>  <span class="at">calccols =</span> <span class="fu">c</span>(<span class="st">&quot;Total&quot;</span>),</span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a>  <span class="at">distance =</span> <span class="dv">800</span>,</span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a>  <span class="at">projection =</span> <span class="st">&quot;austalbers&quot;</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a>  <span class="at">dissolve =</span> <span class="cn">TRUE</span></span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a>)</span></code></pre></div>
 <p>By looking at the data.frame associated with the
 SpatialPolygonsDataFrame that is returned from the
 <code>calc_catchment</code> function, the total population within the
@@ -901,9 +901,9 @@ catchment area can be seen to be nearly 40,000 people. The catchment
 area can also be plotted as with any other <code>Spatial*</code> object
 using the <code>plot</code> function using the code below with the
 result shown in Figure <span class="math inline">\(\ref{fig:catchmentplot}\)</span>.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sa1income, <span class="at">col =</span> <span class="st">&quot;light grey&quot;</span>)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(catch800m, <span class="at">col =</span> <span class="fu">rgb</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>), <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(testcycleway, <span class="at">col =</span> <span class="st">&quot;green&quot;</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">plot</span>(sa1income, <span class="at">col =</span> <span class="st">&quot;light grey&quot;</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="fu">plot</span>(catch800m, <span class="at">col =</span> <span class="fu">rgb</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>), <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="fu">plot</span>(testcycleway, <span class="at">col =</span> <span class="st">&quot;green&quot;</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p>This simplistic catchment area is useful when the straight-line
 distance is a reasonable approximation of the route taken to walk (or
 cycle) to a transport facility. However, this is often not the case. The
@@ -924,10 +924,10 @@ datasets. Preparation of the dataset involves using the
 package) to provide basic routing functionality. The network is used to
 calculate the shortest actual paths within the specific catchment
 distance. This process involves the following code:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unzip</span>(<span class="fu">file.path</span>(data_dir, <span class="st">&quot;sydroads.zip&quot;</span>))</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>sydroads <span class="ot">&lt;-</span> <span class="fu">as</span>(sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">&quot;.&quot;</span>, <span class="st">&quot;roads&quot;</span>), <span class="st">&quot;Spatial&quot;</span>)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">file.remove</span>(<span class="fu">list.files</span>(<span class="at">pattern =</span> <span class="st">&quot;^(roads).*&quot;</span>))</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>sydnetwork <span class="ot">&lt;-</span> <span class="fu">SpatialLinesNetwork</span>(sydroads)</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">unzip</span>(<span class="fu">file.path</span>(data_dir, <span class="st">&quot;sydroads.zip&quot;</span>))</span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>sydroads <span class="ot">&lt;-</span> <span class="fu">as</span>(sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">&quot;.&quot;</span>, <span class="st">&quot;roads&quot;</span>), <span class="st">&quot;Spatial&quot;</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a><span class="fu">file.remove</span>(<span class="fu">list.files</span>(<span class="at">pattern =</span> <span class="st">&quot;^(roads).*&quot;</span>))</span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>sydnetwork <span class="ot">&lt;-</span> <span class="fu">SpatialLinesNetwork</span>(sydroads)</span></code></pre></div>
 <p>The network catchment is then calculated using a similar method as
 with <code>calc_catchment</code> but with a few minor changes.
 Specifically these are including the <code>SpatialLinesNetwork</code>,
@@ -939,23 +939,23 @@ distance in both the <code>calc_catchment</code> and
 <code>maximpedance</code> parameter is the maximum value in the units of
 the network’s weight attribute. In practice this is generally distance
 in metres but can also be travel times, risk or other measures.</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>netcatch800m <span class="ot">&lt;-</span> <span class="fu">calc_network_catchment</span>(</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">sln =</span> sydnetwork,</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">polygonlayer =</span> sa1income,</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">targetlayer =</span> testcycleway,</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">calccols =</span> <span class="fu">c</span>(<span class="st">&quot;Total&quot;</span>),</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">maximpedance =</span> <span class="dv">800</span>,</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">distance =</span> <span class="dv">100</span>,</span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">projection =</span> <span class="st">&quot;austalbers&quot;</span></span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>netcatch800m <span class="ot">&lt;-</span> <span class="fu">calc_network_catchment</span>(</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>  <span class="at">sln =</span> sydnetwork,</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>  <span class="at">polygonlayer =</span> sa1income,</span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>  <span class="at">targetlayer =</span> testcycleway,</span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a>  <span class="at">calccols =</span> <span class="fu">c</span>(<span class="st">&quot;Total&quot;</span>),</span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a>  <span class="at">maximpedance =</span> <span class="dv">800</span>,</span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a>  <span class="at">distance =</span> <span class="dv">100</span>,</span>
+<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a>  <span class="at">projection =</span> <span class="st">&quot;austalbers&quot;</span></span>
+<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a>)</span></code></pre></div>
 <p>Once calculated, the network catchment area can be used just as the
 straight-line network catchment. This includes extracting the catchment
 population of 128,000 and plotting the original catchment area together
 with the original area with the results shown in Figure <span class="math inline">\(\ref{fig:netcatchplot}\)</span>:</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sa1income, <span class="at">col =</span> <span class="st">&quot;light grey&quot;</span>)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(catch800m, <span class="at">col =</span> <span class="fu">rgb</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>), <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(netcatch800m, <span class="at">col =</span> <span class="fu">rgb</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.5</span>), <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(testcycleway, <span class="at">col =</span> <span class="st">&quot;green&quot;</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="fu">plot</span>(sa1income, <span class="at">col =</span> <span class="st">&quot;light grey&quot;</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="fu">plot</span>(catch800m, <span class="at">col =</span> <span class="fu">rgb</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">0.5</span>), <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a><span class="fu">plot</span>(netcatch800m, <span class="at">col =</span> <span class="fu">rgb</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.5</span>), <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a><span class="fu">plot</span>(testcycleway, <span class="at">col =</span> <span class="st">&quot;green&quot;</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 </div>
 </div>
 <div id="modelling-and-visualisation" class="section level1">
@@ -993,12 +993,12 @@ QDF = \frac{d_{Rq}}{d_{Rf}}
 <p>Thanks to the ‘quietest’ route option provided by
 <code>route_cyclestreet</code>, we can estimate average values for both
 metrics as follows:</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>routes_slow <span class="ot">&lt;-</span> <span class="fu">line2route</span>(l, route_cyclestreet, <span class="at">plan =</span> <span class="st">&quot;quietest&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>l<span class="sc">$</span>d_rq <span class="ot">&lt;-</span> routes_slow<span class="sc">$</span>length <span class="co"># quietest route distance</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>Q <span class="ot">&lt;-</span> <span class="fu">mean</span>(l<span class="sc">$</span>d_rf <span class="sc">/</span> l<span class="sc">$</span>d_euclidean, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>QDF <span class="ot">&lt;-</span> <span class="fu">mean</span>(l<span class="sc">$</span>d_rq <span class="sc">/</span> l<span class="sc">$</span>d_rf, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>Q</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>QDF</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>routes_slow <span class="ot">&lt;-</span> <span class="fu">line2route</span>(l, route_cyclestreet, <span class="at">plan =</span> <span class="st">&quot;quietest&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>l<span class="sc">$</span>d_rq <span class="ot">&lt;-</span> routes_slow<span class="sc">$</span>length <span class="co"># quietest route distance</span></span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a>Q <span class="ot">&lt;-</span> <span class="fu">mean</span>(l<span class="sc">$</span>d_rf <span class="sc">/</span> l<span class="sc">$</span>d_euclidean, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a>QDF <span class="ot">&lt;-</span> <span class="fu">mean</span>(l<span class="sc">$</span>d_rq <span class="sc">/</span> l<span class="sc">$</span>d_rf, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a>Q</span>
+<span id="cb27-5"><a href="#cb27-5" tabindex="-1"></a>QDF</span></code></pre></div>
 <p>The results show that cycle paths are not particularly direct in the
 study region by international standards . This is hardly surprisingly
 given the small size of the sample and the short distances covered:
@@ -1008,7 +1008,7 @@ that the quiet routes are constructed along direct, and therefore
 sensible routes. We should caution against such assumptions, however: It
 is a small sample of desire lines and, when time is explored, we find
 that the ‘quietness diversion factor with respect to time’ (<span class="math inline">\(QDF_t\)</span>) is slightly larger:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>(QDFt <span class="ot">&lt;-</span> <span class="fu">mean</span>(routes_slow<span class="sc">$</span>time <span class="sc">/</span> routes_fast<span class="sc">$</span>time, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>(QDFt <span class="ot">&lt;-</span> <span class="fu">mean</span>(routes_slow<span class="sc">$</span>time <span class="sc">/</span> routes_fast<span class="sc">$</span>time, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
 </div>
 <div id="models-of-travel-behaviour" class="section level2">
 <h2>Models of travel behaviour</h2>
@@ -1025,11 +1025,11 @@ on the ability of people to walk and cycle large distances .</p>
 <p>We can explore the relationship between distance and the proportion
 of trips made by walking, using the same object <code>l</code> generated
 by <strong>stplanr</strong>.</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>l<span class="sc">$</span>pwalk <span class="ot">&lt;-</span> l<span class="sc">$</span>On.foot <span class="sc">/</span> l<span class="sc">$</span>All</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(l<span class="sc">$</span>d_euclidean, l<span class="sc">$</span>pwalk,</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex =</span> l<span class="sc">$</span>All <span class="sc">/</span> <span class="dv">50</span>,</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Euclidean distance (m)&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Proportion of trips by foot&quot;</span></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>l<span class="sc">$</span>pwalk <span class="ot">&lt;-</span> l<span class="sc">$</span>On.foot <span class="sc">/</span> l<span class="sc">$</span>All</span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a><span class="fu">plot</span>(l<span class="sc">$</span>d_euclidean, l<span class="sc">$</span>pwalk,</span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>  <span class="at">cex =</span> l<span class="sc">$</span>All <span class="sc">/</span> <span class="dv">50</span>,</span>
+<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Euclidean distance (m)&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Proportion of trips by foot&quot;</span></span>
+<span id="cb29-5"><a href="#cb29-5" tabindex="-1"></a>)</span></code></pre></div>
 <p>Based on the right-hand panel in Figure <span class="math inline">\(\ref{fig:euclidfastest}\)</span>, there is a clear
 negative relationship between distance of trips and the proportion of
 those trips made by walking. This is unsurprising: beyond a certain
@@ -1040,11 +1040,11 @@ is non-linear and there have been a number of functions proposed to fit
 to distance decay curves . From the range of options we test below just
 two forms. We will compare the ability of linear and log-square-root
 functions to fit the data contained in <code>l</code> for walking.</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>lm1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(pwalk <span class="sc">~</span> d_euclidean, <span class="at">data =</span> l<span class="sc">@</span>data, <span class="at">weights =</span> All)</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>lm2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(pwalk <span class="sc">~</span> d_rf, <span class="at">data =</span> l<span class="sc">@</span>data, <span class="at">weights =</span> All)</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>lm3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(pwalk <span class="sc">~</span> d_rf <span class="sc">+</span> <span class="fu">I</span>(d_rf<span class="sc">^</span><span class="fl">0.5</span>),</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> l<span class="sc">@</span>data, <span class="at">weights =</span> All, <span class="at">family =</span> <span class="fu">quasipoisson</span>(<span class="at">link =</span> <span class="st">&quot;log&quot;</span>)</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>lm1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(pwalk <span class="sc">~</span> d_euclidean, <span class="at">data =</span> l<span class="sc">@</span>data, <span class="at">weights =</span> All)</span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>lm2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(pwalk <span class="sc">~</span> d_rf, <span class="at">data =</span> l<span class="sc">@</span>data, <span class="at">weights =</span> All)</span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>lm3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(pwalk <span class="sc">~</span> d_rf <span class="sc">+</span> <span class="fu">I</span>(d_rf<span class="sc">^</span><span class="fl">0.5</span>),</span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>  <span class="at">data =</span> l<span class="sc">@</span>data, <span class="at">weights =</span> All, <span class="at">family =</span> <span class="fu">quasipoisson</span>(<span class="at">link =</span> <span class="st">&quot;log&quot;</span>)</span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a>)</span></code></pre></div>
 <p>The results of these regression models can be seen using
 <code>summary()</code>. Surprisingly, Euclidean distance was a better
 predictor of walking than route distance, but no strong conclusions can
@@ -1052,17 +1052,17 @@ be drawn from this finding, with such a small sample of desire lines (n
 = 42). The results are purely illustrative, of the kind of the
 possibilities created by using <strong>stplanr</strong> in conjuction
 with R’s modelling capabilities (see Figure ).</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(l<span class="sc">$</span>d_euclidean, l<span class="sc">$</span>pwalk,</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex =</span> l<span class="sc">$</span>All <span class="sc">/</span> <span class="dv">50</span>,</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Euclidean distance (m)&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Proportion of trips by foot&quot;</span></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>l2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">d_euclidean =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5000</span>, <span class="at">d_rf =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5000</span>)</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>lm1p <span class="ot">&lt;-</span> <span class="fu">predict</span>(lm1, l2)</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>lm2p <span class="ot">&lt;-</span> <span class="fu">predict</span>(lm2, l2)</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>lm3p <span class="ot">&lt;-</span> <span class="fu">predict</span>(lm3, l2)</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(l2<span class="sc">$</span>d_euclidean, lm1p)</span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(l2<span class="sc">$</span>d_euclidean, <span class="fu">exp</span>(lm2p), <span class="at">col =</span> <span class="st">&quot;green&quot;</span>)</span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(l2<span class="sc">$</span>d_euclidean, <span class="fu">exp</span>(lm3p), <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="fu">plot</span>(l<span class="sc">$</span>d_euclidean, l<span class="sc">$</span>pwalk,</span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>  <span class="at">cex =</span> l<span class="sc">$</span>All <span class="sc">/</span> <span class="dv">50</span>,</span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">&quot;Euclidean distance (m)&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;Proportion of trips by foot&quot;</span></span>
+<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a>)</span>
+<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a>l2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">d_euclidean =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5000</span>, <span class="at">d_rf =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5000</span>)</span>
+<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a>lm1p <span class="ot">&lt;-</span> <span class="fu">predict</span>(lm1, l2)</span>
+<span id="cb31-7"><a href="#cb31-7" tabindex="-1"></a>lm2p <span class="ot">&lt;-</span> <span class="fu">predict</span>(lm2, l2)</span>
+<span id="cb31-8"><a href="#cb31-8" tabindex="-1"></a>lm3p <span class="ot">&lt;-</span> <span class="fu">predict</span>(lm3, l2)</span>
+<span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a><span class="fu">lines</span>(l2<span class="sc">$</span>d_euclidean, lm1p)</span>
+<span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a><span class="fu">lines</span>(l2<span class="sc">$</span>d_euclidean, <span class="fu">exp</span>(lm2p), <span class="at">col =</span> <span class="st">&quot;green&quot;</span>)</span>
+<span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a><span class="fu">lines</span>(l2<span class="sc">$</span>d_euclidean, <span class="fu">exp</span>(lm3p), <span class="at">col =</span> <span class="st">&quot;red&quot;</span>)</span></code></pre></div>
 </div>
 <div id="visualisation" class="section level2">
 <h2>Visualisation</h2>
@@ -1256,7 +1256,7 @@ Journal of Watershed Science and Management</em> 1 (1). <a href="http://confluen
 Pebesma, Edzer, Roger Bivand, Paulo Justiniano Ribeiro, et al. 2015.
 <span>“Software for <span>Spatial</span>
 <span>Statistics</span>.”</span> <em>Journal of Statistical
-Software</em> 63 (1): 1–8. <a href="http://brage.bibsys.no/xmlui/bitstream/id/320781/Pebesma_Bivand_Ribeiro.pdf">http://brage.bibsys.no/xmlui/bitstream/id/320781/Pebesma_Bivand_Ribeiro.pdf</a>.
+Software</em> 63 (1): 1–8.
 </div>
 <div id="ref-waddell_urbansim:_2002" class="csl-entry">
 Waddell, Paul. 2002. <span>“<span>UrbanSim</span>: <span>Modeling</span>

@@ -32,7 +32,7 @@ A more detailed overview of the package's aims and capabilities is contained in 
 # Installing stplanr
 
 If you're new to programming and transport data, we recommend using **stplanr** interactively in an Integrated Development Environment (IDE), [RStudio](https://posit.co/download/rstudio-desktop/).
-Broader guidance on R set-up can be found in [Efficient R Programming](https://csgillespie.github.io/efficientR/set-up.html) [@gillespie_efficient_2016], RStudio's [Education pages](https://education.rstudio.com/learn/beginner/) and on [CRAN](https://cran.r-project.org/).
+Broader guidance on R set-up can be found in Efficient R Programming [@gillespie_efficient_2016], RStudio's [Education pages](https://education.rstudio.com/learn/beginner/) and on [CRAN](https://cran.r-project.org/).
 
 Once you have an R set-up you are happy with, the latest version can be installed as follows:
 
@@ -174,22 +174,16 @@ plot(l["Bicycle"], lwd = lwd)
 
 Finally, we can convert these desire lines into routes as follows (other routing functions can be used, but may require API keys to work - see the [`cyclestreets`](https://cran.r-project.org/package=cyclestreets) package documentation for example):
 
-```{r, message=FALSE, warning=FALSE}
+```{r, eval=FALSE}
 # if the next line returns FALSE the code will not run
-(has_internet <- curl::has_internet())
-(cs_key <- nchar(Sys.getenv("CYCLESTREETS")))
-if (has_internet & cs_key == 16) {
-  r <- route(l = l, route_fun = cyclestreets::journey)
-  r <- aggregate(r[c(3, 12)], by = list(r[[1]], r[[2]]), FUN = mean)
-} else {
-  r <- routes_fast_sf[sel, ]
-}
+r <- route(l = l, route_fun = cyclestreets::journey)
 ```
 
 These routes contain the same information on origin and destination, but have additional spatial information about the route network.
-The routes can be plotted in the same way as the desire lines were plotted:
+The routes can be plotted in the same way as the desire lines were plotted (we will use the pre-made data for this):
 
 ```{r, out.width="500", out.height="500", eval=FALSE}
+r <- stplanr::routes_fast_sf
 plot(r$geometry, lwd = lwd * 3, reset = FALSE)
 ```
 
@@ -237,9 +231,9 @@ Representing this spatial data in a formal class system has many advantages, inc
 **sf** supports most common geographic data formats used in transport planning (including Shapefiles and GeoJSON files representing points, lines, zones). 
 See *stplanr: A package for transport planning* [@lovelace_stplanr_2018] for details.
 
-To get the best out of **stplanr** it helps to have a strong understanding of spatial data in R in general. Chapter 2 of the open source book [*Geocomputation with R*](https://geocompr.robinlovelace.net/) provides an introductory tutorial on the basics of spatial data with R and contains references to more advanced tutorials which may come in handy as your spatial data analysis skills progress.
+To get the best out of **stplanr** it helps to have a strong understanding of spatial data in R in general. Chapter 2 of the open source book [*Geocomputation with R*](https://r.geocompx.org/) provides an introductory tutorial on the basics of spatial data with R and contains references to more advanced tutorials which may come in handy as your spatial data analysis skills progress.
 Further information on geographic data for transport applications can be found in the same book.
-See https://geocompr.robinlovelace.net/transport.html.
+See https://r.geocompx.org/transport.html.
 
 # Contributing
 

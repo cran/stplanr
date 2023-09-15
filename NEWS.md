@@ -1,3 +1,17 @@
+# stplanr 1.1.2  (2023-09)
+
+- Export S3 methods
+
+# stplanr 1.1.1  (2023-09)
+
+- Fixed URLs and other things for CRAN
+
+# stplanr 1.1.0 (2023-09)
+
+- New function `rnet_merge()` and related changes, new contributor Zhao Wang
+- `line_segment()` is now vectorised (#518)
+- Assorted fixes, see https://github.com/ropensci/stplanr/issues?q=is%3Aissue+is%3Aclosed for details
+
 # stplanr 1.0.2
 
 -   Update docs, fix missing functions issue (#499)
@@ -208,7 +222,7 @@
 
 -   New functions `od_aggregate_from()` and `od_aggregate_to()` provide easy ways to aggregate origin-destination pairs. See [#303](https://github.com/ropensci/stplanr/pull/303).
 -   Updated `overline2()` is now faster and better documented (#307)
--   Updates to `route_dodgr()` function, which provides an interface to the [dodgr](https://github.com/ATFutures/dodgr) package, accepts wider range of inputs
+-   Updates to `route_dodgr()` function, which provides an interface to the [dodgr](https://github.com/UrbanAnalyst/dodgr) package, accepts wider range of inputs
 -   Better website and updated function list. See <https://ropensci.github.io/stplanr/index.html>
 -   The `sf` method for `overline()` has been updated so it calls the much faster `overline2()` function
 -   Updated documentation for `route_local()`
