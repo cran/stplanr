@@ -1,4 +1,4 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -6,7 +6,7 @@ knitr::opts_chunk$set(
 )
 has_webshot <- "webshot" %in% installed.packages()
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  install.packages("od")
 #  vignette("od")
 
@@ -63,11 +63,11 @@ has_webshot <- "webshot" %in% installed.packages()
 #    addTiles() %>%
 #    addPolygons(data = l)
 
-## ---- error=TRUE--------------------------------------------------------------
+## ----error=TRUE---------------------------------------------------------------
 #  od$geo_code2[3] <- "nomatch"
 #  od2line(od, z)
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  library(dplyr)
 #  
 #  # get nationwide OD data
@@ -89,7 +89,7 @@ has_webshot <- "webshot" %in% installed.packages()
 #      od_all$geo_code2 %in% centroids_london$msoa11cd,
 #  ]
 
-## ---- eval=FALSE, echo=FALSE--------------------------------------------------
+## ----eval=FALSE, echo=FALSE---------------------------------------------------
 #  # aim: create a reproducible OD dataset
 #  od_lnd <- od_london %>%
 #    select(-matches("rail|name|moto|car|tax|home")) %>%
@@ -98,12 +98,12 @@ has_webshot <- "webshot" %in% installed.packages()
 #  z_lnd <- centroids_london %>%
 #    filter(msoa11cd %in% c(od$geo_code1, od$geo_code2))
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  desire_lines_london <- od2line(od_london, centroids_london)
 #  nrow(desire_lines_london)
 #  # > 352654
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  min_trips_threshold <- 20
 #  desire_lines_inter <- desire_lines_london %>% filter(geo_code1 != geo_code2)
 #  desire_lines_intra <- desire_lines_london %>% filter(geo_code1 == geo_code2)
@@ -111,27 +111,27 @@ has_webshot <- "webshot" %in% installed.packages()
 #  nrow(desire_lines_top)
 #  # > 28879
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  nrow(desire_lines_top) / nrow(desire_lines_london)
 #  # > 0.08189046
 #  sum(desire_lines_top$all) / sum(desire_lines_london$all)
 #  # > 0.557343
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  plot(desire_lines_top["all"])
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 #  knitr::include_graphics("https://user-images.githubusercontent.com/1825120/61058906-030a5c80-a3f0-11e9-90b5-d216964e9681.png")
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  lwd <- desire_lines_top$all / mean(desire_lines_top$all) / 10
 #  desire_lines_top$percent_dont_drive <- 100 - desire_lines_top$car_driver / desire_lines_top$all * 100
 #  plot(desire_lines_top["percent_dont_drive"], lwd = lwd, breaks = c(0, 50, 70, 80, 90, 95, 100))
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 #  knitr::include_graphics("https://user-images.githubusercontent.com/1825120/62073083-e5ceee00-b237-11e9-9cc7-8bf62d0e9b3f.png")
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  library(tmap)
 #  desire_lines_top <- desire_lines_top %>%
 #    arrange(Active)
@@ -153,15 +153,15 @@ has_webshot <- "webshot" %in% installed.packages()
 #      legend.bg.color = "white"
 #    )
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 #  # tmap_save(.Last.value, "tmap-london.png")
 #  knitr::include_graphics("https://user-images.githubusercontent.com/1825120/61066243-12dc6d80-a3fd-11e9-8805-826a47c553f6.png")
 
-## ---- eval=FALSE, echo=FALSE--------------------------------------------------
+## ----eval=FALSE, echo=FALSE---------------------------------------------------
 #  saveRDS(od_all, "od_all.Rds")
 #  piggyback::pb_upload("od_all.Rds")
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  zones_london <- pct::get_pct_zones("london") %>%
 #    select("geo_code")
 #  origin_attributes <- desire_lines_top %>%
@@ -173,10 +173,10 @@ has_webshot <- "webshot" %in% installed.packages()
 #  zones_origins <- left_join(zones_london, origin_attributes, by = "geo_code")
 #  plot(zones_origins, border = NA)
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 #  knitr::include_graphics("https://user-images.githubusercontent.com/1825120/61067619-e7a74d80-a3ff-11e9-8c15-7467717b36ec.png")
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  destination_attributes <- desire_lines_top %>%
 #    sf::st_drop_geometry() %>%
 #    group_by(geo_code2) %>%
@@ -187,20 +187,20 @@ has_webshot <- "webshot" %in% installed.packages()
 #  
 #  plot(destination_attributes, border = NA)
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ----echo=FALSE---------------------------------------------------------------
 #  knitr::include_graphics("https://user-images.githubusercontent.com/1825120/61069409-27703400-a404-11e9-9c83-1cd5f2397260.png")
 
-## ---- out.width="100%", warning=FALSE, eval=FALSE, echo=FALSE-----------------
+## ----out.width="100%", warning=FALSE, eval=FALSE, echo=FALSE------------------
 #  u <- "https://github.com/ropensci/stplanr/releases/download/0.2.9/lines_cars.Rds"
 #  f <- file.path(tempdir(), "lines_cars.Rds")
 #  download.file(u, f)
 #  lines_cars <- readRDS(f)
 #  plot(lines_cars["car_km"], lwd = lines_cars$car_km / 1000)
 
-## ---- eval=FALSE, echo=FALSE--------------------------------------------------
+## ----eval=FALSE, echo=FALSE---------------------------------------------------
 #  sum(lines_cars$car_km * 2.5 * 200) / 1e9
 
-## ---- echo=FALSE, eval=FALSE--------------------------------------------------
+## ----echo=FALSE, eval=FALSE---------------------------------------------------
 #  # out-takes and test code
 #  # demonstrate bug/feature in sf
 #  library(sf)
@@ -228,7 +228,7 @@ has_webshot <- "webshot" %in% installed.packages()
 #  l <- st_linestring(m)
 #  plot(l)
 
-## ---- echo=FALSE, eval=FALSE--------------------------------------------------
+## ----echo=FALSE, eval=FALSE---------------------------------------------------
 #  usethis::use_data(od_data_sample)
 #  # aim: get top flows by car use multiplied by distance
 #  # subset flows with more than n people driving:

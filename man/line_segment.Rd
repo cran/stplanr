@@ -4,32 +4,58 @@
 \alias{line_segment}
 \title{Divide an sf object with LINESTRING geometry into regular segments}
 \usage{
-line_segment(l, n_segments = NA, segment_length = NA)
+line_segment(
+  l,
+  segment_length = NA,
+  n_segments = NA,
+  use_rsgeo = NULL,
+  debug_mode = FALSE
+)
 }
 \arguments{
 \item{l}{A spatial lines object}
 
-\item{n_segments}{The number of segments to divide the line into}
+\item{segment_length}{The approximate length of segments in the output (overrides n_segments if set)}
 
-\item{segment_length}{The approximate length of segments in the output (overides n_segments if set)}
+\item{n_segments}{The number of segments to divide the line into.
+If there are multiple lines, this should be a vector of the same length.}
+
+\item{use_rsgeo}{Should the \code{rsgeo} package be used?
+If \code{rsgeo} is available, this faster implementation is used by default.
+If \code{rsgeo} is not available, the \code{lwgeom} package is used.}
+
+\item{debug_mode}{Should debug messages be printed? Default is FALSE.}
 }
 \description{
-This function keeps the attributes
+This function keeps the attributes.
+Note: results differ when \code{use_rsgeo} is \code{TRUE}:
+the \code{{rsgeo}} implementation is faster and more reliably
+keeps returned linestrings below a the \code{segment_length} value,
+but does not always return the number of segments requested.
 }
 \examples{
-l <- routes_fast_sf[2, ]
-l_seg2 <- line_segment(l = l, n_segments = 2)
-l_seg3 <- line_segment(l = l, n_segments = 3)
-l_seg_100 <- line_segment(l = l, segment_length = 100)
-l_seg_2000 <- line_segment(l = l, segment_length = 2000)
-plot(sf::st_geometry(l_seg2), col = 1:2, lwd = 5)
-plot(sf::st_geometry(l_seg3), col = 1:3, lwd = 5)
-plot(sf::st_geometry(l_seg_100), col = seq(nrow(l_seg_100)), lwd = 5)
-plot(sf::st_geometry(l_seg_2000), col = seq(nrow(l_seg_100)), lwd = 5)
-# Multiple lines
+library(sf)
 l <- routes_fast_sf[2:4, ]
-l_seg_multi = line_segment(l, segment_length = 1000)
-plot(sf::st_geometry(l_seg_multi), col = seq(nrow(l_seg_100)), lwd = 5)
+l_seg_multi <- line_segment(l, segment_length = 1000, use_rsgeo = FALSE)
+# Number of subsegments
+table(l_seg_multi$ID)
+plot(l_seg_multi["ID"])
+plot(l_seg_multi$geometry, col = seq_along(l_seg_multi), lwd = 5)
+round(st_length(l_seg_multi))
+# rsgeo implementation (default if available):
+if (rlang::is_installed("rsgeo")) {
+  rsmulti = line_segment(l, segment_length = 1000, use_rsgeo = TRUE)
+  plot(rsmulti["ID"])
+}
+# Check they have the same total length, to nearest mm:
+# round(sum(st_length(l_seg_multi)), 3) == round(sum(st_length(rsmulti)), 3)
+# With n_segments for 1 line:
+l_seg_multi_n <- line_segment(l[1, ], n_segments = 3, use_rsgeo = FALSE)
+l_seg_multi_n <- line_segment(l$geometry[1], n_segments = 3, use_rsgeo = FALSE)
+l_seg_multi_n <- line_segment(l$geometry[1], n_segments = 3, use_rsgeo = TRUE)
+# With n_segments for all 3 lines:
+l_seg_multi_n <- line_segment(l, n_segments = 2)
+nrow(l_seg_multi_n) == nrow(l) * 2
 }
 \seealso{
 Other lines: 
@@ -41,8 +67,10 @@ Other lines:
 \code{\link{line_bearing}()},
 \code{\link{line_breakup}()},
 \code{\link{line_midpoint}()},
+\code{\link{line_segment1}()},
 \code{\link{line_via}()},
 \code{\link{mats2line}()},
+\code{\link{n_segments}()},
 \code{\link{n_vertices}()},
 \code{\link{onewaygeo}()},
 \code{\link{points2line}()},

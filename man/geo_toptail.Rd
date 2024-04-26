@@ -23,7 +23,7 @@ by the user.
 \details{
 Note: see the function
 \href{https://github.com/ropensci/stplanr/blob/v1.0.0/R/toptail.R}{\code{toptailgs()}}
-in {stplanr} v0.8.5 for an implementation that uses the geosphere
+in stplanr v0.8.5 for an implementation that uses the geosphere
 package.
 }
 \examples{
@@ -47,9 +47,11 @@ Other lines:
 \code{\link{line_bearing}()},
 \code{\link{line_breakup}()},
 \code{\link{line_midpoint}()},
+\code{\link{line_segment1}()},
 \code{\link{line_segment}()},
 \code{\link{line_via}()},
 \code{\link{mats2line}()},
+\code{\link{n_segments}()},
 \code{\link{n_vertices}()},
 \code{\link{onewaygeo}()},
 \code{\link{points2line}()},

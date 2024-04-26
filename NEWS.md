@@ -1,3 +1,12 @@
+# stplanr 1.2.0 (2024-04)
+
+- Various fixes for `rnet_join()` (now recommended over `rnet_merge()`) and `line_segment()` (#552)
+- `line_segment()` now will use `rsgeo::line_segmentize()` if available
+- `line_segment()` becomes an S3 generic which now has methods for `sf` and `sfc` class objects
+- `line_segment()` now works around [{rsgeo} issue](https://github.com/JosiahParry/rsgeo/issues/42) with `line_segmentize()` returning fewer segments than requested (#552)
+- Removal of offending URLs with `urlchecker::check_urls()` 
+- Improvement of documentation of `line_midpoint()`: comparison of output with `sf::st_point_on_surface()` 
+
 # stplanr 1.1.2  (2023-09)
 
 - Export S3 methods

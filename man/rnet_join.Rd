@@ -10,12 +10,13 @@ rnet_join(
   dist = 5,
   length_y = TRUE,
   key_column = 1,
-  subset_x = TRUE,
+  subset_x = FALSE,
   dist_subset = NULL,
   segment_length = 0,
   endCapStyle = "FLAT",
   contains = TRUE,
   max_angle_diff = NULL,
+  crs = geo_select_aeq(rnet_x),
   ...
 )
 }
@@ -35,7 +36,7 @@ length of segments (e.g. weighted mean). \code{TRUE} by default.}
 
 \item{subset_x}{Subset the source route network by the target network before
 creating buffers? This can lead to faster and better results. Default:
-\code{TRUE}.}
+\code{FALSE}.}
 
 \item{dist_subset}{The buffer distance in m to apply when breaking up the
 source object \code{rnet_y}. Default: 5.}
@@ -55,11 +56,13 @@ on sideroads, as documented in \href{https://github.com/ropensci/stplanr/issues/
 \item{max_angle_diff}{The maximum angle difference between x and y nets for a value
 to be returned}
 
+\item{crs}{The CRS to use for the buffer operation. See \code{?geo_projected} for details.}
+
 \item{...}{Additional arguments passed to \code{rnet_subset}.}
 }
 \description{
-This is a spatial join function that is enables adding columns to a
-'target' route network from a 'source' route
+Join function that adds columns to a
+'target' route network \code{sf} object from a 'source' route
 network that contains the base geometry, e.g. from OSM
 }
 \details{
@@ -81,12 +84,10 @@ and a link to an interactive example of inputs and outputs shown below.
 \examples{
 library(sf)
 library(dplyr)
-# Uncomment for interactive examples:
-plot(st_geometry(route_network_small))
 plot(osm_net_example$geometry, lwd = 5, col = "grey", add = TRUE)
 plot(route_network_small["flow"], add = TRUE)
-rnetj = rnet_join(osm_net_example, route_network_small, dist = 9)
-rnetj2 = rnet_join(osm_net_example, route_network_small, dist = 9, segment_length = 10)
+rnetj <- rnet_join(osm_net_example, route_network_small, dist = 9)
+rnetj2 <- rnet_join(osm_net_example, route_network_small, dist = 9, segment_length = 10)
 # library(mapview)
 # mapview(rnetj, zcol = "flow") +
 #   mapview(rnetj2, zcol = "flow") +
@@ -96,21 +97,21 @@ plot(rnetj["flow"], add = TRUE)
 plot(rnetj2["flow"], add = TRUE)
 plot(route_network_small["flow"], add = TRUE)
 summary(rnetj2$length_y)
-rnetj_summary = rnetj2 \%>\%
+rnetj_summary <- rnetj2 \%>\%
   filter(!is.na(length_y)) \%>\%
   sf::st_drop_geometry() \%>\%
   group_by(osm_id) \%>\%
-    summarise(
-      flow = weighted.mean(flow, length_y, na.rm = TRUE),
-      )
-osm_joined_rnet = dplyr::left_join(osm_net_example, rnetj_summary)
+  summarise(
+    flow = weighted.mean(flow, length_y, na.rm = TRUE),
+  )
+osm_joined_rnet <- dplyr::left_join(osm_net_example, rnetj_summary)
 plot(sf::st_geometry(route_network_small))
 plot(route_network_small["flow"], lwd = 3, add = TRUE)
 plot(sf::st_geometry(osm_joined_rnet), add = TRUE)
 # plot(osm_joined_rnet[c("flow")], lwd = 9, add = TRUE)
 # Improve fit between geometries and performance by subsetting rnet_x
-osm_subset = rnet_subset(osm_net_example, route_network_small, dist = 5)
-osm_joined_rnet = dplyr::left_join(osm_subset, rnetj_summary)
+osm_subset <- rnet_subset(osm_net_example, route_network_small, dist = 5)
+osm_joined_rnet <- dplyr::left_join(osm_subset, rnetj_summary)
 plot(route_network_small["flow"])
 # plot(osm_joined_rnet[c("flow")])
 # mapview(joined_network) +

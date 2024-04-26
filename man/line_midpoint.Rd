@@ -16,10 +16,13 @@ See \code{\link[lwgeom:st_linesubstring]{lwgeom::st_linesubstring()}}.}
 Find the mid-point of lines
 }
 \examples{
-l = routes_fast_sf[2:5, ]
+l <- routes_fast_sf[2:5, ]
 plot(l$geometry, col = 2:5)
-midpoints = line_midpoint(l)
+midpoints <- line_midpoint(l)
 plot(midpoints, add = TRUE)
+# compare with sf::st_point_on_surface:
+midpoints2 <- sf::st_point_on_surface(l)
+plot(midpoints2, add = TRUE, col = "red")
 }
 \seealso{
 Other lines: 
@@ -30,9 +33,11 @@ Other lines:
 \code{\link{line2points}()},
 \code{\link{line_bearing}()},
 \code{\link{line_breakup}()},
+\code{\link{line_segment1}()},
 \code{\link{line_segment}()},
 \code{\link{line_via}()},
 \code{\link{mats2line}()},
+\code{\link{n_segments}()},
 \code{\link{n_vertices}()},
 \code{\link{onewaygeo}()},
 \code{\link{points2line}()},
