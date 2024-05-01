@@ -29,14 +29,22 @@ If \code{rsgeo} is not available, the \code{lwgeom} package is used.}
 \description{
 This function keeps the attributes.
 Note: results differ when \code{use_rsgeo} is \code{TRUE}:
-the \code{{rsgeo}} implementation is faster and more reliably
-keeps returned linestrings below a the \code{segment_length} value,
-but does not always return the number of segments requested.
+the \code{{rsgeo}} implementation will be faster.
+Results may not always keep returned linestrings below
+the \code{segment_length} value.
+The \code{{rsgeo}} implementation does not always
+return the number of segments requested due to an upstream issue in the
+\code{geo} Rust crate.
+}
+\details{
+Note: we recommend running these functions on projected data.
 }
 \examples{
 library(sf)
-l <- routes_fast_sf[2:4, ]
+l <- routes_fast_sf[2:4, "ID"]
 l_seg_multi <- line_segment(l, segment_length = 1000, use_rsgeo = FALSE)
+l_seg_n <- line_segment(l, n_segments = 2)
+l_seg_n <- line_segment(l, n_segments = c(1:3))
 # Number of subsegments
 table(l_seg_multi$ID)
 plot(l_seg_multi["ID"])

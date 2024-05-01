@@ -6,25 +6,25 @@ knitr::opts_chunk$set(
 )
 
 ## ----setup, message=FALSE-----------------------------------------------------
-library(stplanr)
-library(sf)
+#  library(stplanr)
+#  library(sf)
 
 ## ----out.width="40%", fig.show='hold', fig.width=5, message=FALSE-------------
-library(stplanr)
-library(sf)
-sample_routes <- routes_fast_sf[2:6, 1]
-sample_routes$value <- rep(1:3, length.out = 5)
-rnet <- overline(sample_routes, attrib = "value")
-plot(sample_routes["value"], lwd = sample_routes$value, main = "Routes")
-plot(rnet["value"], lwd = rnet$value, main = "Route network")
+#  library(stplanr)
+#  library(sf)
+#  sample_routes <- routes_fast_sf[2:6, 1]
+#  sample_routes$value <- rep(1:3, length.out = 5)
+#  rnet <- overline(sample_routes, attrib = "value")
+#  plot(sample_routes["value"], lwd = sample_routes$value, main = "Routes")
+#  plot(rnet["value"], lwd = rnet$value, main = "Route network")
 
 ## ----rnets1, message=FALSE, warning=FALSE, out.width="100%", fig.width=6, fig.height=6, echo=FALSE----
-# knitr::include_graphics("route-networks.png")
+#  # knitr::include_graphics("route-networks.png")
 
 ## -----------------------------------------------------------------------------
-touching_list = st_intersects(sample_routes)
-g = igraph::graph.adjlist(touching_list)
-igraph::is_connected(g)
+#  touching_list = st_intersects(sample_routes)
+#  g = igraph::graph.adjlist(touching_list)
+#  igraph::is_connected(g)
 
 ## ----eval=FALSE---------------------------------------------------------------
 #  # piggyback::pb_download_url("r_key_roads_test.Rds")
@@ -37,23 +37,23 @@ igraph::is_connected(g)
 #  sf:::plot.sfc_LINESTRING(rnet_disconnected$geometry)
 
 ## ----echo=FALSE---------------------------------------------------------------
-knitr::include_graphics("https://i.imgur.com/827f761.png")
+#  knitr::include_graphics("https://i.imgur.com/827f761.png")
 
 ## ----eval=FALSE---------------------------------------------------------------
 #  rnet_disconnected$group = rnet_igroup(rnet_disconnected)
 
 ## ----out.width="49%", fig.show='hide'-----------------------------------------
-# plot(rnet$geometry)
-# plot(sln_nodes, add = TRUE)
-# xy_path <- sum_network_routes(sln = sln, start = xy_nodes[1], end = xy_nodes[2], sumvars = "length")
-# # xy_path = sum_network_links(sln = sln, start = xy_nodes[1], end = xy_nodes[2])
-# plot(rnet$geometry)
-# plot(xy_sf$geometry, add = TRUE)
-# plot(xy_path$geometry, add = TRUE, lwd = 5)
+#  # plot(rnet$geometry)
+#  # plot(sln_nodes, add = TRUE)
+#  # xy_path <- sum_network_routes(sln = sln, start = xy_nodes[1], end = xy_nodes[2], sumvars = "length")
+#  # # xy_path = sum_network_links(sln = sln, start = xy_nodes[1], end = xy_nodes[2])
+#  # plot(rnet$geometry)
+#  # plot(xy_sf$geometry, add = TRUE)
+#  # plot(xy_path$geometry, add = TRUE, lwd = 5)
 
 ## ----netpoint-----------------------------------------------------------------
-new_point_coordinates <- c(-1.540, 53.826)
-p <- sf::st_sf(geometry = sf::st_sfc(sf::st_point(new_point_coordinates)), crs = 4326)
+#  new_point_coordinates <- c(-1.540, 53.826)
+#  p <- sf::st_sf(geometry = sf::st_sfc(sf::st_point(new_point_coordinates)), crs = 4326)
 
 ## ----message=FALSE, warning=FALSE, out.width="100%", fig.width=6, fig.height=6, echo=FALSE, eval=FALSE----
 #  # Show solutions to https://github.com/ropensci/stplanr/issues/237

@@ -156,9 +156,14 @@ line_midpoint <- function(l, tolerance = NULL) {
 #'
 #' This function keeps the attributes.
 #' Note: results differ when `use_rsgeo` is `TRUE`:
-#' the `{rsgeo}` implementation is faster and more reliably
-#' keeps returned linestrings below a the `segment_length` value,
-#' but does not always return the number of segments requested.
+#' the `{rsgeo}` implementation will be faster.
+#' Results may not always keep returned linestrings below
+#' the `segment_length` value.
+#' The `{rsgeo}` implementation does not always
+#' return the number of segments requested due to an upstream issue in the
+#' `geo` Rust crate.
+#'
+#' Note: we recommend running these functions on projected data.
 #'
 #' @inheritParams line2df
 #' @param segment_length The approximate length of segments in the output (overrides n_segments if set)
@@ -172,8 +177,10 @@ line_midpoint <- function(l, tolerance = NULL) {
 #' @export
 #' @examples
 #' library(sf)
-#' l <- routes_fast_sf[2:4, ]
+#' l <- routes_fast_sf[2:4, "ID"]
 #' l_seg_multi <- line_segment(l, segment_length = 1000, use_rsgeo = FALSE)
+#' l_seg_n <- line_segment(l, n_segments = 2)
+#' l_seg_n <- line_segment(l, n_segments = c(1:3))
 #' # Number of subsegments
 #' table(l_seg_multi$ID)
 #' plot(l_seg_multi["ID"])
@@ -200,7 +207,7 @@ line_segment <- function(
     use_rsgeo = NULL,
     debug_mode = FALSE) {
   # Defensive programming:
-  if (is.na(segment_length) && is.na(n_segments)) {
+  if (any(is.na(segment_length)) && any(is.na(n_segments))) {
     rlang::abort(
       "segment_length or n_segments must be set.",
       call = rlang::caller_env()
@@ -217,7 +224,7 @@ line_segment.sf <- function(
     debug_mode = FALSE
   ) {
   # Get n_segments if not provided:
-  if (is.na(n_segments)) {
+  if (all(is.na(n_segments))) {
     segment_lengths <- as.numeric(sf::st_length(l))
     n_segments <- n_segments(segment_lengths, segment_length)
   } else {
@@ -368,13 +375,6 @@ use_rsgeo <- function(shp) {
 line_segment_rsgeo <- function(l, n_segments) {
 
   crs <- sf::st_crs(l)
-  # Test to see if the CRS is latlon or not and provide warning if so
-  if (sf::st_is_longlat(l)) {
-    warning(
-      "The CRS of the input object is latlon.\n",
-      "This may cause problems with the rsgeo implementation of line_segment()."
-    )
-  }
 
   # extract geometry and convert to rsgeo
   geo <- rsgeo::as_rsgeo(sf::st_geometry(l))
@@ -384,8 +384,8 @@ line_segment_rsgeo <- function(l, n_segments) {
 
   # sf linestring:
   res_sfc_ml = sf::st_as_sfc(res_rsgeo)
-  n_segments_rsgeo = as.numeric(lengths(res_sfc_ml))
-  if (! identical(n_segments, n_segments_rsgeo)) {
+  n_segments_rsgeo = lengths(res_sfc_ml)
+  if (! all(n_segments == n_segments_rsgeo)) {
     sum_segments <- sum(n_segments)
     sum_segments_rsgeo <- sum(n_segments_rsgeo)
     msg = paste0(
