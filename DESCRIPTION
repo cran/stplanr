@@ -1,7 +1,7 @@
 Type: Package
 Package: stplanr
 Title: Sustainable Transport Planning
-Version: 1.2.1
+Version: 1.2.2
 Authors@R: c(
     person("Robin", "Lovelace", , "rob00x@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-5679-6536")),
@@ -58,13 +58,14 @@ Suggests: cyclestreets, dodgr (>= 0.2.15), geodist, igraph (>= 1.2.2),
         knitr (>= 1.20), leaflet, mapsapi, opentripplanner, osrm, pct,
         rmarkdown (>= 1.10), rsgeo (>= 0.1.6), testthat (>= 2.0.0),
         tmap
+Additional_repositories: https://josiahparry.r-universe.dev
 VignetteBuilder: knitr
 Encoding: UTF-8
 LazyData: yes
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 SystemRequirements: GNU make
 NeedsCompilation: no
-Packaged: 2024-05-01 15:17:41 UTC; robin
+Packaged: 2024-08-19 07:40:30 UTC; robin
 Author: Robin Lovelace [aut, cre] (<https://orcid.org/0000-0001-5679-6536>),
   Richard Ellison [aut],
   Malcolm Morgan [aut] (<https://orcid.org/0000-0002-9488-9183>),
@@ -78,4 +79,4 @@ Author: Robin Lovelace [aut, cre] (<https://orcid.org/0000-0001-5679-6536>),
   Andrea Gilardi [ctb] (<https://orcid.org/0000-0002-9424-7439>),
   Josiah Parry [ctb] (<https://orcid.org/0000-0001-9910-865X>)
 Repository: CRAN
-Date/Publication: 2024-05-01 23:42:08 UTC
+Date/Publication: 2024-08-22 06:30:02 UTC

@@ -6,7 +6,7 @@ knitr::opts_chunk$set(
 )
 
 ## ----setup--------------------------------------------------------------------
-#  library(stplanr)
+library(stplanr)
 
 ## ----eval=FALSE---------------------------------------------------------------
 #  remotes::install_github("itsleeds/geofabrik")
@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 #  options(osrm.server = "https://0.0.0.0:5000/", osrm.profile = "driving")
 
 ## -----------------------------------------------------------------------------
-#  library(osrm)
+library(osrm)
 
 ## ----eval=FALSE---------------------------------------------------------------
 #  l = pct::wight_lines_30
@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 #  plot(r)
 
 ## ----echo=FALSE---------------------------------------------------------------
-#  knitr::include_graphics("https://user-images.githubusercontent.com/1825120/86902789-577d1080-c106-11ea-91df-8d0180931562.png")
+knitr::include_graphics("https://user-images.githubusercontent.com/1825120/86902789-577d1080-c106-11ea-91df-8d0180931562.png")
 
 ## ----eval=FALSE---------------------------------------------------------------
 #  routes_osrm = route(l = l, route_fun = osrmRoute, returnclass = "sf", overview = "full")
@@ -42,7 +42,7 @@ knitr::opts_chunk$set(
 #  piggyback::pb_upload("routes_osrm.Rds")
 
 ## ----echo=FALSE---------------------------------------------------------------
-#  knitr::include_graphics("https://user-images.githubusercontent.com/1825120/86858225-2970df80-c0b8-11ea-8394-07f98f1c8e8a.png")
+knitr::include_graphics("https://user-images.githubusercontent.com/1825120/86858225-2970df80-c0b8-11ea-8394-07f98f1c8e8a.png")
 
 ## ----eval=FALSE---------------------------------------------------------------
 #  # tidy up

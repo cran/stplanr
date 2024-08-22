@@ -1,3 +1,7 @@
+# stplanr 1.2.2 (2024-07)
+
+- CRAN checks fixed (#563)
+
 # stplanr 1.2.1
 
 - Fixed bug causing errors when `length(n_segments) > 1` (#560)
