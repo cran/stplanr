@@ -1,7 +1,7 @@
 Type: Package
 Package: stplanr
 Title: Sustainable Transport Planning
-Version: 1.2.2
+Version: 1.2.3
 Authors@R: c(
     person("Robin", "Lovelace", , "rob00x@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-5679-6536")),
@@ -19,7 +19,8 @@ Authors@R: c(
     person("Andrea", "Gilardi", role = "ctb",
            comment = c(ORCID = "0000-0002-9424-7439")),
     person("Josiah", "Parry", role = "ctb",
-           comment = c(ORCID = "0000-0001-9910-865X"))
+           comment = c(ORCID = "0000-0001-9910-865X")),
+    person("Matthew", "Petersen", role = "ctb")
   )
 Maintainer: Robin Lovelace <rob00x@gmail.com>
 Description: Tools for transport planning with an emphasis on spatial
@@ -65,7 +66,7 @@ LazyData: yes
 RoxygenNote: 7.3.2
 SystemRequirements: GNU make
 NeedsCompilation: no
-Packaged: 2024-08-19 07:40:30 UTC; robin
+Packaged: 2025-04-21 09:18:25 UTC; robin
 Author: Robin Lovelace [aut, cre] (<https://orcid.org/0000-0001-5679-6536>),
   Richard Ellison [aut],
   Malcolm Morgan [aut] (<https://orcid.org/0000-0002-9488-9183>),
@@ -77,6 +78,7 @@ Author: Robin Lovelace [aut, cre] (<https://orcid.org/0000-0001-5679-6536>),
   Mark Padgham [ctb],
   Zhao Wang [ctb] (<https://orcid.org/0000-0002-4054-0533>),
   Andrea Gilardi [ctb] (<https://orcid.org/0000-0002-9424-7439>),
-  Josiah Parry [ctb] (<https://orcid.org/0000-0001-9910-865X>)
+  Josiah Parry [ctb] (<https://orcid.org/0000-0001-9910-865X>),
+  Matthew Petersen [ctb]
 Repository: CRAN
-Date/Publication: 2024-08-22 06:30:02 UTC
+Date/Publication: 2025-04-21 09:50:02 UTC

@@ -3,10 +3,10 @@ library(stplanr)
 knitr::opts_chunk$set(eval = curl::has_internet())
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  install.packages("stplanr")
+# install.packages("stplanr")
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  remotes::install_github("ropensci/stplanr")
+# remotes::install_github("ropensci/stplanr")
 
 ## -----------------------------------------------------------------------------
 library(stplanr)
@@ -54,7 +54,7 @@ sel <- !sel_intra & sel_dist
 l <- l[sel, ]
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  plot(l)
+# plot(l)
 
 ## ----echo=FALSE---------------------------------------------------------------
 l_bb <- sf::st_bbox(l)
@@ -70,21 +70,21 @@ plot(st_geometry(l), lwd = lwd)
 plot(l["Bicycle"], lwd = lwd)
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  # if the next line returns FALSE the code will not run
-#  r <- route(l = l, route_fun = cyclestreets::journey)
+# # if the next line returns FALSE the code will not run
+# r <- route(l = l, route_fun = cyclestreets::journey)
 
 ## ----out.width="500", out.height="500", eval=FALSE----------------------------
-#  r <- stplanr::routes_fast_sf
-#  plot(r$geometry, lwd = lwd * 3, reset = FALSE)
+# r <- stplanr::routes_fast_sf
+# plot(r$geometry, lwd = lwd * 3, reset = FALSE)
 
 ## ----out.width="500", out.height="500", echo=FALSE, eval=FALSE----------------
-#  # alternative showing buildings:
-#  r_sf <- st_sf(l, geometry = st_as_sfc(r))
-#  if (require(osmdata)) {
-#    buildings <- opq(st_bbox(l)) %>%
-#      add_osm_feature(key = "building", value = "industrial") %>%
-#      osmdata_sf()
-#  }
-#  plot(r_sf["Bicycle"], lwd = lwd * 3, reset = FALSE)
-#  plot(st_geometry(buildings$osm_polygons), col = "grey", add = TRUE)
+# # alternative showing buildings:
+# r_sf <- st_sf(l, geometry = st_as_sfc(r))
+# if (require(osmdata)) {
+#   buildings <- opq(st_bbox(l)) %>%
+#     add_osm_feature(key = "building", value = "industrial") %>%
+#     osmdata_sf()
+# }
+# plot(r_sf["Bicycle"], lwd = lwd * 3, reset = FALSE)
+# plot(st_geometry(buildings$osm_polygons), col = "grey", add = TRUE)
 
